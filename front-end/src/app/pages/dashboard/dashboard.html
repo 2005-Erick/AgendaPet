@@ -1,115 +1,66 @@
+```html
 <div class="bg-background text-on-surface font-body-md min-h-screen flex antialiased">
 
     <!-- Sidebar -->
-    <nav
-        class="bg-surface-container-lowest w-64 border-r border-outline-variant flex flex-col fixed h-screen z-40">
+    <nav class="bg-surface-container-lowest w-64 border-r border-outline-variant flex flex-col fixed h-screen z-40">
 
         <!-- Logo -->
         <div class="mb-8 flex items-center gap-3 px-6 py-6">
-            <div
-                class="h-10 w-10 bg-primary-container rounded-full flex items-center justify-center text-on-primary-container font-bold text-lg">
+            <div class="h-10 w-10 bg-primary-container rounded-full flex items-center justify-center text-on-primary-container font-bold text-lg">
                 <span class="material-symbols-outlined">pets</span>
             </div>
 
             <div>
-                <h1 class="font-bold text-2xl text-primary">
-                    AgendaPet
-                </h1>
-
-                <p class="text-sm text-on-surface-variant">
-                    Portal do Tutor
-                </p>
+                <h1 class="font-bold text-2xl text-primary">AgendaPet</h1>
+                <p class="text-sm text-on-surface-variant">Portal do Tutor</p>
             </div>
         </div>
 
         <!-- Botão -->
         <div class="px-4">
-            <button
-                class="bg-primary text-on-primary h-11 rounded-lg w-full mb-6 hover:bg-primary-fixed-dim transition-colors flex items-center justify-center gap-2 px-4 shadow-sm">
-
-                <span class="material-symbols-outlined text-[20px]">
-                    add
-                </span>
-
+            <button class="bg-primary text-on-primary h-11 rounded-lg w-full mb-6 hover:bg-primary-fixed-dim transition-colors flex items-center justify-center gap-2 px-4 shadow-sm">
+                <span class="material-symbols-outlined text-[20px]">add</span>
                 Agendar Serviço
             </button>
         </div>
 
         <!-- Menu -->
         <div class="flex-1 flex flex-col gap-1 px-4">
-
-            <a class="flex items-center gap-3 px-4 py-3 bg-secondary-container text-on-secondary-container rounded-lg font-bold"
-                href="#">
-
-                <span class="material-symbols-outlined"
-                    style="font-variation-settings: 'FILL' 1;">
-                    dashboard
-                </span>
-
+            <a class="flex items-center gap-3 px-4 py-3 bg-secondary-container text-on-secondary-container rounded-lg font-bold" href="#">
+                <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">dashboard</span>
                 Dashboard
             </a>
 
-            <a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-colors"
-                href="#">
-
-                <span class="material-symbols-outlined">
-                    pets
-                </span>
-
+            <a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-colors" href="#">
+                <span class="material-symbols-outlined">pets</span>
                 Pets
             </a>
 
-            <a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-colors"
-                href="#">
-
-                <span class="material-symbols-outlined">
-                    calendar_today
-                </span>
-
+            <a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-colors" href="#">
+                <span class="material-symbols-outlined">calendar_today</span>
                 Consultas
             </a>
 
-            <a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-colors"
-                href="#">
-
-                <span class="material-symbols-outlined">
-                    inventory_2
-                </span>
-
+            <a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-colors" href="#">
+                <span class="material-symbols-outlined">inventory_2</span>
                 Estoque
             </a>
 
-            <a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-colors"
-                href="#">
-
-                <span class="material-symbols-outlined">
-                    point_of_sale
-                </span>
-
+            <a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-colors" href="#">
+                <span class="material-symbols-outlined">point_of_sale</span>
                 Caixa
             </a>
         </div>
 
         <!-- Rodapé Sidebar -->
         <div class="border-t border-outline-variant p-4 flex flex-col gap-1">
-
-            <a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-colors"
-                href="#">
-
-                <span class="material-symbols-outlined">
-                    settings
-                </span>
-
+            <a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-colors" href="#">
+                <span class="material-symbols-outlined">settings</span>
                 Configurações
             </a>
 
-            <a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-colors"
-                href="#">
-
-                <span class="material-symbols-outlined">
-                    help
-                </span>
-
+            <a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-colors" href="#">
+                <span class="material-symbols-outlined">help</span>
                 Suporte
             </a>
         </div>
@@ -119,150 +70,173 @@
     <main class="flex-1 ml-64 flex flex-col min-h-screen">
 
         <!-- Topbar -->
-        <header
-            class="bg-surface border-b border-outline-variant h-20 flex items-center justify-between px-10 sticky top-0 z-30">
+        <header class="bg-surface border-b border-outline-variant h-20 flex items-center justify-between px-10 sticky top-0 z-30">
 
-            <!-- Navegação -->
             <nav class="flex gap-8 h-full items-center">
-
-                <a class="flex items-center h-full text-primary font-bold border-b-2 border-primary px-2"
-                    href="#">
-                    Dashboard
-                </a>
-
-                <a class="flex items-center h-full text-on-surface-variant hover:text-primary transition-colors px-2"
-                    href="#">
-                    Registros
-                </a>
-
-                <a class="flex items-center h-full text-on-surface-variant hover:text-primary transition-colors px-2"
-                    href="#">
-                    Agenda
-                </a>
+                <a class="flex items-center h-full text-primary font-bold border-b-2 border-primary px-2" href="#">Dashboard</a>
+                <a class="flex items-center h-full text-on-surface-variant hover:text-primary transition-colors px-2" href="#">Registros</a>
+                <a class="flex items-center h-full text-on-surface-variant hover:text-primary transition-colors px-2" href="#">Agenda</a>
             </nav>
 
-            <!-- Perfil -->
             <div class="flex items-center gap-4">
 
-                <button
-                    class="w-10 h-10 rounded-full border border-outline-variant flex items-center justify-center relative hover:bg-surface-container-low transition-colors">
-
-                    <span class="material-symbols-outlined">
-                        notifications
-                    </span>
-
+                <button class="w-10 h-10 rounded-full border border-outline-variant flex items-center justify-center relative hover:bg-surface-container-low transition-colors">
+                    <span class="material-symbols-outlined">notifications</span>
                     <span class="absolute top-2 right-2 w-2 h-2 bg-error rounded-full"></span>
                 </button>
 
                 <div class="h-10 w-10 rounded-full overflow-hidden border border-outline-variant">
-
                     <img class="w-full h-full object-cover"
                         src="https://lh3.googleusercontent.com/aida-public/AB6AXuB7EkCZeirTxeOgGRDp5HwP6E01PBb3uE8wcXYJZe1EDQNQziDtxwQDx35Jt4968Y-QRsasK-jGav1hlLur0Ub3ZeQTWq4LIclfAA7bDvEx_WvmVAnISHJrIm0cD92oSa0oMXlnUk4TPWDWBbC8sOpQf_yhLCT3ol0CMIGnLu8kRZURNVP02Uuvs5nyyrzDjILuyitIFQjgli8DWz7u-SIsuQLjcOfFgUu5VNCevCJxtTwOMI8UjCuCu8o0T_Pj8XJwrnwpne9C3EY" />
                 </div>
+
             </div>
         </header>
 
-        <!-- Conteúdo Dashboard -->
-        <div class="p-10 flex flex-col gap-8">
+        <!-- Conteúdo -->
+        <div class="p-10 flex flex-col gap-10">
 
             <!-- Banner -->
-            <section
-                class="bg-primary-container rounded-xl p-10 flex items-center justify-between relative overflow-hidden">
-
-                <div
-                    class="absolute right-0 top-0 w-1/2 h-full bg-gradient-to-l from-primary-fixed-dim/30 to-transparent">
-                </div>
+            <section class="bg-primary-container rounded-xl p-10 flex items-center justify-between relative overflow-hidden">
+                <div class="absolute right-0 top-0 w-1/2 h-full bg-gradient-to-l from-primary-fixed-dim/30 to-transparent"></div>
 
                 <div class="z-10">
                     <h2 class="text-3xl font-bold text-on-primary-container mb-2">
                         Bom dia, Sarah.
                     </h2>
-
                     <p class="text-on-primary-container/80">
                         Luna possui uma vacinação agendada para a próxima semana.
                     </p>
                 </div>
 
-                <button
-                    class="z-10 bg-surface text-primary px-6 h-11 rounded-lg border border-transparent hover:bg-surface-container-low transition-colors flex items-center gap-2">
-
-                    <span class="material-symbols-outlined">
-                        event_available
-                    </span>
-
+                <button class="z-10 bg-surface text-primary px-6 h-11 rounded-lg border border-transparent hover:bg-surface-container-low transition-colors flex items-center gap-2">
+                    <span class="material-symbols-outlined">event_available</span>
                     Agendar Serviço
                 </button>
             </section>
 
-            <!-- Cards -->
-            <section class="grid grid-cols-2 gap-6">
-                @for (pet of pets; track pet.nome){
-                        <app-cards
+            <!-- GRID 1: Pets + Upcoming -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+                <!-- Pets -->
+                <section class="lg:col-span-8 flex flex-col gap-4">
+
+                    <div class="flex justify-between items-end">
+                        <h3 class="text-2xl font-bold">Meus Pets</h3>
+                        <button class="text-primary hover:underline flex items-center gap-1">
+                            <span class="material-symbols-outlined text-[16px]">add</span>
+                            Adicionar Pet
+                        </button>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-6">
+                        @for (pet of pets; track pet.nome) {
+                            <app-cards
                                 [nome]="pet.nome"
                                 [imagem]="pet.imagem"
                                 [raca]="pet.raca"
                                 [idade]="pet.idade"
                                 [status]="pet.status"
                                 [proximo]="pet.proximo">
-                        </app-cards>
-                }
-            </section>
-
-            <!-- Timeline -->
-            <section class="flex flex-col gap-4">
-
-                <h3 class="text-2xl font-bold">
-                    Histórico de Saúde
-                </h3>
-
-                <div
-                    class="bg-surface-container-lowest border border-outline-variant rounded-xl p-6 flex flex-col gap-6">
-
-                    <div
-                        class="bg-surface border border-outline-variant rounded-lg p-4">
-
-                        <div class="flex justify-between mb-2">
-
-                            <h4 class="font-bold">
-                                Check-up anual - Luna
-                            </h4>
-
-                            <span class="text-sm text-on-surface-variant">
-                                2 dias atrás
-                            </span>
-                        </div>
-
-                        <p class="text-on-surface-variant text-sm">
-                            Dr. Smith informou que Luna está com ótima saúde.
-                        </p>
+                            </app-cards>
+                        }
                     </div>
 
-                    <div
-                        class="bg-surface border border-outline-variant rounded-lg p-4">
+                </section>
 
-                        <div class="flex justify-between mb-2">
+                <!-- Upcoming -->
+                <section class="lg:col-span-4 flex flex-col gap-4">
 
-                            <h4 class="font-bold">
-                                Tratamento contra pulgas - Thor
-                            </h4>
+                    <h3 class="text-2xl font-bold">Próximos</h3>
 
-                            <span class="text-sm text-error">
-                                Atrasado
-                            </span>
+                    <div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-5 flex flex-col gap-4">
+
+                        <div class="flex gap-4 pb-4 border-b border-surface-container">
+                            <div class="text-primary text-sm font-bold">OUT 12</div>
+                            <div>
+                                <p class="font-bold">Vacinação da Luna</p>
+                                <p class="text-sm text-on-surface-variant">10:00 - City Vet</p>
+                            </div>
                         </div>
 
-                        <p class="text-on-surface-variant text-sm mb-3">
-                            O tratamento mensal precisa ser realizado.
+                        <div class="flex gap-4">
+                            <div class="text-primary text-sm font-bold">NOV 05</div>
+                            <div>
+                                <p class="font-bold">Banho do Thor</p>
+                                <p class="text-sm text-on-surface-variant">14:30 - Pet Spa</p>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </section>
+            </div>
+
+            <!-- GRID 2: Timeline + Support -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+                <!-- Timeline -->
+                <section class="lg:col-span-8 flex flex-col gap-4">
+
+                    <h3 class="text-2xl font-bold">Histórico de Saúde</h3>
+
+                    <div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-6 flex flex-col gap-6">
+
+                        <div class="bg-surface border border-outline-variant rounded-lg p-4">
+                            <div class="flex justify-between mb-2">
+                                <h4 class="font-bold">Check-up anual - Luna</h4>
+                                <span class="text-sm text-on-surface-variant">2 dias atrás</span>
+                            </div>
+                            <p class="text-sm text-on-surface-variant">
+                                Luna está em ótima saúde.
+                            </p>
+                        </div>
+
+                        <div class="bg-surface border border-outline-variant rounded-lg p-4">
+                            <div class="flex justify-between mb-2">
+                                <h4 class="font-bold">Tratamento - Thor</h4>
+                                <span class="text-sm text-error">Atrasado</span>
+                            </div>
+                            <p class="text-sm text-on-surface-variant mb-3">
+                                Tratamento mensal necessário.
+                            </p>
+
+                            <button class="border border-primary text-primary px-4 h-8 rounded-lg">
+                                Marcar como concluído
+                            </button>
+                        </div>
+
+                    </div>
+                </section>
+
+                <!-- Support -->
+                <section class="lg:col-span-4 flex flex-col gap-4">
+
+                    <h3 class="text-2xl font-bold">Suporte</h3>
+
+                    <div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-6 flex flex-col items-center text-center gap-4">
+
+                        <span class="material-symbols-outlined text-3xl">
+                            chat_bubble
+                        </span>
+
+                        <p class="font-bold">Precisa de ajuda?</p>
+
+                        <p class="text-sm text-on-surface-variant">
+                            Equipe disponível para suporte.
                         </p>
 
-                        <button
-                            class="border border-primary text-primary px-4 h-8 rounded-lg hover:bg-surface-container-low transition-colors">
-
-                            Marcar como concluído
+                        <button class="bg-primary text-on-primary px-4 h-10 rounded-lg">
+                            Falar com clínica
                         </button>
+
                     </div>
-                </div>
-            </section>
+
+                </section>
+
+            </div>
+
         </div>
     </main>
 </div>
+```
