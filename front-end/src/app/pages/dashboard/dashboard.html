@@ -149,23 +149,14 @@
                     <h3 class="text-2xl font-bold">Próximos</h3>
 
                     <div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-5 flex flex-col gap-4">
-
-                        <div class="flex gap-4 pb-4 border-b border-surface-container">
-                            <div class="text-primary text-sm font-bold">OUT 12</div>
-                            <div>
-                                <p class="font-bold">Vacinação da Luna</p>
-                                <p class="text-sm text-on-surface-variant">10:00 - City Vet</p>
-                            </div>
-                        </div>
-
-                        <div class="flex gap-4">
-                            <div class="text-primary text-sm font-bold">NOV 05</div>
-                            <div>
-                                <p class="font-bold">Banho do Thor</p>
-                                <p class="text-sm text-on-surface-variant">14:30 - Pet Spa</p>
-                            </div>
-                        </div>
-
+                        @for (agendamento of agendamentos; track agendamento.titulo) {
+                            <app-proximos-agendamentos
+                                [titulo]="agendamento.titulo"
+                                [horario]="agendamento.horario"
+                                [cidade]="agendamento.cidade"
+                                [data]="agendamento.data">
+                        </app-proximos-agendamentos>
+                        }
                     </div>
 
                 </section>
