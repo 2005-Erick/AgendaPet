@@ -171,31 +171,14 @@
                     <h3 class="text-2xl font-bold">Histórico de Saúde</h3>
 
                     <div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-6 flex flex-col gap-6">
-
-                        <div class="bg-surface border border-outline-variant rounded-lg p-4">
-                            <div class="flex justify-between mb-2">
-                                <h4 class="font-bold">Check-up anual - Luna</h4>
-                                <span class="text-sm text-on-surface-variant">2 dias atrás</span>
-                            </div>
-                            <p class="text-sm text-on-surface-variant">
-                                Luna está em ótima saúde.
-                            </p>
-                        </div>
-
-                        <div class="bg-surface border border-outline-variant rounded-lg p-4">
-                            <div class="flex justify-between mb-2">
-                                <h4 class="font-bold">Tratamento - Thor</h4>
-                                <span class="text-sm text-error">Atrasado</span>
-                            </div>
-                            <p class="text-sm text-on-surface-variant mb-3">
-                                Tratamento mensal necessário.
-                            </p>
-
-                            <button class="border border-primary text-primary px-4 h-8 rounded-lg">
-                                Marcar como concluído
-                            </button>
-                        </div>
-
+                         @for (historico of historicos; track historico.titulo) {
+                            <app-historico-animal
+                                [titulo]="historico.titulo"
+                                [nomeAnimal]="historico.nomeAnimal"
+                                [descricao]="historico.descricao"
+                                [data]="historico.data">
+                        </app-historico-animal>
+                        }   
                     </div>
                 </section>
 

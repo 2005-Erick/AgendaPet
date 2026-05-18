@@ -1,0 +1,14 @@
+<div class="bg-surface border border-outline-variant rounded-lg p-4">
+    <div class="flex justify-between mb-2">
+        <h4 class="font-bold">{{titulo()}} - {{nomeAnimal()}}</h4>
+        <span class="text-sm text-error" [class.text-error]="data() === 'Atrasado'">{{data()}}</span>
+    </div>
+    <p class="text-sm text-on-surface-variant mb-3">
+        {{descricao()}}
+    </p>
+    @if (data() === 'Atrasado'){
+        <button class="border border-primary text-primary px-4 h-8 rounded-lg">
+            Marcar como concluído
+        </button>
+    }
+</div>
