@@ -1,0 +1,45 @@
+<div
+    class="bg-surface-container-lowest border border-outline-variant rounded-xl p-5 flex flex-col gap-4 hover:bg-surface-container-low transition-colors">
+
+    <div class="flex items-center justify-between">
+
+        <div class="flex items-center gap-4">
+
+            <div
+                class="w-16 h-16 rounded-full overflow-hidden border border-outline-variant">
+
+                <img class="w-full h-full object-cover"
+                    [src]="imagem()"/>
+            </div>
+
+            <div>
+                <h3 class="text-xl font-bold">
+                    {{nome()}}
+                </h3>
+
+                <p class="text-sm text-on-surface-variant">
+                    {{raca()}} • {{idade()}}
+                </p>
+            </div>
+        </div>
+
+        <span
+            class="bg-secondary-fixed text-on-secondary-fixed px-2 py-1 rounded-full text-xs uppercase">
+
+            {{status()}}
+
+        </span>
+    </div>
+
+    <div
+        class="flex justify-between items-center border-t border-surface-container pt-3">
+
+        <span class="text-sm text-on-surface-variant">
+            Próximo: {{proximo()}}
+        </span>
+
+        <span class="material-symbols-outlined text-primary">
+            chevron_right
+        </span>
+    </div>
+</div>
