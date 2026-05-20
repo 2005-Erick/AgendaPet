@@ -1,25 +1,20 @@
-import { Component, inject } from '@angular/core';
-import { Cards } from '../../components/cards/cards';
-import { PetService } from '../../services/pet/pet';
-import { ProximosAgendamentosService } from '../../services/proximos-agendamentos/proximos-agendamentos';
-import { ProximosAgendamentos } from '../../components/proximos-agendamentos/proximos-agendamentos';
-import { HistoricoAnimalService } from '../../services/historico-animal/historico-animal';
-import { HistoricoAnimal } from '../../components/historico-animal/historico-animal';
+import { Component } from '@angular/core';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { RouterLink, RouterOutlet, RouterLinkActive } from '@angular/router';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-dashboard',
-  imports: [Cards, ProximosAgendamentos, HistoricoAnimal],
+  imports: [
+    MatSidenavModule,
+    MatButtonModule,
+    MatIconModule,
+    RouterOutlet,
+    RouterLink,
+    RouterLinkActive,
+  ],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.css',
 })
-
-export class Dashboard {
-  private petService = inject(PetService);
-  pets = this.petService.pets();
-
-  private proximosAgendamentosService = inject(ProximosAgendamentosService);
-  agendamentos = this.proximosAgendamentosService.proximosAgendamentos()
-
-  private historicoAnimalService = inject(HistoricoAnimalService);
-  historicos = this.historicoAnimalService.historicoAnimal();
-}
+export class Dashboard {}

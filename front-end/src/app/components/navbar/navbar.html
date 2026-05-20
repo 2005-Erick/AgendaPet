@@ -1,1 +1,34 @@
 <p>navbar works!</p>
+
+<!-- app.component.html -->
+
+<div class="reader-container">
+    <nav class="menu">
+        <button (click)="scrollTo('secao1')">Seção 1</button>
+        <button (click)="scrollTo('secao2')">Seção 2</button>
+        <button (click)="scrollTo('secao3')">Seção 3</button>
+    </nav>
+
+    <section id="secao1" class="secao">
+        <h2>Seção 1</h2>
+        <p>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+            Esse é o conteúdo da primeira seção.
+        </p>
+    </section>
+
+    <section id="secao2" class="secao">
+        <h2>Seção 2</h2>
+        <p>
+            Aqui fica o conteúdo da segunda seção.
+            Pode adicionar texto, imagens ou qualquer coisa.
+        </p>
+    </section>
+
+    <section id="secao3" class="secao">
+        <h2>Seção 3</h2>
+        <p>
+            Última seção do reader básico.
+        </p>
+    </section>
+</div>

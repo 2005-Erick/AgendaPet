@@ -1,4 +1,9 @@
 /* You can add global styles to this file, and also import other style files */
 
-@config "../tailwind.config.js";
-@import "tailwindcss";
+@import 'tailwindcss';
+
+/* Permitir que as classes de cor do Tailwind funcionem nos botões do Angular Material */
+.mat-mdc-button .mdc-button__label,
+.mat-mdc-button .mat-icon {
+  color: inherit !important;
+}

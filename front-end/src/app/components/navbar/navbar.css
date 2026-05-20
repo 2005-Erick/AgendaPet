@@ -1,0 +1,30 @@
+/* app.component.css */
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+}
+
+.reader-container {
+  padding: 20px;
+}
+
+.menu {
+  position: sticky;
+  top: 0;
+  background: white;
+  padding: 10px;
+  display: flex;
+  gap: 10px;
+  border-bottom: 1px solid #ccc;
+}
+
+button {
+  padding: 10px 16px;
+  cursor: pointer;
+}
+
+.secao {
+  min-height: 100vh;
+  padding: 40px 0;
+}
