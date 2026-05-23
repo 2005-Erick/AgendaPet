@@ -42,14 +42,14 @@
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         @for (pet of pets; track pet.nome) {
-                            <app-cards
+                            <app-cards-pet
                                 [nome]="pet.nome"
                                 [imagem]="pet.imagem"
                                 [raca]="pet.raca"
                                 [idade]="pet.idade"
                                 [status]="pet.status"
                                 [proximo]="pet.proximo">
-                            </app-cards>
+                            </app-cards-pet>
                         }
                     </div>
 

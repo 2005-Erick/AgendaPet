@@ -2,13 +2,13 @@ import { Component, inject } from '@angular/core';
 import { PetService } from '../../../../services/pet/pet';
 import { ProximosAgendamentosService } from '../../../../services/proximos-agendamentos/proximos-agendamentos';
 import { HistoricoAnimalService } from '../../../../services/historico-animal/historico-animal';
-import { Cards } from '../../../../components/cards/cards';
+import { CardsPet } from '../../../../components/cards-pet/cards-pet';
 import { HistoricoAnimal } from '../../../../components/historico-animal/historico-animal';
 import { ProximosAgendamentos } from '../../../../components/proximos-agendamentos/proximos-agendamentos';
 
 @Component({
   selector: 'app-dashboard-page',
-  imports: [Cards, HistoricoAnimal, ProximosAgendamentos],
+  imports: [CardsPet, HistoricoAnimal, ProximosAgendamentos],
   templateUrl: './dashboard-page.html',
   styleUrl: './dashboard-page.css',
 })
