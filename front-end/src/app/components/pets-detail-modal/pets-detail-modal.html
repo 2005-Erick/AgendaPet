@@ -1,6 +1,6 @@
 @if (pet()) {
-<div class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 transition-opacity duration-300 p-4" (click)="fechar()">
-    <div class="w-full max-w-2xl max-h-[85vh] overflow-y-auto rounded-3xl bg-white shadow-2xl" (click)="$event.stopPropagation()">
+<div class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm transition-opacity duration-300 p-4" (click)="fechar()">
+    <div class="w-full max-w-[720px] max-h-[85vh] overflow-y-auto rounded-3xl bg-white shadow-2xl ring-1 ring-black/5 transform transition-all duration-300 ease-out md:ml-6 lg:ml-50" (click)="$event.stopPropagation()">
         
         <!-- Header do Modal -->
         <div class="sticky top-0 z-10 border-b border-outline-variant/30 bg-white px-6 py-4">

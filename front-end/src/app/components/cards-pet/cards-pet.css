@@ -1,0 +1,14 @@
+/* Navigation feedback: applied only while navigating */
+.is-navigating {
+	transform: translateY(-6px) scale(1.02);
+	opacity: 0.85;
+	transition: transform 220ms ease-in-out, opacity 220ms ease-in-out;
+	pointer-events: none;
+}
+
+.is-navigating img {
+	filter: brightness(0.98) contrast(1.02) saturate(1.02);
+	transition: filter 220ms ease-in-out, transform 220ms ease-in-out;
+	transform: scale(1.08);
+}
+
