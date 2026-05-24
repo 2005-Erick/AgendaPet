@@ -5,4 +5,5 @@ export interface Pet {
   idade: number;
   status: string;
   proximo: string;
+  id: number;
 }

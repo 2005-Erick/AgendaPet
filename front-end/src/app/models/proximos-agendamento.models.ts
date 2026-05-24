@@ -3,4 +3,6 @@ export interface ProximosAgendamentos {
   data: string;
   horario: string;
   cidade: string;
+  dataCompleta?: string;
+  petId?: number;
 }

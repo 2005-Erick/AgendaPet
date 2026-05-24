@@ -10,14 +10,16 @@ export class HistoricoAnimalService {
       nomeAnimal: 'Luna',
       titulo: 'Check-up anual',
       data: '2 dias atrás',
-      descricao: 'Luna está em ótima saúde'
+      descricao: 'Luna está em ótima saúde',
+      petId: 1
     },
 
     {
       nomeAnimal: 'Thor',
       titulo: 'Tratamento',
       data: 'Atrasado',
-      descricao: 'Tratamento mensal necessário.'
+      descricao: 'Tratamento mensal necessário.',
+      petId: 2
     }
   ]);
 

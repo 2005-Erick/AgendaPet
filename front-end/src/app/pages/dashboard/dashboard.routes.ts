@@ -7,5 +7,6 @@ export const dashboardRoutes: Routes = [
   { path: '', redirectTo: 'dashboard-page', pathMatch: 'full' },
   { path: 'dashboard-page', component: DashboardPage },
   { path: 'pets-page', component: PetsPage },
+  { path: 'pets-page/:id', component: PetsPage },
   { path: 'agendamentos-page', component: AgendamentosPage },
 ];
