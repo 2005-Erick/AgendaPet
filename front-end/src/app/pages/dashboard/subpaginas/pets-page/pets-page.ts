@@ -22,7 +22,7 @@ export class PetsPage {
   petSelecionado = signal<number | null>(null);
 
   abrirPet(id: number) {
-    this.router.navigate(['/dashboard/pets-page', id]);
+    this.router.navigate(['/dashboard/pets-page/pet', id]);
   }
 
   constructor() {

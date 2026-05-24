@@ -27,7 +27,7 @@ export class CardsPet {
 
     // pequeno delay para permitir a animação antes da navegação
     setTimeout(() => {
-      this.router.navigate(['/dashboard/pets-page', this.id()]);
+      this.router.navigate(['/dashboard/pets-page/pet', this.id()]);
     }, 220);
   }
 }
