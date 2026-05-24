@@ -11,8 +11,10 @@ export class ProximosAgendamentosService {
       data: 'OUT 12',
       cidade: 'City Vet',
       horario: '10:00', 
-      dataCompleta: '12 de Outubro',
-      petId: 1  
+      dataCompleta: '12/06/2026',
+      petId: 1,
+      servico: 'Vacinação',
+      nomeAnimal: 'Luna'
     },
 
     {
@@ -20,8 +22,10 @@ export class ProximosAgendamentosService {
       data: 'NOV 05',
       cidade: 'Pet Spa',
       horario: '14:30',
-      dataCompleta: '05 de Novembro',
-      petId: 2
+      dataCompleta: '13/06/2026',
+      petId: 2,
+      servico: 'Banho',
+      nomeAnimal: 'Thor'
     },
   ]);
 
