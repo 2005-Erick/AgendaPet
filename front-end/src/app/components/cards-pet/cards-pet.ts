@@ -1,12 +1,12 @@
 import { Component, input } from '@angular/core';
 
 @Component({
-  selector: 'app-cards',
+  selector: 'app-cards-pet',
   imports: [],
-  templateUrl: './cards.html',
-  styleUrl: './cards.css',
+  templateUrl: './cards-pet.html',
+  styleUrl: './cards-pet.css',
 })
-export class Cards {
+export class CardsPet {
   nome = input.required<string>();
   imagem = input.required<string>();
   raca = input.required<string>();
