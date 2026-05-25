@@ -1,0 +1,40 @@
+<div class="flex flex-row min-h-screen w-full bg-[#f8faf9] text-[#191c1c] p-6">
+    <aside>
+
+        <h1 class="text-2xl font-bold mb-6 text-[#2d6a4f]">
+            Configurações
+        </h1>
+
+        <nav class="flex flex-col gap-2">
+
+            <button routerLink="Profile" routerLinkActive="bg-[#D8F3DC]!"
+                class="text-left px-4 py-3 rounded-xl text-zinc-700 font-medium hover:bg-[#D8F3DC]">
+                Perfil
+            </button>
+
+            <button routerLink="Security" routerLinkActive="bg-[#D8F3DC]!"
+                class="text-left px-4 py-3 rounded-xl hover:bg-[#D8F3DC] transition">
+                Segurança e privacidade
+            </button>
+
+            <button routerLink="Notifications" routerLinkActive="bg-[#D8F3DC]!"
+                class="text-left px-4 py-3 rounded-xl hover:bg-[#D8F3DC] transition">
+                Notificações
+            </button>
+
+            <button routerLink="Accessibility" routerLinkActive="bg-[#D8F3DC]!"
+                class="text-left px-4 py-3 rounded-xl hover:bg-[#D8F3DC] transition">
+                Acessibilidade e exibição
+            </button>
+
+        </nav>
+
+    </aside>
+
+    <section class="flex-1 p-6 overflow-auto">
+
+        <router-outlet></router-outlet>
+
+    </section>
+
+</div>

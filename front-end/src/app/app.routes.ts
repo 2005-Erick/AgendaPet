@@ -6,6 +6,8 @@ import { Dashboard } from './pages/dashboard/dashboard';
 import { dashboardRoutes } from './pages/dashboard/dashboard.routes';
 import { PrecoComponent } from './pages/home/subpaginas/preco/preco';
 import { NotFoundPage } from './pages/not-found/not-found';
+import { ConfigurationPage } from './pages/dashboard/subpaginas/configuration-page/configuration-page';
+import { configurationRoutes } from './pages/dashboard/subpaginas/configuration-page/configuration.routes';
 
 export const routes: Routes = [
   { path: '', component: Home, title: 'AgendaPet - Gestão de Clínicas Veterinárias e Pet Shops' },

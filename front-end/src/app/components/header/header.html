@@ -1,69 +1,55 @@
 <header class="relative bg-white border-b border-gray-200 w-full z-50">
   <div class="flex justify-between items-center px-4 md:px-6 h-16 max-w-7xl mx-auto">
-    <div class="font-headline-md text-3xl text-primary font-bold">AgendaPet</div>
+    <div class=" text-3xl text-[#40916C] font-bold">AgendaPet</div>
 
     <nav class="hidden md:flex gap-6 text-lg font-label-md">
-      <a
-        routerLink="/"
-        class="text-gray-500 hover:text-green-700 transition-colors duration-300 cursor-pointer"
-      >
+      <a routerLink="/" routerLinkActive="text-[#40916C]"
+        class="text-zinc-500 hover:text-[#40916C] transition-colors duration-300 cursor-pointer">
         Início
       </a>
 
-      <a
-        routerLink="/preco"
-        class="text-gray-500 hover:text-green-700 transition-colors duration-300 cursor-pointer"
-      >
+      <a routerLink="/preco" routerLinkActive="text-[#40916C]"
+        class="text-zinc-500 hover:text-[#40916C] transition-colors duration-300 cursor-pointer">
         Preços
       </a>
     </nav>
 
-    <button (click)="toggleMenu()" class="md:hidden text-3xl text-primary">☰</button>
+    <button (click)="toggleMenu()" class="md:hidden text-3xl text-[#40916C]">☰</button>
 
     <div class="hidden md:flex gap-3">
-      <a
-        routerLink="/login"
-        class="flex h-11 items-center px-4 rounded-lg border border-primary text-primary bg-transparent hover:bg-surface-container-low transition active:scale-95"
-      >
+      <a routerLink="/login"
+        class="flex h-11 items-center px-4 rounded-lg border border-[#40916C] text-[#40916C] bg-transparent hover:bg-surface-container-low transition active:scale-95">
         Entrar
       </a>
 
-      <a
-        routerLink="/cadastro"
-        class="flex h-11 items-center px-4 rounded-lg bg-primary text-white hover:bg-tertiary transition active:scale-95"
-      >
+      <a routerLink="/cadastro"
+        class="flex h-11 items-center px-4 rounded-lg bg-[#40916C] text-white hover:bg-tertiary transition active:scale-95">
         Começar
       </a>
     </div>
   </div>
   @if (menuOpen()) {
-    <div
-      class="md:hidden absolute top-20 left-0 w-full bg-white border-t border-gray-200 shadow-lg px-6 py-6 flex flex-col gap-5 z-50 transition-all duration-300 ease-in-out"
-    >
-      <a routerLink="/" class="text-lg font-medium text-gray-700 hover:text-primary transition">
-        Início
-      </a>
+  <div
+    class="md:hidden absolute top-20 left-0 w-full bg-white border-t border-gray-200 shadow-lg px-6 py-6 flex flex-col gap-5 z-50 transition-all duration-300 ease-in-out">
+    <a routerLink="/" class="text-lg font-medium text-gray-700 hover:text-[#40916C] transition">
+      Início
+    </a>
 
-      <a
-        routerLink="/preco"
-        class="text-lg font-medium text-gray-700 hover:text-primary transition"
-      >
-        Preços
-      </a>
+    <a routerLink="/preco" class="text-lg font-medium text-gray-700 hover:text-[#40916C] transition">
+      Preços
+    </a>
 
-      <div class="flex flex-col gap-3 pt-2">
-        <button
-          class="w-full h-12 rounded-xl border border-primary text-primary font-medium active:scale-95 transition-all duration-150"
-        >
-          Entrar
-        </button>
+    <div class="flex flex-col gap-3 pt-2">
+      <button
+        class="w-full h-12 rounded-xl border border-[#40916C] text-[#40916C] font-medium active:scale-95 transition-all duration-150">
+        Entrar
+      </button>
 
-        <button
-          class="w-full h-12 rounded-xl bg-primary text-white font-medium active:scale-95 transition-all duration-150"
-        >
-          Começar
-        </button>
-      </div>
+      <button
+        class="w-full h-12 rounded-xl bg-[#40916C] text-white font-medium active:scale-95 transition-all duration-150">
+        Começar
+      </button>
     </div>
+  </div>
   }
 </header>

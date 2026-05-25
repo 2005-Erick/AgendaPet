@@ -1,0 +1,28 @@
+<div class="flex flex-row min-h-screen w-full bg-[#f8faf9] text-[#191c1c] p-6">
+    <aside>
+
+        <nav class="flex flex-col gap-2 border-l border-[#40916C] pl-4">
+
+            <button routerLink="Generic" routerLinkActive="bg-[#D8F3DC]!"
+                class="text-left px-4 py-3 rounded-xl hover:bg-[#D8F3DC] transition">
+                Filtros
+            </button>
+
+            <button routerLink="Generic" routerLinkActive="bg-[#D8F3DC]!"
+                class="text-left px-4 py-3 rounded-xl hover:bg-[#D8F3DC] transition">
+                Preferências
+            </button>
+            <button routerLink="Generic" routerLinkActive="bg-[#D8F3DC]!"
+                class="text-left px-4 py-3 rounded-xl hover:bg-[#D8F3DC] transition">
+                Configurações de Notificação
+            </button>
+
+        </nav>
+
+    </aside>
+    <section class="flex-1 p-6 overflow-auto">
+
+        <router-outlet></router-outlet>
+
+    </section>
+</div>

@@ -1,136 +1,96 @@
-<main
-  class="flex flex-col md:flex-row w-full min-h-screen bg-surface selection:bg-primary selection:text-on-primary"
->
+<main class="flex flex-col md:flex-row w-full min-h-screen bg-surface selection:bg-primary selection:text-on-primary">
   <!-- Left Side: Image Canvas (Hidden on Mobile) -->
   <section
-    class="hidden md:flex md:w-1/2 relative bg-surface-container-low overflow-hidden items-center justify-center"
-  >
-    <img
-      alt="Veterinary Clinic"
-      class="absolute inset-0 w-full h-full object-cover opacity-90"
-      src="https://lh3.googleusercontent.com/aida-public/AB6AXuD6QJoP8jPJ-aaVFUkx6BRGOvqN8d4MVwp_-PXpVJIVtFGmnAFkUaY6MCspwpq_ioJhahFwBLPf9Zorb_MVzFkSeY_6BnaKq2ZKO7dAE3AwSwjtdAZ22Np4Ght3D1T9qNcC_NarCBDFP5r5IxL1SJSq51E1WLqKmpq15mqnz7qQSp8efMEu4SUP1Xkn4oN8E19Jj8rNohe8XV-bjdBj7PBm7FsnU1m2_x49BLBBkFp1NzWcH0VqjfASH-WRncbTUVFWt4K2DXfj1ro"
-    />
-    <div
-      class="absolute inset-0 bg-linear-to-tr from-primary/30 to-transparent mix-blend-multiply"
-    ></div>
-    <div class="absolute top-10 left-10 z-10 flex items-center gap-2">
+    class="hidden md:flex md:w-1/2 relative bg-surface-container-low overflow-hidden items-center justify-center">
+    <img alt="Veterinary Clinic" class="absolute inset-0 w-full h-full object-cover opacity-90" src="/cat-logn.png" />
+    <div class="absolute inset-0 bg-linear-to-tr from-primary/30 to-transparent mix-blend-multiply"></div>
+    <button routerLink="/" class="absolute top-10 left-10 z-10 flex items-center gap-2">
+      <span class="material-symbols-outlined text-on-primary text-white"
+        style="font-variation-settings: 'FILL' 1; font-size: 32px">pets</span>
       <span
-        class="material-symbols-outlined text-on-primary"
-        style="font-variation-settings: 'FILL' 1; font-size: 32px"
-        >pets</span
-      >
-      <span class="font-headline-md text-headline-md text-on-primary font-bold tracking-tight"
-        >AgendaPet</span
-      >
-    </div>
+        class="font-headline-md text-headline-md text-on-primary font-bold tracking-tight text-white">AgendaPet</span>
+    </button>
   </section>
 
   <!-- Right Side: Form Canvas -->
-  <section
-    class="flex w-full md:w-1/2 items-center justify-center p-4 md:p-10 bg-surface relative z-10"
-  >
+  <section class="flex w-full md:w-1/2 items-center justify-center p-4 md:p-10 bg-surface relative z-10">
     <div class="w-full max-w-105 flex flex-col">
       <!-- Mobile Branding -->
       <div class="md:hidden flex items-center justify-center gap-2 mb-8">
-        <span
-          class="material-symbols-outlined text-primary"
-          style="font-variation-settings: 'FILL' 1; font-size: 32px"
-          >pets</span
-        >
-        <span class="font-headline-md text-headline-md text-primary font-bold tracking-tight"
-          >AgendaPet</span
-        >
+        <span class="material-symbols-outlined text-primary"
+          style="font-variation-settings: 'FILL' 1; font-size: 32px">pets</span>
+        <span class="font-headline-md text-headline-md text-primary font-bold tracking-tight">AgendaPet</span>
       </div>
 
       <!-- Header -->
       <header class="mb-8 text-center md:text-left">
-        <h1 class="text-3xl font-bold text-on-surface mb-2">Bem-vindo de volta</h1>
-        <p class="text-on-surface-variant">
+        <h1 class="text-3xl font-bold text-zinc-800 mb-2">Bem-vindo de volta</h1>
+        <p class="text-zinc-600">
           Entre no console clínico para gerenciar agendamentos e registros.
         </p>
       </header>
 
       @if (errorMessage()) {
-        <div class="bg-error-container text-on-error-container p-4 rounded-lg mb-6 text-sm">
-          {{ errorMessage() }}
-        </div>
+      <div class="bg-error-container text-on-error-container p-4 rounded-lg mb-6 text-sm">
+        {{ errorMessage() }}
+      </div>
       }
 
       <!-- Form -->
       <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="flex flex-col gap-6">
         <!-- Email -->
         <div class="flex flex-col gap-2">
-          <label class="text-sm font-semibold text-on-surface" for="email">Endereço de Email</label>
+          <label class="text-sm font-semibold text-zinc-800" for="email">Endereço de Email</label>
           <div class="relative">
             <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-outline">
               <span class="material-symbols-outlined" style="font-size: 20px">mail</span>
             </span>
-            <input
-              formControlName="email"
-              class="w-full h-11 pl-10 pr-3 rounded-lg bg-surface-container-lowest border border-outline-variant text-on-surface focus:border-primary focus:border-2 focus:ring-4 focus:ring-primary/10 transition-all outline-none"
-              id="email"
-              placeholder="doutor@clinica.com"
-              type="email"
-            />
+            <input formControlName="email"
+              class="w-full h-11 pl-10 pr-3 rounded-lg bg-surface-container-lowest border border-outline-variant text-zinc-800 focus:border-primary focus:border-2 focus:ring-4 focus:ring-primary/10 transition-all outline-none"
+              id="email" placeholder="doutor@clinica.com" type="email" />
           </div>
           @if (getFieldFeedback('email'); as feedback) {
-            <p
-              [class.text-error]="feedback.kind === 'error'"
-              [class.text-success]="feedback.kind === 'success'"
-              class="text-xs font-medium"
-            >
-              {{ feedback.message }}
-            </p>
+          <p [class.text-error]="feedback.kind === 'error'" [class.text-success]="feedback.kind === 'success'"
+            class="text-xs font-medium">
+            {{ feedback.message }}
+          </p>
           }
         </div>
 
         <!-- Password -->
         <div class="flex flex-col gap-2">
           <div class="flex justify-between items-center">
-            <label class="text-sm font-semibold text-on-surface" for="password">Senha</label>
-            <a class="text-sm font-semibold text-primary hover:text-primary-container" href="#"
-              >Esqueceu a senha?</a
-            >
+            <label class="text-sm font-semibold text-zinc-800" for="password">Senha</label>
+            <a class="text-sm font-semibold text-[#40916C] hover:text-[#357a57]" href="#">Esqueceu a senha?</a>
           </div>
           <div class="relative">
             <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-outline">
               <span class="material-symbols-outlined" style="font-size: 20px">lock</span>
             </span>
-            <input
-              formControlName="password"
-              class="w-full h-11 pl-10 pr-3 rounded-lg bg-surface-container-lowest border border-outline-variant text-on-surface focus:border-primary focus:border-2 focus:ring-4 focus:ring-primary/10 transition-all outline-none"
-              id="password"
-              placeholder="••••••••"
-              type="password"
-            />
+            <input formControlName="password"
+              class="w-full h-11 pl-10 pr-3 rounded-lg bg-surface-container-lowest border border-outline-variant text-zinc-800 focus:border-primary focus:border-2 focus:ring-4 focus:ring-primary/10 transition-all outline-none"
+              id="password" placeholder="••••••••" type="password" />
           </div>
           @if (getFieldFeedback('password'); as feedback) {
-            <p
-              [class.text-error]="feedback.kind === 'error'"
-              [class.text-success]="feedback.kind === 'success'"
-              class="text-xs font-medium"
-            >
-              {{ feedback.message }}
-            </p>
+          <p [class.text-error]="feedback.kind === 'error'" [class.text-success]="feedback.kind === 'success'"
+            class="text-xs font-medium">
+            {{ feedback.message }}
+          </p>
           }
         </div>
 
         <!-- Submit Button -->
-        <button
-          [disabled]="loginForm.invalid || isLoading()"
-          class="w-full h-11 mt-2 bg-primary text-on-primary rounded-lg font-semibold flex justify-center items-center hover:bg-primary-container disabled:opacity-50 transition-colors shadow-sm"
-          type="submit"
-        >
+        <button [disabled]="loginForm.invalid || isLoading()"
+          class="w-full h-11 mt-2 bg-[#40916C] text-on-primary rounded-lg font-semibold flex justify-center items-center hover:bg-[#357a57] disabled:opacity-50 transition-colors shadow-sm"
+          type="submit">
           {{ isLoading() ? 'Entrando...' : 'Entrar' }}
         </button>
       </form>
 
       <!-- Registration Link -->
-      <p class="mt-8 text-center text-sm text-on-surface-variant">
+      <p class="mt-8 text-center text-sm text-zinc-600">
         Novo no AgendaPet?
-        <a class="font-semibold text-primary hover:underline" routerLink="/cadastro"
-          >Criar uma Conta</a
-        >
+        <a class="font-semibold text-[#40916C] hover:underline" routerLink="/cadastro">Criar uma Conta</a>
       </p>
     </div>
   </section>

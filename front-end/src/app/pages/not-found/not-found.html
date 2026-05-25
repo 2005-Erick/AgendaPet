@@ -1,10 +1,7 @@
 <main class="min-h-screen flex items-center justify-center bg-[#f8faf9] px-4">
-  <section
-    class="w-full max-w-lg rounded-3xl bg-white border border-outline-variant shadow-sm p-8 md:p-10 text-center"
-  >
+  <section class="w-full max-w-lg rounded-3xl bg-white border border-outline-variant shadow-sm p-8 md:p-10 text-center">
     <div
-      class="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-[#d8f3dc] text-primary-container"
-    >
+      class="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-[#d8f3dc] text-primary-container">
       <span class="material-symbols-outlined text-5xl">pets</span>
     </div>
 
@@ -14,11 +11,9 @@
       A rota que você tentou acessar não existe.
     </p>
 
-    <a
-      routerLink="/"
-      class="mt-8 inline-flex h-11 items-center justify-center rounded-lg bg-primary-container px-5 font-semibold text-white transition hover:opacity-90"
-    >
-      Voltar para a Home
+    <a (click)="goBack()"
+      class="mt-8 inline-flex h-11 items-center justify-center rounded-lg bg-primary-container px-5 font-semibold text-white transition hover:opacity-90">
+      Voltar para a página anterior
     </a>
   </section>
 </main>

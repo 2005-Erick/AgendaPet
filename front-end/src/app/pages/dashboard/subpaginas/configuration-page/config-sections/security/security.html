@@ -1,0 +1,31 @@
+<div class="flex flex-row min-h-screen w-full bg-[#f8faf9] text-[#191c1c] p-6">
+
+    <aside>
+        <nav class="flex flex-col gap-2 border-l border-[#40916C] pl-4">
+
+            <button routerLink="Generic" class="text-left px-4 py-3 rounded-xl hover:bg-[#D8F3DC] transition">
+                Sobre sua Conta
+            </button>
+
+            <button routerLink="Generic" class="text-left px-4 py-3 rounded-xl hover:bg-[#D8F3DC] transition">
+                Atividade de Login
+            </button>
+
+            <button routerLink="Generic" class="text-left px-4 py-3 rounded-xl hover:bg-[#D8F3DC] transition">
+                Sessões Ativas
+            </button>
+
+            <button routerLink="**" class="text-left px-4 py-3 rounded-xl hover:bg-[#D8F3DC] transition">
+                Politicas de Privacidade
+            </button>
+
+        </nav>
+
+    </aside>
+    <section class="flex-1 p-6 overflow-auto">
+
+        <router-outlet></router-outlet>
+
+    </section>
+
+</div>

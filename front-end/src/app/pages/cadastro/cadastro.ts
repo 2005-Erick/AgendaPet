@@ -3,17 +3,21 @@ import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { Router, RouterLink } from '@angular/router';
 import { UsersService } from '../../services/users-service';
 import { user_role } from '../../models/users-model';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-cadastro',
   standalone: true,
-  imports: [ReactiveFormsModule, RouterLink],
+  imports: [ReactiveFormsModule, RouterLink, MatIconModule],
   templateUrl: './cadastro.html',
   styleUrl: './cadastro.css',
 })
 export class Cadastro {
   private usersService = inject(UsersService);
   private router = inject(Router);
+
+  // Expor o enum para o template
+  user_role = user_role;
 
   roles = [
     { label: 'Tutor', value: user_role.TUTOR },
