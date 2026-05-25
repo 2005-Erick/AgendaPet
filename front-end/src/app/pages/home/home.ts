@@ -1,10 +1,18 @@
 import { Component } from '@angular/core';
-import { Navbar } from '../../components/navbar/navbar';
+import { CommonModule } from '@angular/common';
+
+import { HeaderComponent } from '../../components/header/header';
+import { FooterComponent } from '../../components/footer/footer';
 
 @Component({
   selector: 'app-home',
-  imports: [Navbar],
+  standalone: true,
+  imports: [
+    CommonModule,
+    HeaderComponent,
+    FooterComponent
+  ],
   templateUrl: './home.html',
-  styleUrl: './home.css',
+  styleUrls: ['./home.css']
 })
 export class Home {}

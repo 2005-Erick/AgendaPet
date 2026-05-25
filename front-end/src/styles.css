@@ -1,9 +1,125 @@
-/* You can add global styles to this file, and also import other style files */
-
+/* Tailwind */
 @import 'tailwindcss';
 
-/* Permitir que as classes de cor do Tailwind funcionem nos botões do Angular Material */
+@theme {
+  --color-on-secondary: #ffffff;
+  --color-error-container: #ffdad6;
+  --color-on-error-container: #93000a;
+  --color-primary-fixed-dim: #95d4b3;
+  --color-inverse-surface: #2e3131;
+  --color-on-primary-fixed: #002114;
+  --color-on-primary-container: #a8e7c5;
+  --color-on-secondary-fixed: #092012;
+  --color-on-tertiary-fixed-variant: #005236;
+  --color-on-surface-variant: #404943;
+  --color-surface-container-low: #f2f4f3;
+  --color-on-secondary-container: #506856;
+  --color-on-primary-fixed-variant: #0e5138;
+  --color-error: #ba1a1a;
+  --color-secondary-container: #cce6d0;
+  --color-on-background: #191c1c;
+  --color-tertiary-fixed-dim: #86d7ad;
+  --color-inverse-on-surface: #eff1f0;
+  --color-tertiary-fixed: #a1f4c8;
+  --color-primary: #0f5238;
+  --color-background: #f8faf9;
+  --color-surface-container-high: #e6e9e8;
+  --color-on-surface: #191c1c;
+  --color-on-secondary-fixed-variant: #354c3b;
+  --color-secondary: #4c6452;
+  --color-surface-container: #eceeed;
+  --color-secondary-fixed: #cee9d3;
+  --color-on-tertiary: #ffffff;
+  --color-on-error: #ffffff;
+  --color-surface-variant: #e1e3e2;
+  --color-secondary-fixed-dim: #b3cdb7;
+  --color-primary-container: #2d6a4f;
+  --color-outline-variant: #bfc9c1;
+  --color-outline: #707973;
+  --color-primary-fixed: #b1f0ce;
+  --color-on-tertiary-container: #98eabf;
+  --color-tertiary-container: #116c4a;
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-bright: #f8faf9;
+  --color-tertiary: #005236;
+  --color-surface-dim: #d8dada;
+  --color-surface-tint: #2c694e;
+  --color-on-tertiary-fixed: #002113;
+  --color-surface: #f8faf9;
+  --color-surface-container-highest: #e1e3e2;
+  --color-inverse-primary: #95d4b3;
+
+  --spacing-margin-mobile: 16px;
+  --spacing-unit: 8px;
+  --spacing-margin-desktop: 40px;
+  --spacing-container-max-width: 1280px;
+  --spacing-gutter: 24px;
+
+  --font-headline-md: "Manrope";
+  --font-body-md: "Inter";
+  --font-headline-lg: "Manrope";
+  --font-body-lg: "Inter";
+  --font-label-md: "Inter";
+  --font-headline-sm: "Manrope";
+  --font-headline-lg-mobile: "Manrope";
+  --font-body-sm: "Inter";
+  --font-headline-xl: "Manrope";
+
+  --text-headline-xl: 40px;
+  --text-headline-xl--line-height: 48px;
+  --text-headline-xl--letter-spacing: -0.02em;
+  --text-headline-xl--font-weight: 700;
+
+  --text-label-md: 12px;
+  --text-label-md--line-height: 16px;
+  --text-label-md--letter-spacing: 0.05em;
+  --text-label-md--font-weight: 600;
+
+  --text-body-sm: 14px;
+  --text-body-sm--line-height: 20px;
+  --text-body-sm--font-weight: 400;
+
+  --text-headline-lg-mobile: 24px;
+  --text-headline-lg-mobile--line-height: 32px;
+  --text-headline-lg-mobile--font-weight: 600;
+
+  --text-body-lg: 18px;
+  --text-body-lg--line-height: 28px;
+  --text-body-lg--font-weight: 400;
+
+  --text-headline-sm: 18px;
+  --text-headline-sm--line-height: 28px;
+  --text-headline-sm--font-weight: 600;
+
+  --text-headline-md: 24px;
+  --text-headline-md--line-height: 32px;
+  --text-headline-md--letter-spacing: -0.01em;
+  --text-headline-md--font-weight: 600;
+
+  --text-headline-lg: 32px;
+  --text-headline-lg--line-height: 40px;
+  --text-headline-lg--letter-spacing: -0.01em;
+  --text-headline-lg--font-weight: 600;
+
+  --radius-lg: 0.5rem;
+  --radius-xl: 0.75rem;
+}
+
+/* Angular Material */
 .mat-mdc-button .mdc-button__label,
 .mat-mdc-button .mat-icon {
   color: inherit !important;
+}
+
+html {
+  scroll-behavior: smooth;
+  height: 100%;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: #f8faf9;
+  color: #191c1c;
+  min-height: 100%;
+  margin: 0;
 }
