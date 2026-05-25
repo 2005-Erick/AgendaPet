@@ -27,4 +27,22 @@ export class Dashboard {
     this.usersService.logout();
     this.router.navigate(['/login']);
   }
+
+  deleteMyAccount() {
+    const confirmed = confirm('Tem certeza que deseja excluir sua conta?');
+
+    if (!confirmed) {
+      return;
+    }
+
+    this.usersService.deleteCurrentUser().subscribe({
+      next: () => {
+        this.usersService.logout();
+        this.router.navigate(['/login']);
+      },
+      error: () => {
+        alert('Não foi possível excluir a conta.');
+      },
+    });
+  }
 }

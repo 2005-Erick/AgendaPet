@@ -1,84 +1,130 @@
 <mat-sidenav-container class="h-screen">
-    <mat-sidenav mode="side" opened class="w-64 bg-zinc-900 text-zinc-300 border-r border-zinc-800 p-1">
-        <div class="flex flex-col h-full">
-            <div class="p-6 text-xl font-bold text-[#40916C] flex items-center gap-2">
-                <div class="bg-[#40916C] h-10 w-10 rounded-full content-center flex items-center justify-center">
-                    <mat-icon class="text-[#D8F3DC]!">pets</mat-icon>
-                </div>
-                <div class="flex flex-col">
-                    <span class="font-bold text-2xl">AgendaPet</span>
-                    <span class="text-sm text-zinc-500 font-medium">Portal do Tutor</span>
-                </div>
-            </div>
-
-            <div class="border-b border-[#40916C]">
-                <div class="flex items-center justify-between gap-2 px-4 py-3">
-                    <button
-                        class="w-10 h-10 rounded-full flex items-center justify-center hover:bg-[#D8F3DC] transition-colors relative">
-                        <span
-                            class="animate-ping absolute top-0 right-0 inline-flex h-2 w-2 rounded-full bg-[#40916C]"></span>
-                        <span class="absolute top-0 right-0 inline-flex h-2 w-2 rounded-full bg-[#40916C]"></span>
-                        <mat-icon class="text-zinc-300">notifications</mat-icon>
-                    </button>
-                    @if (currentUser()) {
-                    <a routerLink="/login" (click)="logout()"
-                        class="w-10 h-10 rounded-full flex items-center justify-center hover:bg-[#D8F3DC] transition-colors">
-                        <mat-icon class="text-zinc-300">logout</mat-icon>
-                    </a>
-                    } @else {
-                    <a routerLink="/login"
-                        class="w-10 h-10 rounded-full flex items-center justify-center hover:bg-[#D8F3DC] transition-colors">
-                        <mat-icon class="text-zinc-300">login</mat-icon>
-                    </a>
-                    }
-                </div>
-            </div>
-            <div class="m-3">
-                <button
-                    class="rounded-lg bg-[#40916C] w-full h-12 flex items-center justify-center gap-2 hover:bg-tertiary-container transition-colors text-white">
-                    Agendar Consulta
-                </button>
-            </div>
-
-            <nav class="flex-1 flex flex-col justify-between p-1">
-                <div class="flex flex-col gap-2">
-                    <button mat-button routerLink="dashboard-page" routerLinkActive="bg-[#D8F3DC]! text-gray-500!"
-                        class="justify-start! hover:bg-[#D8F3DC]! py-6! text-gray-700! rounded-lg">
-                        <mat-icon class="mr-2">dashboard</mat-icon>
-                        Dashboard
-                    </button>
-
-                    <button mat-button routerLink="pets-page" routerLinkActive="bg-[#D8F3DC]! text-gray-500!"
-                        class="justify-start! hover:bg-[#D8F3DC]! py-6! text-gray-700! rounded-lg transition-colors">
-                        <mat-icon class="mr-2">pets</mat-icon>
-                        Pets
-                    </button>
-
-                    <button mat-button routerLink="agendamentos-page" routerLinkActive="bg-[#D8F3DC]! text-gray-500!"
-                        class="justify-start! hover:bg-[#D8F3DC]! py-6! text-gray-700! rounded-lg">
-                        <mat-icon class="mr-2">calendar_today</mat-icon>
-                        Agendamentos
-                    </button>
-                </div>
-
-                <div class="flex flex-col gap-2 border-t border-[#40916C] pt-4 mb-4">
-                    <button routerLink="configuration-page" routerLinkActive="bg-[#D8F3DC]! text-gray-500!" mat-button
-                        class="justify-start! hover:bg-[#D8F3DC]! py-6! text-gray-700! rounded-lg">
-                        <mat-icon class="mr-2">settings</mat-icon>
-                        Configurações
-                    </button>
-
-                    <button mat-button class="justify-start! hover:bg-[#D8F3DC]! py-6! text-gray-700! rounded-lg"
-                        routerLink="**">
-                        <mat-icon class="mr-2">help</mat-icon>
-                        Suporte
-                    </button>
-                </div>
-            </nav>
+  <mat-sidenav
+    mode="side"
+    opened
+    class="w-64 bg-zinc-900 text-zinc-300 border-r border-zinc-800 p-1"
+  >
+    <div class="flex flex-col h-full">
+      <div class="p-6 text-xl font-bold text-[#40916C] flex items-center gap-2">
+        <div
+          class="bg-[#40916C] h-10 w-10 rounded-full content-center flex items-center justify-center"
+        >
+          <mat-icon class="text-[#D8F3DC]!">pets</mat-icon>
         </div>
-    </mat-sidenav>
+        <div class="flex flex-col">
+          <span class="font-bold text-2xl">AgendaPet</span>
+          <span class="text-sm text-zinc-500 font-medium">Portal do Tutor</span>
+        </div>
+      </div>
 
-    <mat-sidenav-content class="bg-zinc-100 p-6">
-        <router-outlet></router-outlet>
-    </mat-sidenav-content>
+      <div class="border-b border-[#40916C]">
+        <div class="flex items-center justify-between gap-2 px-4 py-3">
+          <button
+            class="w-10 h-10 rounded-full flex items-center justify-center hover:bg-[#D8F3DC] transition-colors relative"
+          >
+            <span
+              class="animate-ping absolute top-0 right-0 inline-flex h-2 w-2 rounded-full bg-[#40916C]"
+            ></span>
+            <span
+              class="absolute top-0 right-0 inline-flex h-2 w-2 rounded-full bg-[#40916C]"
+            ></span>
+            <mat-icon class="text-zinc-300">notifications</mat-icon>
+          </button>
+          @if (currentUser()) {
+            <a
+              routerLink="/login"
+              (click)="logout()"
+              class="w-10 h-10 rounded-full flex items-center justify-center hover:bg-[#D8F3DC] transition-colors"
+            >
+              <mat-icon class="text-zinc-300">logout</mat-icon>
+            </a>
+          } @else {
+            <a
+              routerLink="/login"
+              class="w-10 h-10 rounded-full flex items-center justify-center hover:bg-[#D8F3DC] transition-colors"
+            >
+              <mat-icon class="text-zinc-300">login</mat-icon>
+            </a>
+          }
+        </div>
+      </div>
+      <div class="m-3">
+        <button
+          class="rounded-lg bg-[#40916C] w-full h-12 flex items-center justify-center gap-2 hover:bg-tertiary-container transition-colors text-white"
+        >
+          Agendar Consulta
+        </button>
+      </div>
+
+      <nav class="flex-1 flex flex-col justify-between p-1">
+        <div class="flex flex-col gap-2">
+          <button
+            mat-button
+            routerLink="dashboard-page"
+            routerLinkActive="bg-[#D8F3DC]! text-gray-500!"
+            class="justify-start! hover:bg-[#D8F3DC]! py-6! text-gray-700! rounded-lg"
+          >
+            <mat-icon class="mr-2">dashboard</mat-icon>
+            Dashboard
+          </button>
+
+          <button
+            mat-button
+            routerLink="pets-page"
+            routerLinkActive="bg-[#D8F3DC]! text-gray-500!"
+            class="justify-start! hover:bg-[#D8F3DC]! py-6! text-gray-700! rounded-lg transition-colors"
+          >
+            <mat-icon class="mr-2">pets</mat-icon>
+            Pets
+          </button>
+
+          <button
+            mat-button
+            routerLink="agendamentos-page"
+            routerLinkActive="bg-[#D8F3DC]! text-gray-500!"
+            class="justify-start! hover:bg-[#D8F3DC]! py-6! text-gray-700! rounded-lg"
+          >
+            <mat-icon class="mr-2">calendar_today</mat-icon>
+            Agendamentos
+          </button>
+        </div>
+
+        <div class="flex flex-col gap-2 border-t border-[#40916C] pt-4 mb-4">
+          <button
+            routerLink="configuration-page"
+            routerLinkActive="bg-[#D8F3DC]! text-gray-500!"
+            mat-button
+            class="justify-start! hover:bg-[#D8F3DC]! py-6! text-gray-700! rounded-lg"
+          >
+            <mat-icon class="mr-2">settings</mat-icon>
+            Configurações
+          </button>
+
+          @if (currentUser()) {
+            <button
+              mat-button
+              (click)="deleteMyAccount()"
+              class="justify-start! hover:bg-red-100! py-6! text-red-600! rounded-lg"
+            >
+              <mat-icon class="mr-2">delete</mat-icon>
+              Excluir minha conta
+            </button>
+          }
+
+          <button
+            mat-button
+            class="justify-start! hover:bg-[#D8F3DC]! py-6! text-gray-700! rounded-lg"
+            routerLink="**"
+          >
+            <mat-icon class="mr-2">help</mat-icon>
+            Suporte
+          </button>
+        </div>
+      </nav>
+    </div>
+  </mat-sidenav>
+
+  <mat-sidenav-content class="bg-zinc-100 p-6">
+    <router-outlet></router-outlet>
+  </mat-sidenav-content>
 </mat-sidenav-container>

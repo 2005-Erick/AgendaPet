@@ -24,6 +24,11 @@ export class UsersService {
     };
   }
 
+  getUsers(): Observable<iUser[]> {
+    const url = `${this.apiUrl}?select=*`;
+    return this.http.get<iUser[]>(url, { headers: this.headers });
+  }
+
   login(email: string, password: string): Observable<iUser> {
     const url = `${this.apiUrl}?email=eq.${email}&password=eq.${password}&select=*`;
     return this.http.get<iUser[]>(url, { headers: this.headers }).pipe(
@@ -42,6 +47,21 @@ export class UsersService {
       map((users) => users[0]),
       tap((user) => this.saveUser(user)),
     );
+  }
+
+  deleteUser(id: string): Observable<void> {
+    const url = `${this.apiUrl}?id=eq.${id}`;
+    return this.http.delete<void>(url, { headers: this.headers });
+  }
+
+  deleteCurrentUser(): Observable<void> {
+    const user = this.currentUser();
+
+    if (!user?.id) {
+      throw new Error('Usuário não encontrado');
+    }
+
+    return this.deleteUser(user.id);
   }
 
   logout() {
