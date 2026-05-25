@@ -3,7 +3,7 @@
 <main class="w-full bg-background text-on-surface font-body-md antialiased overflow-x-hidden">
   <section id="Inicio" class="w-full px-margin-mobile md:px-margin-desktop py-12 md:py-24 max-w-container-max-width mx-auto flex flex-col md:flex-row items-center gap-12">
     <div class="w-full md:w-1/2 flex flex-col gap-6">
-      <h1 class="font-headline-xl text-headline-xl text-on-surface">
+      <h1 class="text-5xl md:text-7xl leading-tight font-bold text-on-surface tracking-tight">
         Gestão Moderna para
         <span class="text-primary">
           Clínicas Veterinárias
@@ -16,11 +16,11 @@
       </p>
 
       <div class="flex flex-col sm:flex-row gap-4 mt-4">
-        <button class="h-[48px] md:h-[44px] px-6 rounded-lg bg-primary text-white font-label-md text-label-md hover:bg-tertiary transition-colors">
+        <button class="h-[48px] md:h-[44px] px-6 rounded-lg bg-primary text-white font-label-md text-label-md hover:bg-tertiary transition-colors active:scale-95 transition-all duration-300 ease-in-out hover:shadow-lg hover:scale-105">
           Começar Agora
         </button>
 
-        <button class="h-[48px] md:h-[44px] px-6 rounded-lg border border-primary text-primary bg-transparent font-label-md text-label-md hover:bg-surface-container-low transition-colors flex items-center justify-center gap-2 whitespace-nowrap">
+        <button class="h-[48px] md:h-[44px] px-6 rounded-lg border border-primary text-primary bg-transparent font-label-md text-label-md hover:bg-surface-container-low transition-colors flex items-center justify-center gap-2 whitespace-nowrap active:scale-95 transition-all duration-300 ease-in-out hover:shadow-lg hover:scale-105">
           <span class="material-symbols-outlined" data-icon="play_circle">play_circle</span>
           <span class="whitespace-nowrap">Veja Como Funciona</span>
         </button>
@@ -48,7 +48,7 @@
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div class="bg-surface-container-lowest rounded-xl p-8 border border-outline-variant hover:shadow-md transition-shadow flex flex-col gap-6">
+        <div class="bg-surface-container-lowest rounded-xl p-8 border border-outline-variant hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 flex flex-col gap-6">
           <div class="w-12 h-12 rounded-full bg-secondary-container flex items-center justify-center text-primary">
             <span class="material-symbols-outlined fill text-[24px]">medical_services</span>
           </div>
@@ -76,7 +76,7 @@
           </div>
         </div>
 
-        <div class="bg-surface-container-lowest rounded-xl p-8 border border-outline-variant hover:shadow-md transition-shadow flex flex-col gap-6">
+        <div class="bg-surface-container-lowest rounded-xl p-8 border border-outline-variant hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 flex flex-col gap-6">
           <div class="w-12 h-12 rounded-full bg-tertiary-container flex items-center justify-center text-on-tertiary">
             <span class="material-symbols-outlined fill text-[24px]">storefront</span>
           </div>
@@ -117,7 +117,7 @@
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <div class="bg-surface-container-low p-8 rounded-xl border border-outline-variant">
+        <div class="bg-surface-container-low p-8 rounded-xl border border-outline-variant hover:scale-[1.02] hover:shadow-2xl transition-all duration-300 ease-in-out">
           <div class="flex gap-2 mb-4 text-tertiary">
             <span class="material-symbols-outlined fill">star</span>
             <span class="material-symbols-outlined fill">star</span>
@@ -131,7 +131,11 @@
           </p>
 
           <div class="flex items-center gap-4">
-            <div class="w-12 h-12 rounded-full bg-secondary-container flex items-center justify-center text-on-surface-variant font-bold">DR</div>
+            <img
+  src="https://images.pexels.com/photos/28289074/pexels-photo-28289074.jpeg"
+  alt="Dra. Renata Silva"
+  class="w-14 h-14 rounded-full object-cover border-2 border-white shadow-md hover:scale-110 transition-all duration-300"
+/>
             <div>
               <div class="font-headline-sm text-on-surface font-semibold">Dra. Renata Silva</div>
               <div class="font-body-sm text-on-surface-variant">Veterinária Chefe, Clínica Vida Animal</div>
@@ -139,7 +143,7 @@
           </div>
         </div>
 
-        <div class="bg-surface-container-low p-8 rounded-xl border border-outline-variant">
+        <div class="bg-surface-container-low p-8 rounded-xl border border-outline-variant hover:scale-[1.02] hover:shadow-2xl transition-all duration-300 ease-in-out">
           <div class="flex gap-2 mb-4 text-tertiary">
             <span class="material-symbols-outlined fill">star</span>
             <span class="material-symbols-outlined fill">star</span>
@@ -153,7 +157,11 @@
           </p>
 
           <div class="flex items-center gap-4">
-            <div class="w-12 h-12 rounded-full bg-tertiary-container flex items-center justify-center text-on-tertiary font-bold">CP</div>
+            <img
+  src="https://images.pexels.com/photos/6235666/pexels-photo-6235666.jpeg"
+  alt="Carlos Pereira"
+  class="w-14 h-14 rounded-full object-cover border-2 border-white shadow-md hover:scale-110 transition-all duration-300"
+/>
             <div>
               <div class="font-headline-sm text-on-surface font-semibold">Carlos Pereira</div>
               <div class="font-body-sm text-on-surface-variant">Proprietário, Pet Shop Patinhas</div>
@@ -174,7 +182,7 @@
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-        <div class="bg-surface-container-lowest rounded-xl p-8 border border-outline-variant flex flex-col">
+        <div class="bg-surface-container-lowest rounded-xl p-8 border border-outline-variant flex flex-col hover:scale-105 transition-all duration-300 ease-in-out">
           <h3 class="font-headline-md text-headline-md text-on-surface mb-2">Clínica Pro</h3>
           <p class="font-body-md text-on-surface-variant mb-6">Para clínicas veterinárias em crescimento.</p>
           <div class="text-4xl font-bold text-primary mb-6">R$ 299<span class="text-lg font-normal text-on-surface-variant">/mês</span></div>
@@ -184,12 +192,12 @@
             <li class="flex items-center gap-3"><span class="material-symbols-outlined text-primary">check</span><span class="text-on-surface">Gestão de vacinas e retornos</span></li>
             <li class="flex items-center gap-3"><span class="material-symbols-outlined text-primary">check</span><span class="text-on-surface">Suporte prioritário por WhatsApp</span></li>
           </ul>
-          <button class="w-full h-12 rounded-lg border-2 border-primary text-primary font-bold hover:bg-surface-container-low transition-colors">
+          <button class="w-full h-12 rounded-lg border-2 border-primary text-primary font-bold hover:bg-surface-container-low transition-colors active:scale-95 transition-all duration-300 ease-in-out hover:shadow-lg hover:scale-105">
             Assinar Clínica Pro
           </button>
         </div>
 
-        <div class="bg-primary-container rounded-xl p-8 border border-primary flex flex-col relative overflow-hidden">
+        <div class="bg-primary-container rounded-xl p-8 border border-primary flex flex-col relative overflow-hidden hover:scale-105 transition-all duration-300 ease-in-out">
           <div class="absolute top-0 right-0 bg-primary text-on-primary text-xs font-bold px-3 py-1 rounded-bl-lg">MAIS POPULAR</div>
           <h3 class="font-headline-md text-headline-md text-on-primary-container mb-2">Pet Shop Plus</h3>
           <p class="font-body-md text-on-primary-container opacity-90 mb-6">A solução completa para clínicas com varejo.</p>
@@ -200,7 +208,7 @@
             <li class="flex items-center gap-3"><span class="material-symbols-outlined text-primary">check</span><span class="text-on-primary-container">Controle de estoque avançado</span></li>
             <li class="flex items-center gap-3"><span class="material-symbols-outlined text-primary">check</span><span class="text-on-primary-container">Módulo de Banho &amp; Tosa</span></li>
           </ul>
-          <button class="w-full h-12 rounded-lg bg-primary text-on-primary font-bold hover:bg-tertiary transition-colors">
+          <button class="w-full h-12 rounded-lg bg-primary text-on-primary font-bold hover:bg-tertiary transition-colors active:scale-95 transition-all duration-300 ease-in-out hover:shadow-lg hover:scale-105">
             Assinar Pet Shop Plus
           </button>
         </div>
@@ -216,7 +224,7 @@
       </div>
 
       <div class="flex flex-col gap-4">
-        <details class="bg-surface-container-low rounded-lg border border-outline-variant p-4 group cursor-pointer">
+        <details class="bg-surface-container-low rounded-lg border border-outline-variant p-5 md:p-6 hover:shadow-md transition-all duration-300 group cursor-pointer">
           <summary class="font-headline-sm text-on-surface font-semibold list-none flex justify-between items-center">
             Posso testar antes de comprar?
             <span class="material-symbols-outlined group-open:rotate-180 transition-transform">expand_more</span>
@@ -224,7 +232,7 @@
           <p class="mt-4 text-on-surface-variant font-body-md">Sim! Oferecemos 14 dias de teste gratuito com acesso total a todas as funcionalidades para você avaliar a plataforma.</p>
         </details>
 
-        <details class="bg-surface-container-low rounded-lg border border-outline-variant p-4 group cursor-pointer">
+        <details class="bg-surface-container-low rounded-lg border border-outline-variant p-5 md:p-6 hover:shadow-md transition-all duration-300 group cursor-pointer">
           <summary class="font-headline-sm text-on-surface font-semibold list-none flex justify-between items-center">
             Como funciona o suporte técnico?
             <span class="material-symbols-outlined group-open:rotate-180 transition-transform">expand_more</span>
@@ -232,7 +240,7 @@
           <p class="mt-4 text-on-surface-variant font-body-md">Nosso suporte funciona em horário comercial (seg a sex, 8h às 18h) via chat integrado na plataforma, WhatsApp e e-mail.</p>
         </details>
 
-        <details class="bg-surface-container-low rounded-lg border border-outline-variant p-4 group cursor-pointer">
+        <details class="bg-surface-container-low rounded-lg border border-outline-variant p-5 md:p-6 hover:shadow-md transition-all duration-300 group cursor-pointer">
           <summary class="font-headline-sm text-on-surface font-semibold list-none flex justify-between items-center">
             Os meus dados estão seguros?
             <span class="material-symbols-outlined group-open:rotate-180 transition-transform">expand_more</span>
@@ -240,7 +248,7 @@
           <p class="mt-4 text-on-surface-variant font-body-md">Completamente. Utilizamos servidores seguros na nuvem (AWS) com backups diários e criptografia de ponta a ponta para proteger os dados da sua clínica e de seus clientes.</p>
         </details>
 
-        <details class="bg-surface-container-low rounded-lg border border-outline-variant p-4 group cursor-pointer">
+        <details class="bg-surface-container-low rounded-lg border border-outline-variant p-5 md:p-6 hover:shadow-md transition-all duration-300 group cursor-pointer">
           <summary class="font-headline-sm text-on-surface font-semibold list-none flex justify-between items-center">
             Posso migrar dados do meu sistema antigo?
             <span class="material-symbols-outlined group-open:rotate-180 transition-transform">expand_more</span>
@@ -251,11 +259,11 @@
     </div>
   </section>
 
-  <section class="w-full py-20 px-margin-mobile md:px-margin-desktop bg-primary-container text-on-primary-container text-center">
+  <section class="w-full py-20 rounded-t-[40px] px-margin-mobile md:px-margin-desktop bg-primary-container text-on-primary-container text-center">
     <div class="max-w-3xl mx-auto flex flex-col items-center gap-6">
       <h2 class="font-headline-lg text-headline-lg">Pronto para transformar sua clínica?</h2>
       <p class="font-body-lg text-body-lg opacity-90">Junte-se às principais clínicas e boutiques que já usam o AgendaPet para otimizar operações e oferecer um atendimento excepcional.</p>
-      <button class="mt-4 h-[48px] md:h-[44px] px-8 rounded-lg bg-surface text-primary font-label-md text-label-md hover:bg-surface-container-lowest transition-colors shadow-sm">
+      <button class="mt-4 h-[48px] md:h-[44px] px-8 rounded-lg bg-surface text-primary font-label-md text-label-md hover:bg-surface-container-lowest transition-colors shadow-sm active:scale-95 transition-all duration-300 ease-in-out hover:shadow-lg hover:scale-105">
         Começar Agora Mesmo
       </button>
     </div>
@@ -263,25 +271,3 @@
 </main>
 
 <app-footer></app-footer>
-
-<nav class="md:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-margin-mobile py-unit bg-surface border-t border-outline-variant shadow-sm rounded-t-xl">
-  <a class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-full px-4 py-1 active:scale-90 transition-transform">
-    <span class="material-symbols-outlined">home</span>
-    <span class="font-label-md text-[10px] leading-[14px]">Início</span>
-  </a>
-
-  <a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-container-high rounded-full px-4 py-1 active:scale-90 transition-transform" href="#Precos">
-    <span class="material-symbols-outlined">pets</span>
-    <span class="font-label-md text-[10px] leading-[14px]">Pets</span>
-  </a>
-
-  <a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-container-high rounded-full px-4 py-1 active:scale-90 transition-transform" href="#Precos">
-    <span class="material-symbols-outlined">event</span>
-    <span class="font-label-md text-[10px] leading-[14px]">Agenda</span>
-  </a>
-
-  <a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-container-high rounded-full px-4 py-1 active:scale-90 transition-transform" href="#Precos">
-    <span class="material-symbols-outlined">shopping_basket</span>
-    <span class="font-label-md text-[10px] leading-[14px]">Loja</span>
-  </a>
-</nav>

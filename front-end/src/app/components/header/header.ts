@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterLink } from '@angular/router';
+import { signal } from '@angular/core';
+
 
 @Component({
   selector: 'app-header',
@@ -10,5 +12,11 @@ import { RouterLink } from '@angular/router';
   styleUrl: './header.css'
 })
 export class HeaderComponent {
+
+  menuOpen = signal(false);
+
+  toggleMenu() {
+    this.menuOpen.update(value => !value);
+  }
 
 }
