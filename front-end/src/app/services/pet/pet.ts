@@ -11,7 +11,7 @@ export class PetService {
     {
       nome: 'Luna',
       imagem: '/golden_retriever-luna.jpg', 
-      raca: 'Golden Retriever',
+      raca: 'Golden',
       idade: 3,
       status: 'Rotina',
       proximo: 'Check-up anual',
