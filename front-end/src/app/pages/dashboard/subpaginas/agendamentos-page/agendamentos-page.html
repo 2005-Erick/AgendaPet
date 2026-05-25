@@ -13,7 +13,8 @@
       <input
         type="text"
         placeholder="Nome do serviço"
-        (input)="setFilter('servico', $event.target.value)"
+        [value]="filters().servico"
+        (input)="setFilter('servico', $any($event.target).value)"
         class="border rounded-lg px-3 py-2 w-48 focus:ring-2 focus:ring-blue-400 outline-none"
       />
     </div>
@@ -23,7 +24,8 @@
       <input
         type="text"
         placeholder="Nome do animal"
-        (input)="setFilter('animal', $event.target.value)"
+        [value]="filters().animal"
+        (input)="setFilter('animal', $any($event.target).value)"
         class="border rounded-lg px-3 py-2 w-48 focus:ring-2 focus:ring-blue-400 outline-none"
       />
     </div>
@@ -32,7 +34,8 @@
       <label class="text-sm text-gray-600">Data</label>
       <input
         type="date"
-        (input)="setFilter('data', $event.target.value)"
+        [value]="filters().data"
+        (input)="setFilter('data', $any($event.target).value)"
         class="border rounded-lg px-3 py-2 w-48 focus:ring-2 focus:ring-blue-400 outline-none"
       />
     </div>
