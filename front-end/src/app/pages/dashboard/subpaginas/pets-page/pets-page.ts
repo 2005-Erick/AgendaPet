@@ -36,8 +36,22 @@ export class PetsPage {
 
   constructor() {
     this.route.params.subscribe(params => {
-      const id = Number(params['id']);
-      this.petSelecionado.set(Number.isNaN(id) ? null : id);
+
+      if (!params['id']) {
+        this.petSelecionado.set(null);
+        return;
+      }
+
+      const id : number = Number(params['id']);
+
+      const petExiste = this.petService.pets().some(p => p.id === id);
+
+      if (!petExiste) {
+        this.router.navigate(['/404']);
+        return;
+      }
+
+      this.petSelecionado.set(id);
     });
   }
 
@@ -45,4 +59,3 @@ export class PetsPage {
     this.router.navigate(['/dashboard/pets-page']);
   }
 }
-
