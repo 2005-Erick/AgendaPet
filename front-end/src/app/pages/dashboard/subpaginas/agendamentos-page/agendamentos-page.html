@@ -37,7 +37,7 @@
       />
     </div>
 
-    <button class="h-10 px-4 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 transition">
+    <button class="h-10 px-4 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 transition" (click)="clearFilters()">
       Limpar
     </button>
 
@@ -60,43 +60,31 @@
       </thead>
 
       <tbody>
-        @for (agendamento of historicosFiltrados(); track agendamento.titulo) {
+        @for (agendamento of agendamentosFiltrados(); track agendamento.titulo) {
             <tr class="border-t hover:bg-gray-50">
             <td class="p-3">Usuário</td>
             <td class="p-3">{{ agendamento.nomeAnimal }}</td>
             <td class="p-3">{{ agendamento.data }}</td>
             <td class="p-3">{{ agendamento.horario }}</td>
-            <td class="p-3">{{ agendamento.titulo }}</td>
+            <td class="p-3">{{ agendamento.servico }}</td>
             <td class="p-3">
-            @if (agendamento.status !== "Pendente") {
-                <span class="px-2 py-1 rounded-full text-xs bg-green-100 text-green-700">
+            @if (agendamento.status === "Pendente" || agendamento.status === "Cancelado") {
+                <span class="px-2 py-1 rounded-full text-xs bg-red-100 text-red-700">
                     {{agendamento.status}}
                 </span>
+            } 
+            @else if (agendamento.status === "Concluido"){
+                <span class="px-2 py-1 rounded-full text-xs bg-green-100 text-green-700">
+                    {{agendamento.status}}
+                </span>            
             } @else {
-                <span class="px-2 py-1 rounded-full text-xs bg-red-100 text-red-700">
+                <span class="px-2 py-1 rounded-full text-xs bg-blue-100 text-blue-700">
                     {{agendamento.status}}
                 </span>
             }
             </td>
             </tr>
         }
-
-        @for (agendamento of proximosFiltrados(); track agendamento.titulo) {
-            <tr class="border-t hover:bg-gray-50">
-            <td class="p-3">Usuário</td>
-            <td class="p-3">{{ agendamento.nomeAnimal }}</td>
-            <td class="p-3">{{ agendamento.dataCompleta }}</td>
-            <td class="p-3">{{ agendamento.horario }}</td>
-            <td class="p-3">{{ agendamento.titulo }}</td>
-            <td class="p-3">
-                <span class="px-2 py-1 rounded-full text-xs bg-blue-100 text-blue-700">
-                    Agendado
-                </span>
-            </td>
-            </tr>
-        }
-
-
       </tbody>
 
     </table>

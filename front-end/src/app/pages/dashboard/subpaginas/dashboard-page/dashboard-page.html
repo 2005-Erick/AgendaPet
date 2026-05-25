@@ -64,13 +64,15 @@
                     <div class="rounded-2xl p-5 flex flex-col gap-4"
                          style="background:#ffffff; border:1px solid #bfc9c1;">
 
-                        @for (agendamento of agendamentos; track agendamento.titulo) {
-                            <app-proximos-agendamentos
-                                [titulo]="agendamento.titulo"
-                                [horario]="agendamento.horario"
-                                [cidade]="agendamento.cidade"
-                                [data]="agendamento.data">
-                            </app-proximos-agendamentos>
+                        @for (agendamento of agendamentos; track agendamento.id) {
+                            @if (agendamento.status === 'Agendado'){
+                                <app-proximos-agendamentos
+                                    [titulo]="agendamento.titulo"
+                                    [horario]="agendamento.horario"
+                                    [cidade]="agendamento.cidade"
+                                    [data]="agendamento.data">
+                                </app-proximos-agendamentos>
+                            }
                         }
 
                     </div>
@@ -89,14 +91,16 @@
                     <div class="rounded-2xl p-6 flex flex-col gap-6"
                          style="background:#ffffff; border:1px solid #bfc9c1;">
 
-                        @for (historico of historicos; track historico.titulo) {
-                            <app-historico-animal
-                                [titulo]="historico.titulo"
-                                [nomeAnimal]="historico.nomeAnimal"
-                                [descricao]="historico.descricao"
-                                [data]="historico.data"
-                                [status]="historico.status">
-                            </app-historico-animal>
+                        @for (agendamento of agendamentos; track agendamento.titulo) {
+                            @if (agendamento.descricao) {
+                                <app-historico-animal
+                                    [titulo]="agendamento.titulo"
+                                    [nomeAnimal]="agendamento.nomeAnimal"
+                                    [descricao]="agendamento.descricao"
+                                    [data]="agendamento.data"
+                                    [status]="agendamento.status">
+                                </app-historico-animal>
+                            }
                         }
 
                     </div>

@@ -1,6 +1,5 @@
 import { Component, inject, signal, computed } from '@angular/core';
-import { HistoricoAnimalService } from '../../../../services/historico-animal/historico-animal';
-import { ProximosAgendamentosService } from '../../../../services/proximos-agendamentos/proximos-agendamentos';
+import {AgendamentoService} from '../../../../services/agendamento';
 
 @Component({
   selector: 'app-agendamentos-page',
@@ -10,11 +9,9 @@ import { ProximosAgendamentosService } from '../../../../services/proximos-agend
 })
 export class AgendamentosPage {
 
-  private historicoAnimalService = inject(HistoricoAnimalService);
-  private proximosAgendamentosService = inject(ProximosAgendamentosService);
+  private agendamentoService = inject(AgendamentoService);
 
-  historico = this.historicoAnimalService.historicoAnimal;
-  proximosAgendamentos = this.proximosAgendamentosService.proximosAgendamentos;
+  agendamentos = this.agendamentoService.agendamento;
 
   filters = signal({
     servico: '',
@@ -22,23 +19,13 @@ export class AgendamentosPage {
     data: ''
   });
 
-  historicosFiltrados = computed(() => {
+  agendamentosFiltrados = computed(() => {
     const f = this.filters();
 
-    return this.historico().filter(h =>
-      h.nomeAnimal.toLowerCase().includes(f.animal.toLowerCase()) &&
-      h.titulo.toLowerCase().includes(f.servico.toLowerCase()) &&
-      (!f.data || h.data === f.data)
-    );
-  });
-
-  proximosFiltrados = computed(() => {
-    const f = this.filters();
-
-    return this.proximosAgendamentos().filter(p =>
-      p.nomeAnimal.toLowerCase().includes(f.animal.toLowerCase()) &&
-      p.servico.toLowerCase().includes(f.servico.toLowerCase()) &&
-      (!f.data || p.dataCompleta === f.data)
+    return this.agendamentos().filter(a =>
+      a.nomeAnimal.toLowerCase().includes(f.animal.toLowerCase()) &&
+      a.servico.toLowerCase().includes(f.servico.toLowerCase()) &&
+      (!f.data || a.data === f.data)
     );
   });
 

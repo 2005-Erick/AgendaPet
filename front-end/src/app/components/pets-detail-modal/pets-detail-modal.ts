@@ -1,8 +1,7 @@
 import { Component, input, inject, computed } from '@angular/core';
 import { Router } from '@angular/router';
 import { PetService } from '../../services/pet/pet';
-import { ProximosAgendamentosService } from '../../services/proximos-agendamentos/proximos-agendamentos';
-import { HistoricoAnimalService } from '../../services/historico-animal/historico-animal';
+import { AgendamentoService } from '../../services/agendamento';
 
 @Component({
   selector: 'app-pets-detail-modal',
@@ -14,12 +13,10 @@ export class PetsDetailModal {
 
   private router = inject(Router);
   private petService = inject(PetService);
-  private proximosAgendamentosService = inject(ProximosAgendamentosService);
-  private historicoAnimalService = inject(HistoricoAnimalService);
+  private agendamentoService = inject(AgendamentoService);
 
   pet = computed(() => this.petService.pets().find(p => p.id === this.id()));
-  agendamentos = this.proximosAgendamentosService.proximosAgendamentos();
-  historicos = this.historicoAnimalService.historicoAnimal();
+  agendamentos = this.agendamentoService.agendamento();
 
   fechar() {
     this.router.navigate(['/dashboard/pets-page']);
