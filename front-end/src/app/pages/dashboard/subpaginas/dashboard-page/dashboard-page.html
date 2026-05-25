@@ -1,132 +1,142 @@
 <div class="min-h-screen w-full bg-[#f8faf9] flex text-[#191c1c]">
-  <!-- Conteúdo -->
-  <main class="flex-1 flex flex-col">
-    <!-- Conteúdo -->
-    <div class="p-6 flex flex-col gap-8">
-      <!-- Banner -->
-      <section
-        style="background-color: #2d6a4f"
-        class="rounded-2xl p-8 flex items-center justify-between relative overflow-hidden"
-      >
-        <div
-          class="absolute right-0 top-0 w-1/2 h-full"
-          style="
-            background: linear-gradient(to left, rgba(149, 212, 179, 0.3), transparent);
-            pointer-events: none;
-          "
-        ></div>
+        <!-- Conteúdo -->
+    <main class="flex-1 flex flex-col">
 
-        <div class="relative z-10">
-          <h2 class="text-3xl font-bold mb-2" style="color: #ffffff">Bom dia, {{ userName }}.</h2>
+        <!-- Conteúdo -->
+        <div class="p-6 flex flex-col gap-8">
 
-          <p style="color: rgba(255, 255, 255, 0.8)">
-            Luna possui uma vacinação agendada para a próxima semana.
-          </p>
+            <!-- Banner -->
+            <section style="background-color:#2d6a4f;"
+                class="rounded-2xl p-8 flex items-center justify-between relative overflow-hidden">
+
+                <div class="absolute right-0 top-0 w-1/2 h-full"
+                     style="background: linear-gradient(to left, rgba(149,212,179,0.3), transparent);">
+                </div>
+
+                <div class="relative z-10">
+                    <h2 class="text-3xl font-bold mb-2" style="color:#ffffff;">
+                        Bom dia, {{userName}}.
+                    </h2>
+
+                    <p style="color: rgba(255,255,255,0.8);">
+                        Luna possui uma vacinação agendada para a próxima semana.
+                    </p>
+                </div>
+
+                <button class="px-6 h-11 rounded-xl flex items-center gap-2"
+                        style="background-color:#ffffff; color:#2d6a4f;">
+                    <span class="material-symbols-outlined">event_available</span>
+                    Agendar Consulta
+                </button>
+            </section>
+
+            <!-- GRID 1: Pets + Upcoming -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+                <!-- Pets -->
+                <section class="lg:col-span-8 flex flex-col gap-4">
+
+                    <div class="flex justify-between items-end">
+                        <h3 class="text-2xl font-bold">Meus Pets</h3>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        @for (pet of pets; track pet.nome) {
+                            <app-cards-pet
+                                [nome]="pet.nome"
+                                [imagem]="pet.imagem"
+                                [raca]="pet.raca"
+                                [idade]="pet.idade"
+                                [status]="pet.status"
+                                [proximo]="pet.proximo"
+                                [id] = "pet.id">
+                            </app-cards-pet>
+                        }
+                    </div>
+
+                </section>
+
+                <!-- Upcoming -->
+                <section class="lg:col-span-4 flex flex-col gap-4">
+
+                    <h3 class="text-2xl font-bold">Próximos</h3>
+
+                    <div class="rounded-2xl p-5 flex flex-col gap-4"
+                         style="background:#ffffff; border:1px solid #bfc9c1;">
+
+                        @for (agendamento of agendamentos; track agendamento.id) {
+                            @if (agendamento.status === 'Agendado'){
+                                <app-proximos-agendamentos
+                                    [titulo]="agendamento.titulo"
+                                    [horario]="agendamento.horario"
+                                    [cidade]="agendamento.cidade"
+                                    [data]="agendamento.data">
+                                </app-proximos-agendamentos>
+                            }
+                        }
+
+                    </div>
+
+                </section>
+            </div>
+
+            <!-- GRID 2: Timeline + Support -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+                <!-- Timeline -->
+                <section class="lg:col-span-8 flex flex-col gap-4">
+
+                    <h3 class="text-2xl font-bold">Histórico de Saúde</h3>
+
+                    <div class="rounded-2xl p-6 flex flex-col gap-6"
+                         style="background:#ffffff; border:1px solid #bfc9c1;">
+
+                        @for (agendamento of agendamentos; track agendamento.titulo) {
+                            @if (agendamento.descricao) {
+                                <app-historico-animal
+                                    [titulo]="agendamento.titulo"
+                                    [nomeAnimal]="agendamento.nomeAnimal"
+                                    [descricao]="agendamento.descricao"
+                                    [data]="agendamento.data"
+                                    [status]="agendamento.status">
+                                </app-historico-animal>
+                            }
+                        }
+
+                    </div>
+                </section>
+
+                <!-- Support -->
+                <section class="lg:col-span-4 flex flex-col gap-4">
+
+                    <h3 class="text-2xl font-bold">Suporte</h3>
+
+                    <div class="rounded-2xl p-6 flex flex-col items-center text-center gap-4 transition-all duration-200 hover:-translate-y-1 hover:shadow-md"
+                        style="background:#ffffff; border:1px solid #bfc9c1;">
+
+                        <span class="material-symbols-outlined text-3xl transition-all duration-200 hover:scale-110"
+                            style="color:#2d6a4f;">
+                            chat_bubble
+                        </span>
+
+                        <p class="font-bold">Precisa de ajuda?</p>
+
+                        <p style="color:#404943;" class="text-sm">
+                            Equipe disponível para suporte.
+                        </p>
+
+                        <button style="background-color:#2d6a4f; color:#ffffff;"
+                                class="px-4 h-10 rounded-xl transition-all duration-200 hover:scale-[1.03] active:scale-[0.98] hover:shadow-lg">
+                            Falar com clínica
+                        </button>
+
+                    </div>
+
+                </section>
+
+            </div>
+
         </div>
 
-        <button
-          class="relative z-10 px-6 h-11 rounded-xl flex items-center gap-2"
-          style="background-color: #ffffff; color: #2d6a4f"
-        >
-          <span class="material-symbols-outlined">event_available</span>
-          Agendar Consulta
-        </button>
-      </section>
-
-      <!-- GRID 1: Pets + Upcoming -->
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        <!-- Pets -->
-        <section class="lg:col-span-8 flex flex-col gap-4">
-          <div class="flex justify-between items-end">
-            <h3 class="text-2xl font-bold">Meus Pets</h3>
-          </div>
-
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            @for (pet of pets; track pet.nome) {
-              <app-cards-pet
-                [nome]="pet.nome"
-                [imagem]="pet.imagem"
-                [raca]="pet.raca"
-                [idade]="pet.idade"
-                [status]="pet.status"
-                [proximo]="pet.proximo"
-              >
-              </app-cards-pet>
-            }
-          </div>
-        </section>
-
-        <!-- Upcoming -->
-        <section class="lg:col-span-4 flex flex-col gap-4">
-          <h3 class="text-2xl font-bold">Próximos</h3>
-
-          <div
-            class="rounded-2xl p-5 flex flex-col gap-4"
-            style="background: #ffffff; border: 1px solid #bfc9c1"
-          >
-            @for (agendamento of agendamentos; track agendamento.titulo) {
-              <app-proximos-agendamentos
-                [titulo]="agendamento.titulo"
-                [horario]="agendamento.horario"
-                [cidade]="agendamento.cidade"
-                [data]="agendamento.data"
-              >
-              </app-proximos-agendamentos>
-            }
-          </div>
-        </section>
-      </div>
-
-      <!-- GRID 2: Timeline + Support -->
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        <!-- Timeline -->
-        <section class="lg:col-span-8 flex flex-col gap-4">
-          <h3 class="text-2xl font-bold">Histórico de Saúde</h3>
-
-          <div
-            class="rounded-2xl p-6 flex flex-col gap-6"
-            style="background: #ffffff; border: 1px solid #bfc9c1"
-          >
-            @for (historico of historicos; track historico.titulo) {
-              <app-historico-animal
-                [titulo]="historico.titulo"
-                [nomeAnimal]="historico.nomeAnimal"
-                [descricao]="historico.descricao"
-                [data]="historico.data"
-              >
-              </app-historico-animal>
-            }
-          </div>
-        </section>
-
-        <!-- Support -->
-        <section class="lg:col-span-4 flex flex-col gap-4">
-          <h3 class="text-2xl font-bold">Suporte</h3>
-
-          <div
-            class="rounded-2xl p-6 flex flex-col items-center text-center gap-4 transition-all duration-200 hover:-translate-y-1 hover:shadow-md"
-            style="background: #ffffff; border: 1px solid #bfc9c1"
-          >
-            <span
-              class="material-symbols-outlined text-3xl transition-all duration-200 hover:scale-110"
-              style="color: #2d6a4f"
-            >
-              chat_bubble
-            </span>
-
-            <p class="font-bold">Precisa de ajuda?</p>
-
-            <p style="color: #404943" class="text-sm">Equipe disponível para suporte.</p>
-
-            <button
-              style="background-color: #2d6a4f; color: #ffffff"
-              class="px-4 h-10 rounded-xl transition-all duration-200 hover:scale-[1.03] active:scale-[0.98] hover:shadow-lg"
-            >
-              Falar com clínica
-            </button>
-          </div>
-        </section>
-      </div>
-    </div>
-  </main>
+    </main>
 </div>

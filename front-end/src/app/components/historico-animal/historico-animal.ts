@@ -11,4 +11,5 @@ export class HistoricoAnimal {
   data = input.required<string>();
   descricao = input.required<string>();
   nomeAnimal = input.required<string>();
+  status = input.required<string>();
 }

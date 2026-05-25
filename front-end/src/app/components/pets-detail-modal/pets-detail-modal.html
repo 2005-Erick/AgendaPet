@@ -1,0 +1,125 @@
+@if (pet()) {
+<div class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm transition-opacity duration-300 p-4" (click)="fechar()">
+    <div class="w-full max-w-[720px] max-h-[85vh] overflow-y-auto rounded-3xl bg-white shadow-2xl ring-1 ring-black/5 transform transition-all duration-300 ease-out md:ml-6 lg:ml-50" (click)="$event.stopPropagation()">
+        
+        <!-- Header do Modal -->
+        <div class="sticky top-0 z-10 border-b border-outline-variant/30 bg-white px-6 py-4">
+            <div class="flex items-center justify-between">
+                <h2 class="text-2xl font-semibold text-on-surface">Detalhes do pet</h2>
+                <button type="button" (click)="fechar()" class="rounded-full p-2 text-on-surface transition hover:bg-surface-container">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="p-6 space-y-8">
+            
+            <!-- Foto e Info Básica -->
+            <div class="space-y-4">
+                <div class="relative aspect-video w-full overflow-hidden rounded-3xl bg-surface-container shadow-md">
+                    <img [src]="pet()?.imagem" class="h-full w-full object-cover" />
+                </div>
+                
+                <div class="space-y-3">
+                    <div class="flex items-center justify-between gap-4">
+                        <div>
+                            <h3 class="text-3xl font-semibold text-on-surface">{{pet()?.nome}}</h3>
+                            <p class="mt-1 text-on-surface-variant">{{pet()?.raca}} • {{pet()?.idade}}</p>
+                        </div>
+                        <span class="shrink-0 rounded-full bg-primary/10 px-4 py-2 text-sm font-semibold text-primary">
+                            {{pet()?.status}}
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Grid de Informações -->
+            <div class="grid gap-4 sm:grid-cols-2">
+                <article class="rounded-3xl border border-outline-variant/40 bg-surface-container-low p-4">
+                    <p class="text-xs uppercase tracking-wider text-on-surface-variant">Peso</p>
+                    <p class="mt-2 text-2xl font-semibold text-on-surface">12 kg</p>
+                </article>
+                
+                <article class="rounded-3xl border border-outline-variant/40 bg-surface-container-low p-4">
+                    <p class="text-xs uppercase tracking-wider text-on-surface-variant">Microchip</p>
+                    <p class="mt-2 text-lg font-mono text-on-surface">023847#</p>
+                </article>
+
+                <article class="rounded-3xl border border-outline-variant/40 bg-surface-container-low p-4">
+                    <p class="text-xs uppercase tracking-wider text-on-surface-variant">Dono</p>
+                    <p class="mt-2 text-xl font-semibold text-on-surface">Usuário</p>
+                </article>
+
+                <article class="rounded-3xl border border-outline-variant/40 bg-surface-container-low p-4">
+                    <p class="text-xs uppercase tracking-wider text-on-surface-variant">Telefone</p>
+                    <p class="mt-2 text-lg font-semibold text-on-surface">(11) 9999-9999</p>
+                </article>
+            </div>
+        <div class="space-y-3">
+
+            <p class="text-sm font-semibold uppercase tracking-wider text-on-surface-variant">
+                Próximos agendamentos
+            </p>
+
+            <div class="space-y-2">
+
+                @for (agendamento of agendamentos; track agendamento.id) {
+
+                    @if (id() === agendamento.petId) {
+
+                        <div class="flex items-center gap-3 rounded-2xl border border-primary/20 bg-primary/5 p-4">
+
+                        <div class="flex h-10 w-10 items-center justify-center rounded-full bg-primary/20">
+                            <span class="material-symbols-outlined text-primary">calendar_today</span>
+                        </div>
+
+                        <div class="flex-1">
+                            <p class="font-semibold text-on-surface">
+                            {{ agendamento.data }} • {{ agendamento.horario }}
+                            </p>
+                            <p class="text-sm text-on-surface-variant">
+                            {{ agendamento.titulo }}
+                            </p>
+                        </div>
+
+                        </div>
+                    }
+                }
+
+            </div>
+
+            </div>
+
+            <div class="space-y-3">
+                <p class="text-sm font-semibold uppercase tracking-wider text-on-surface-variant">Histórico recente</p>
+            @for (agendamento of agendamentos; track agendamento.titulo) {
+            <!-- Histórico Recente -->
+                @if (id() === agendamento.petId && agendamento.status === 'Concluido') {
+                        <div class="space-y-2">
+                            <div class="rounded-2xl border border-outline-variant/40 bg-surface-container-low p-4">
+                                <p class="font-semibold text-on-surface">{{agendamento.titulo}}</p>
+                                <p class="mt-1 text-sm text-on-surface-variant">{{agendamento.data}} • {{agendamento.descricao}}</p>
+                            </div>
+                        </div>
+                }
+            }
+         </div>
+            <!-- Ações -->
+            <div class="grid gap-3 sm:grid-cols-2">
+                <button
+                    type="button"
+                    class="col-span-2 inline-flex items-center justify-center gap-2 rounded-2xl border border-outline bg-white px-4 py-3 text-sm font-semibold text-on-surface transition hover:bg-surface-container"
+                >
+                    <span class="material-symbols-outlined text-[20px]">
+                        edit
+                    </span>
+
+                    Editar
+                </button>
+            </div>
+
+            <div class="pb-4"></div>
+        </div>
+    </div>
+</div>
+}

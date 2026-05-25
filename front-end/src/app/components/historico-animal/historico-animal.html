@@ -3,9 +3,14 @@
         <h4 class="font-bold">{{titulo()}} - {{nomeAnimal()}}</h4>
 
         <span class="text-sm font-medium px-2 py-1 rounded-md transition-all"
-            [style.color]="data() === 'Atrasado' ? '#f87171' : ''"
-            [style.background]="data() === 'Atrasado' ? 'rgba(239,68,68,0.12)' : ''">
-            {{data()}}
+            [style.color]="status() === 'Pendente' ? '#f87171' : ''"
+            [style.background]="status() === 'Pendente' ? 'rgba(239,68,68,0.12)' : ''">
+            @if (status() === 'Pendente') {
+                Atrasado
+            } @else {
+                {{data()}}
+            }
+             
         </span>
     </div>
 
@@ -13,7 +18,7 @@
         {{descricao()}}
     </p>
 
-    @if (data() === 'Atrasado'){ 
+    @if (status() === 'Pendente'){ 
         <button class="px-4 h-8 rounded-lg text-sm font-medium border transition-all" style="border-color:#ef4444;color:#f87171;background:rgba(239,68,68,0.08)">
             Marcar como concluído 
         </button> 

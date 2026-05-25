@@ -14,7 +14,8 @@ export class PetService {
       raca: 'Golden Retriever',
       idade: 3,
       status: 'Rotina',
-      proximo: 'Check-up anual'
+      proximo: 'Check-up anual',
+      id: 1
     },
 
     {
@@ -23,7 +24,8 @@ export class PetService {
       raca: 'Persa',
       idade: 5,
       status: 'Saudável',
-      proximo: 'Tratamento contra pulgas'
+      proximo: 'Tratamento contra pulgas',
+      id: 2
     }
   ]);
 
