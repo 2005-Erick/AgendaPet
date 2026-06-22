@@ -9,5 +9,5 @@ import java.time.LocalDateTime;
 import java.util.Set;
 import java.util.UUID;
 
-public record UserResponseDTO(UUID id, String name, String email, GenderEnum gender, LocalDate birthday, Set<Role> roles, LocalDateTime created_at) {
+public record UserResponseDTO(UUID id, String name, String email, String avatarUrl, GenderEnum gender, LocalDate birthday, Set<Role> roles, LocalDateTime created_at) {
 }

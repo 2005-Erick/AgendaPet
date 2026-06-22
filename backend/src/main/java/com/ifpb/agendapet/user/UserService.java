@@ -21,7 +21,7 @@ public class UserService {
     public UserResponseDTO findById (UUID id) {
         User user = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Usuário não encontrado."));
 
-        return new UserResponseDTO(user.getId(), user.getName(), user.getEmail(), user.getGender(), user.getBirthday(), user.getRoles(), user.getCreatedAt());
+        return new UserResponseDTO(user.getId(), user.getName(), user.getEmail(), user.getAvatarUrl(), user.getGender(), user.getBirthday(), user.getRoles(), user.getCreatedAt());
     }
 
     public UserResponseDTO create(UserCreateDTO dto) {
@@ -33,6 +33,7 @@ public class UserService {
 
         user.setName(dto.name());
         user.setEmail(dto.email());
+        user.setAvatarUrl(dto.avatarUrl());
         user.setGender(dto.gender());
         user.setBirthday(dto.birthday());
         user.setPassword(dto.password());
@@ -41,7 +42,7 @@ public class UserService {
 
         user = userRepository.save(user);
 
-        return new UserResponseDTO(user.getId(), user.getName(), user.getEmail(), user.getGender(), user.getBirthday(), user.getRoles(), user.getCreatedAt());
+        return new UserResponseDTO(user.getId(), user.getName(), user.getEmail(), user.getAvatarUrl(), user.getGender(), user.getBirthday(), user.getRoles(), user.getCreatedAt());
     }
 
     public List<UserResponseDTO> findAll() {
@@ -50,7 +51,7 @@ public class UserService {
         List<UserResponseDTO> dtos = new ArrayList<>();
 
         for (User user : users) {
-            dtos.add(new UserResponseDTO(user.getId(), user.getName(), user.getEmail(), user.getGender(), user.getBirthday(), user.getRoles(), user.getCreatedAt()));
+            dtos.add(new UserResponseDTO(user.getId(), user.getName(), user.getEmail(), user.getAvatarUrl(), user.getGender(), user.getBirthday(), user.getRoles(), user.getCreatedAt()));
         }
 
         return dtos;
@@ -75,6 +76,10 @@ public class UserService {
             user.setEmail(dto.email());
         }
 
+        if(dto.avatarUrl() != null) {
+            user.setAvatarUrl(dto.avatarUrl());
+        }
+
         if(dto.phone() != null) {
             user.setPhone(dto.phone());
         }
@@ -89,7 +94,7 @@ public class UserService {
 
         user = userRepository.save(user);
 
-        return new UserResponseDTO(user.getId(), user.getName(), user.getEmail(), user.getGender(), user.getBirthday(), user.getRoles(), user.getCreatedAt());
+        return new UserResponseDTO(user.getId(), user.getName(), user.getEmail(), user.getAvatarUrl(), user.getGender(), user.getBirthday(), user.getRoles(), user.getCreatedAt());
     }
 
     public StatusResponseDTO updatePassword (UUID id, ChangePasswordDTO dto) {

@@ -3,6 +3,7 @@ package com.ifpb.agendapet.pet.dto;
 import com.ifpb.agendapet.pet.PetSpecies;
 import com.ifpb.agendapet.shared.enums.GenderEnum;
 import jakarta.validation.constraints.*;
+import org.hibernate.validator.constraints.URL;
 
 import java.time.LocalDate;
 import java.util.UUID;
@@ -12,5 +13,5 @@ public record PetCreateDTO(@NotNull UUID tutor_id, @NotBlank
 @Pattern(
         regexp = "^[\\p{L}]+( [\\p{L}]+)*$",
         message = "Nome deve conter apenas letras e espaços"
-) String name, @NotNull Double weight, @NotNull GenderEnum gender, @NotNull @Past LocalDate birthday, @NotNull PetSpecies species, @NotBlank @Size(min = 3, max = 50) String breed, @Size(max = 300) String description) {
+) String name, @NotNull Double weight, @URL @Size(max = 300) String avatarUrl, @NotNull GenderEnum gender, @NotNull @Past LocalDate birthday, @NotNull PetSpecies species, @NotBlank @Size(min = 3, max = 50) String breed, @Size(max = 300) String description) {
 }

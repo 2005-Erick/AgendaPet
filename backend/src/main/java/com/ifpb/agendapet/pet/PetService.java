@@ -52,14 +52,19 @@ public class PetService {
         return petAppointments;
     }
 
+    @NonNull
+    private PetResponseDTO getPetResponseDTO(Pet pet) {
+        List<AppointmentResponseDTO> petAppointments = getPetAppointments(pet);
+
+        return new PetResponseDTO(pet.getId(), pet.getName(), pet.getAvatarUrl(), pet.getWeight(), pet.getTutor().getId(), pet.getTutor().getName(), pet.getGender(), pet.getBirthday(), pet.getSpecies(), pet.getBreed(), pet.getDescription(), petAppointments, pet.getCreatedAt(), pet.getUpdatedAt());
+    }
+
     // Serviços
 
     public PetResponseDTO findById(UUID id) {
         Pet pet =  petRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Pet não encontrado"));
 
-        List<AppointmentResponseDTO> petAppointments = getPetAppointments(pet);
-
-        return new PetResponseDTO(pet.getId(), pet.getName(), pet.getWeight(), pet.getTutor().getId(), pet.getTutor().getName(), pet.getGender(), pet.getBirthday(), pet.getSpecies(), pet.getBreed(), pet.getDescription(), petAppointments, pet.getCreatedAt(), pet.getUpdatedAt());
+        return getPetResponseDTO(pet);
     }
 
     public List<PetResponseDTO> findAll() {
@@ -70,7 +75,7 @@ public class PetService {
         for (Pet pet : pets) {
             List<AppointmentResponseDTO> petAppointments = getPetAppointments(pet);
 
-            petsDto.add(new PetResponseDTO(pet.getId(), pet.getName(), pet.getWeight(), pet.getTutor().getId(), pet.getTutor().getName(), pet.getGender(), pet.getBirthday(), pet.getSpecies(), pet.getBreed(), pet.getDescription(), petAppointments, pet.getCreatedAt(), pet.getUpdatedAt()));
+            petsDto.add(new PetResponseDTO(pet.getId(), pet.getName(), pet.getAvatarUrl(), pet.getWeight(), pet.getTutor().getId(), pet.getTutor().getName(), pet.getGender(), pet.getBirthday(), pet.getSpecies(), pet.getBreed(), pet.getDescription(), petAppointments, pet.getCreatedAt(), pet.getUpdatedAt()));
         }
 
         return petsDto;
@@ -96,8 +101,6 @@ public class PetService {
 
         petRepository.save(pet);
 
-        List<AppointmentResponseDTO> petAppointments = getPetAppointments(pet);
-
-        return new PetResponseDTO(pet.getId(), pet.getName(), pet.getWeight(), pet.getTutor().getId(), pet.getTutor().getName(), pet.getGender(), pet.getBirthday(), pet.getSpecies(), pet.getBreed(), pet.getDescription(), petAppointments, pet.getCreatedAt(), pet.getUpdatedAt());
+        return getPetResponseDTO(pet);
     }
 }

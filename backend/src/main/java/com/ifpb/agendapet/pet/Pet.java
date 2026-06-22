@@ -32,6 +32,8 @@ public class Pet {
     @Column(length = 72, nullable = false)
     private String name;
 
+    private String avatarUrl;
+
     private Double weight;
 
     @Enumerated(EnumType.STRING)

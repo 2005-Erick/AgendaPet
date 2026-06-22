@@ -43,6 +43,8 @@ public class User implements UserDetails {
     @Column(nullable = false, unique = true)
     private String cpf;
 
+    private String avatarUrl;
+
     @Column(nullable = false)
     private GenderEnum gender;
 
