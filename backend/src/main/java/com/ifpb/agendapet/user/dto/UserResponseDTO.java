@@ -2,7 +2,6 @@ package com.ifpb.agendapet.user.dto;
 
 import com.ifpb.agendapet.role.Role;
 import com.ifpb.agendapet.shared.enums.GenderEnum;
-import com.ifpb.agendapet.user.UserRoles;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
