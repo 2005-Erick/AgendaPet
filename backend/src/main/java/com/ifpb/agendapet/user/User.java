@@ -69,6 +69,11 @@ public class User implements UserDetails {
     private Doctor doctorProfile;
 
     @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(
+            name = "user_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            foreignKey = @ForeignKey(name = "fk_user_roles_cascade", foreignKeyDefinition = "FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE")
+    )
     @Enumerated(EnumType.STRING)
     private Set<RoleEnum> roles = new HashSet<>();
 
