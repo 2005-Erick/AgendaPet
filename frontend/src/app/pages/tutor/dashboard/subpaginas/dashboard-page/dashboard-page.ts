@@ -1,10 +1,10 @@
 import { Component, inject } from '@angular/core';
-import { PetService } from '../../../../services/pet/pet';
-import { UsersService } from '../../../../services/users-service';
-import { CardsPet } from '../../../../components/cards-pet/cards-pet';
-import { HistoricoAnimal } from '../../../../components/historico-animal/historico-animal';
-import { ProximosAgendamentos } from '../../../../components/proximos-agendamentos/proximos-agendamentos';
-import { AgendamentoService } from '../../../../services/agendamento';
+import { PetService } from '../../../../../services/pet/pet';
+import { UsersService } from '../../../../../services/users-service';
+import { CardsPet } from '../../../../../components/cards-pet/cards-pet';
+import { HistoricoAnimal } from '../../../../../components/historico-animal/historico-animal';
+import { ProximosAgendamentos } from '../../../../../components/proximos-agendamentos/proximos-agendamentos';
+import { AgendamentoService } from '../../../../../services/agendamento';
 
 @Component({
   selector: 'app-dashboard-page',

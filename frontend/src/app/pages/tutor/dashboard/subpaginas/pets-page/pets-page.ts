@@ -1,8 +1,8 @@
 import { Component, inject, signal, computed } from '@angular/core';
-import { PetService } from '../../../../services/pet/pet';
-import { AgendamentoService } from '../../../../services/agendamento';
+import { PetService } from '../../../../../services/pet/pet';
+import { AgendamentoService } from '../../../../../services/agendamento';
 import { ActivatedRoute, Router } from '@angular/router';
-import {PetsDetailModal} from '../../../../components/pets-detail-modal/pets-detail-modal';
+import {PetsDetailModal} from '../../../../../components/pets-detail-modal/pets-detail-modal';
 
 @Component({
   selector: 'app-pets-page',

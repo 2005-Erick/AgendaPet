@@ -1,5 +1,5 @@
 import { Component, inject, signal, computed } from '@angular/core';
-import {AgendamentoService} from '../../../../services/agendamento';
+import {AgendamentoService} from '../../../../../services/agendamento';
 
 @Component({
   selector: 'app-agendamentos-page',

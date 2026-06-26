@@ -1,8 +1,8 @@
 import { Component, inject, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { UsersService } from '../../services/users-service';
-import { user_role } from '../../models/users-model';
+import { UsersService } from '../../../services/users-service';
+import { user_role } from '../../../models/users-model';
 import { MatIconModule } from '@angular/material/icon';
 
 @Component({
