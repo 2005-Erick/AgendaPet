@@ -40,7 +40,7 @@ public class AuthService {
         userRepository.save(user);
 
         // Dispara o email (não retorna o Token ainda)
-        emailService.sendMfaCode(user.getEmail(), mfaCode);
+        emailService.sendLoginCode(user.getEmail(), user.getName(), mfaCode);
     }
 
     public String confirmLogin(VerifyMfaRequestDTO dto) {
@@ -76,7 +76,7 @@ public class AuthService {
         pendingRegistrationService.addPendingRegistration(dto.email(), dto, mfaCode);
 
         // Envia o e-mail
-        emailService.sendMfaCode(dto.email(), mfaCode);
+        emailService.sendRegistrationCode(dto.email(), dto.name(), mfaCode);
     }
 
     public String confirmRegistration(VerifyMfaRequestDTO dto) {
