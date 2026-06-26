@@ -4,6 +4,7 @@ import com.ifpb.agendapet.doctor.Doctor;
 import com.ifpb.agendapet.pet.Pet;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
@@ -14,6 +15,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+@Builder
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -39,6 +41,7 @@ public class Appointment {
     @Column(nullable = false)
     private AppointmentTypes type;
 
+    @Builder.Default
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private AppointmentStatus status = AppointmentStatus.SCHEDULED;

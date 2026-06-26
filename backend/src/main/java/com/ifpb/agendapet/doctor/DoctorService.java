@@ -6,9 +6,7 @@ import com.ifpb.agendapet.exception.ResourceErrorException;
 import com.ifpb.agendapet.exception.ResourceNotFoundException;
 import com.ifpb.agendapet.user.User;
 import com.ifpb.agendapet.user.UserRepository;
-import com.ifpb.agendapet.role.Role;
-import com.ifpb.agendapet.role.RoleEnum;
-import com.ifpb.agendapet.role.RoleRepository;
+import com.ifpb.agendapet.shared.enums.RoleEnum;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +19,6 @@ import java.util.UUID;
 public class DoctorService {
     private final DoctorRepository doctorRepository;
     private final UserRepository userRepository;
-    private final RoleRepository roleRepository;
 
     public DoctorResponseDTO createDoctorProfile(DoctorCreateDTO dto) {
         User user = userRepository.findById(dto.user_id()).orElseThrow(() -> new ResourceNotFoundException("Usuário não encontrado"));
@@ -35,8 +32,7 @@ public class DoctorService {
         doctor.setUser(user);
         doctor.setCrmv(dto.crmv());
 
-        Role doctorRole = roleRepository.findByName(RoleEnum.DOCTOR).orElseThrow();
-        user.getRoles().add(doctorRole);
+        user.getRoles().add(RoleEnum.DOCTOR);
         userRepository.save(user);
 
         doctorRepository.save(doctor);

@@ -42,4 +42,14 @@ public class GlobalHandlerException {
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
     }
+
+    @ExceptionHandler(org.springframework.security.authentication.BadCredentialsException.class)
+    public ResponseEntity<StatusResponseDTO> handleBadCredentials(org.springframework.security.authentication.BadCredentialsException e) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new StatusResponseDTO("Credenciais inválidas."));
+    }
+
+    @ExceptionHandler(org.springframework.security.authentication.InternalAuthenticationServiceException.class)
+    public ResponseEntity<StatusResponseDTO> handleInternalAuth(org.springframework.security.authentication.InternalAuthenticationServiceException e) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new StatusResponseDTO("Erro ao autenticar usuário."));
+    }
 }

@@ -77,12 +77,10 @@
 			<artifactId>spring-boot-starter-security</artifactId>
 			<version>4.0.6</version>
 		</dependency>
-		<!-- Source: https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt-api -->
 		<dependency>
-			<groupId>io.jsonwebtoken</groupId>
-			<artifactId>jjwt-api</artifactId>
-			<version>0.13.0</version>
-			<scope>compile</scope>
+			<groupId>com.auth0</groupId>
+			<artifactId>java-jwt</artifactId>
+			<version>4.5.2</version>
 		</dependency>
 		<!-- Source: https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-validation -->
 		<dependency>
@@ -91,7 +89,16 @@
 			<version>4.1.0</version>
 			<scope>compile</scope>
 		</dependency>
-		<!-- Flyway removed as per user request -->
+		<dependency>
+			<groupId>com.resend</groupId>
+			<artifactId>resend-java</artifactId>
+			<version>3.1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>me.paulschwarz</groupId>
+			<artifactId>spring-dotenv</artifactId>
+			<version>4.0.0</version>
+		</dependency>
 	</dependencies>
 
 	<build>

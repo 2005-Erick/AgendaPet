@@ -1,9 +1,9 @@
 package com.ifpb.agendapet.user;
 
+import com.ifpb.agendapet.auth.dto.RegisterRequestDTO;
 import com.ifpb.agendapet.exception.ResourceErrorException;
 import com.ifpb.agendapet.exception.ResourceNotFoundException;
 import com.ifpb.agendapet.exception.dto.StatusResponseDTO;
-import com.ifpb.agendapet.role.RoleRepository;
 import com.ifpb.agendapet.user.dto.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,7 +16,6 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
-    private final RoleRepository roleRepository;
 
     public UserResponseDTO findById (UUID id) {
         User user = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Usuário não encontrado."));
@@ -24,7 +23,7 @@ public class UserService {
         return new UserResponseDTO(user.getId(), user.getName(), user.getEmail(), user.getAvatarUrl(), user.getGender(), user.getBirthday(), user.getRoles(), user.getCreatedAt());
     }
 
-    public UserResponseDTO create(UserCreateDTO dto) {
+    public UserResponseDTO create(RegisterRequestDTO dto) {
         if(userRepository.existsByCpf(dto.cpf()) || userRepository.existsByEmail(dto.email())) {
             throw new ResourceErrorException();
         }

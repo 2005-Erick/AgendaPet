@@ -4,12 +4,14 @@ import com.ifpb.agendapet.appointment.Appointment;
 import com.ifpb.agendapet.user.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
 import java.util.UUID;
 
+@Builder
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

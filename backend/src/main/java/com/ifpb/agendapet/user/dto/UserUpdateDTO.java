@@ -6,5 +6,5 @@ import org.hibernate.validator.constraints.URL;
 
 import java.time.LocalDate;
 
-public record UserUpdateDTO(String name, @Size(min = 8, max = 16) String phone, @URL @Size(max = 300) String avatarUrl, GenderEnum gender, @Past LocalDate birthday, @Email String email) {
+public record UserUpdateDTO(@Size(min = 2, max = 50) String name, @Size(min = 8, max = 16) String phone, @URL @Size(max = 300) String avatarUrl, GenderEnum gender, @Past LocalDate birthday, @Email String email) {
 }

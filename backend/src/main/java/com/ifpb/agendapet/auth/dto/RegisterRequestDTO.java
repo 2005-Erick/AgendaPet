@@ -1,4 +1,4 @@
-package com.ifpb.agendapet.user.dto;
+package com.ifpb.agendapet.auth.dto;
 
 import com.ifpb.agendapet.shared.enums.GenderEnum;
 import jakarta.validation.constraints.*;
@@ -7,7 +7,7 @@ import org.hibernate.validator.constraints.br.CPF;
 
 import java.time.LocalDate;
 
-public record UserCreateDTO(
+public record RegisterRequestDTO(
         @NotBlank String name,
         @NotBlank @Email String email,
         @NotBlank @Size(min = 8, max = 72) @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[^A-Za-z\\d]).*$",

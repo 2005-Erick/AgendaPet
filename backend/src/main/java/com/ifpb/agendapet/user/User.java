@@ -2,15 +2,17 @@ package com.ifpb.agendapet.user;
 
 import com.ifpb.agendapet.doctor.Doctor;
 import com.ifpb.agendapet.pet.Pet;
-import com.ifpb.agendapet.role.Role;
+import com.ifpb.agendapet.shared.enums.RoleEnum;
 import com.ifpb.agendapet.shared.enums.GenderEnum;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDate;
@@ -21,6 +23,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+@Builder
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -54,19 +57,19 @@ public class User implements UserDetails {
     @Column(unique = true)
     private String phone;
 
+    private String mfaCode;
+
+    private LocalDateTime mfaCodeExpiration;
+
     @OneToMany(mappedBy = "tutor")
     private List<Pet> pets;
 
     @OneToOne(mappedBy = "user")
     private Doctor doctorProfile;
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(
-            name = "user_roles",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id")
-    )
-    private Set<Role> roles = new HashSet<>();
+    @ElementCollection(fetch = FetchType.EAGER)
+    @Enumerated(EnumType.STRING)
+    private Set<RoleEnum> roles = new HashSet<>();
 
     @CreationTimestamp
     @Column(nullable = false, updatable = false)
@@ -78,7 +81,9 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return this.roles;
+        return this.roles.stream()
+                .map(role -> new SimpleGrantedAuthority("ROLE_" + role.name()))
+                .toList();
     }
 
     @Override

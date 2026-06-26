@@ -1,8 +1,8 @@
-package com.ifpb.agendapet.role;
+package com.ifpb.agendapet.shared.enums;
 
 public enum RoleEnum {
     TUTOR,
     DOCTOR,
-    STAFF,
+    RECEPTIONIST,
     ADMIN
 }
