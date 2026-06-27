@@ -4,9 +4,9 @@ export interface IAppointment {
   pet_id?: string; 
   scheduled_at: Date; 
   type: appointment_type ; 
-  status: appointment_type ; 
+  status: appointments_status; 
   price: number; 
-  payment_status: appointment_type ; 
+  payment_status: payment_status_enum ; 
   note?: string; 
   created_at?: Date; 
   updated_at?: Date; 
@@ -22,4 +22,10 @@ export enum appointment_type {
   CONSULTATION = 'Consultation',
   VACCINATION = 'Vaccination',
   SURGERY = 'Surgery',
+}
+
+export enum payment_status_enum {
+  PENDING = 'PENDING',
+  PAID = 'PAID',
+  REFUNDED = 'REFUNDED'
 }

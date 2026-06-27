@@ -123,13 +123,13 @@
             </div>
 
             <div class="flex flex-col gap-2">
-              <label class="text-sm font-medium text-zinc-700" for="note">Notas</label>
-              <input id="note" formControlName="note" type="text" class="h-11 rounded-xl border border-[#D8F3DC] bg-[#F7FBF8] px-3 outline-none transition focus:border-[#40916C]" />
-              @if (getAppointmentFieldFeedback('note'); as feedback) {
+              <label class="text-sm font-medium text-zinc-700" for="price">Preço</label>
+              <input id="price" formControlName="price" type="number" class="h-11 rounded-xl border border-[#D8F3DC] bg-[#F7FBF8] px-3 outline-none transition focus:border-[#40916C]" />
+              @if (getAppointmentFieldFeedback('price'); as feedback) {
                 <p [class]="feedback.kind === 'error' ? 'text-red-600' : 'text-emerald-600'" class="text-xs">{{ feedback.message }}</p>
               }
             </div>
-            
+
             <div class="md:col-span-2 flex flex-wrap gap-3">
               <button type="submit" class="w-full rounded-xl bg-[#40916C] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#357a57]">
                 Salvar agendamento

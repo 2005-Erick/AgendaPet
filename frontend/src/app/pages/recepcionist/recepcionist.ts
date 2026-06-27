@@ -23,10 +23,10 @@ export class Recepcionist {
     petName: new FormControl('', [Validators.required]),
     service: new FormControl('Consulta', [Validators.required]),
     dateTime: new FormControl('', [Validators.required]),
-    doctor: new FormControl('Dra. Ana Paula', [Validators.required]),
-    note: new FormControl(''),
+    doctor: new FormControl('Dra. Ana Paula', [Validators.required]), 
+    price: new FormControl<number | null>(null, [Validators.required, Validators.min(0)])
   });
-
+  
   petForm = new FormGroup({
     name: new FormControl('', [Validators.required]),
     species: new FormControl<pets_species | null>(null, [Validators.required]),
@@ -62,14 +62,14 @@ export class Recepcionist {
   showConfirmationModal = signal(false);
   confirmationCode = signal('');
 
-  getAppointmentFieldFeedback(fieldName: 'personName' | 'petName' | 'service' | 'dateTime' | 'doctor' | 'note') {
+  getAppointmentFieldFeedback(fieldName: 'personName' | 'petName' | 'service' | 'dateTime' | 'doctor' | 'price' ) {
     const messages = {
       personName: 'Informe o nome do cliente.',
       petName: 'Informe o nome do animal.',
       service: 'Selecione um serviço.',
       dateTime: 'Escolha a data e hora.',
       doctor: 'Selecione um veterinário.',
-      note: ''
+      price: 'Informe o preço do serviço.',
     };
 
     return this.getFieldFeedback(this.appointmentForm.get(fieldName), messages[fieldName]);
@@ -118,7 +118,7 @@ export class Recepcionist {
       service: this.appointmentForm.value.service,
       dateTime: this.appointmentForm.value.dateTime,
       doctor: this.appointmentForm.value.doctor,
-      note: this.appointmentForm.value.note,
+      price: this.appointmentForm.value.price
     };
 
     this.appointmentsService.registerAppointment(iAppointment).subscribe({
