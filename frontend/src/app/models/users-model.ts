@@ -7,7 +7,9 @@ export interface iUser {
   cpf: string;
   birthday: string;
   phone: string;
-  role: user_role;
+  role?: user_role;
+  token?: string;
+  gender?: 'MALE' | 'FEMALE';
   created_at?: string;
   updated_at?: string;
 }

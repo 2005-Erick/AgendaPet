@@ -1,21 +1,23 @@
-export interface iAppointment {
-  id: string;
-  doctor_id: string;
-  pet_id: string;
-  schedule_at: string;
-  type: appointment_type;
-  status: appointment_status;
-  created_at: string;
-  updated_at: string;
+export interface IAppointment {
+  id?: string; 
+  doctor_id?: string; 
+  pet_id?: string; 
+  scheduled_at: Date; 
+  type: appointment_type ; 
+  status: appointment_type ; 
+  price: number; 
+  payment_status: appointment_type ; 
+  note?: string; 
+  created_at?: Date; 
+  updated_at?: Date; 
 }
 
-export enum appointment_status {
-  SCHEDULED = 'Scheduled',
-  COMPLETED = 'Completed',
-  CANCELED = 'Canceled',
-  NO_SHOW = 'No Show',
+export enum appointments_status {
+  CONSULTATION = 'SCHEDULED',
+  COMPLETED = 'COMPLETED',
+  CANCELED = 'CANCELED',
+  NO_SHOW = 'NO_SHOW'
 }
-
 export enum appointment_type {
   CONSULTATION = 'Consultation',
   VACCINATION = 'Vaccination',

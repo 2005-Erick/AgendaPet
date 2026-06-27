@@ -8,6 +8,7 @@ import { PrecoComponent } from './pages/public/home/subpaginas/preco/preco';
 import { NotFoundPage } from './pages/not-found/not-found';
 import { ConfigurationPage } from './pages/tutor/dashboard/subpaginas/configuration-page/configuration-page';
 import { configurationRoutes } from './pages/tutor/dashboard/subpaginas/configuration-page/configuration.routes';
+import { Recepcionist } from './pages/recepcionist/recepcionist';
 
 export const routes: Routes = [
   { path: '', component: Home, title: 'AgendaPet - Gestão de Clínicas Veterinárias e Pet Shops' },
@@ -19,5 +20,6 @@ export const routes: Routes = [
     component: Dashboard,
     children: dashboardRoutes,
   },
+  {path: 'dashboard-recepcionist', component: Recepcionist, title: 'AgendaPet - Dashboard Recepcionista'},
   { path: '**', component: NotFoundPage, title: 'AgendaPet - 404' },
 ];

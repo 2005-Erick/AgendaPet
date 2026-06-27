@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment-db';
 import { iUser } from '../models/users-model';
 import { map, Observable, tap } from 'rxjs';
+import { iPets } from '../models/pets-model';
 
 @Injectable({
   providedIn: 'root',
@@ -13,10 +14,10 @@ export class UsersService {
   private readonly apiKey = environment.supabasePublishableKey;
   private readonly storageKey = 'agendaPetUser';
 
-  currentUser = signal<iUser | null>(this.loadUser());
+    currentUser = signal<iUser | null>(this.loadUser());
 
-  private get headers() {
-    return {
+    private get headers() {
+      return {
       apikey: this.apiKey,
       Authorization: `Bearer ${this.apiKey}`,
       'Content-Type': 'application/json',
@@ -49,6 +50,15 @@ export class UsersService {
     );
   }
 
+  registerUser(user: iUser): Observable<iUser | any> {
+    return this.http.post<iUser | any>('https://agendapet.onrender.com/auth/register', user);
+  }
+
+  confirmRegister(email: string, code: string) {
+    return this.http.post<{token: string}>('https://agendapet.onrender.com/auth/register/confirm',{email, code}
+    );
+  }
+    
   deleteUser(id: string): Observable<void> {
     const url = `${this.apiUrl}?id=eq.${id}`;
     return this.http.delete<void>(url, { headers: this.headers });

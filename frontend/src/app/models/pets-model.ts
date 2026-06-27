@@ -1,10 +1,13 @@
 export interface iPets {
-  id: string;
-  tutor_id: string;
+  id?: string;
+  tutor_id?: string;
+  weight: number;
   name: string;
   breed: string;
   species: pets_species;
-  bithday: string;
+  birthday: Date;
+  description: string;
+  gender: 'MALE' | 'FEMALE';
 }
 
 export enum pets_species {
