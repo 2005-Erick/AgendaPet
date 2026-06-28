@@ -1,77 +1,62 @@
 import { Component, inject, signal } from '@angular/core';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { UsersService } from '../../../services/users-service';
-import { user_role } from '../../../models/users-model';
 import { MatIconModule } from '@angular/material/icon';
+import { iUser } from '../../../models/users-model';
 
 @Component({
   selector: 'app-cadastro',
   standalone: true,
-  imports: [ReactiveFormsModule, RouterLink, MatIconModule],
+  imports: [ReactiveFormsModule, FormsModule, RouterLink, MatIconModule],
   templateUrl: './cadastro.html',
   styleUrl: './cadastro.css',
 })
 export class Cadastro {
-  private usersService = inject(UsersService);
-  private router = inject(Router);
-
-  // Expor o enum para o template
-  user_role = user_role;
-
-  roles = [
-    { label: 'Tutor', value: user_role.TUTOR },
-    { label: 'Médico Veterinário', value: user_role.DOCTOR },
-  ];
+    private userService = inject(UsersService);
 
   registrationForm = new FormGroup({
     name: new FormControl('', [Validators.required]),
+    cpf: new FormControl('', [ Validators.required, Validators.pattern(/^\d{11}$/)]),
+    phone: new FormControl('', [Validators.required]),
+    birthday: new FormControl('', [Validators.required]),
     email: new FormControl('', [Validators.required, Validators.email]),
     password: new FormControl('', [Validators.required, Validators.minLength(6)]),
-    cpf: new FormControl('', [Validators.required, Validators.pattern(/^\d{11}$/)]),
-    birthday: new FormControl('', [Validators.required]),
-    phone: new FormControl('', [Validators.required]),
-    role: new FormControl(user_role.TUTOR, [Validators.required]),
-    crmv: new FormControl<string | null>(null),
+    gender: new FormControl<'MALE' | 'FEMALE' | null>(null,[Validators.required]),
   });
 
-  isLoading = signal(false);
   errorMessage = signal<string | null>(null);
+  errorMessageType = signal<'success' | 'error' | null>(null);
 
-  constructor() {
-    this.syncCrmvValidation(this.registrationForm.controls.role.value);
+  showConfirmationModal = signal(false);
+  confirmationCode = signal('');
 
-    this.registrationForm.controls.role.valueChanges.subscribe((role) => {
-      this.syncCrmvValidation(role);
-    });
-  }
+  isLoading = signal(false);
 
-  getFieldFeedback(
-    fieldName: 'name' | 'email' | 'password' | 'cpf' | 'birthday' | 'phone' | 'role' | 'crmv',
-  ) {
+  private router = inject(Router);
+
+  getFieldFeedback( fieldName:'name' | 'cpf' | 'phone' | 'birthday' | 'email' | 'password'| 'gender') {
     const control = this.registrationForm.get(fieldName);
 
     if (!control || (!control.touched && !control.dirty)) {
       return null;
     }
 
-    if (fieldName === 'crmv' && this.registrationForm.controls.role.value !== user_role.DOCTOR) {
-      return null;
-    }
-
     if (control.hasError('required')) {
       const messages = {
         name: 'O nome é obrigatório.',
+        cpf: 'O CPF é obrigatório.',
+        phone: 'O telefone é obrigatório.',
+        birthday: 'A data de nascimento é obrigatória.',
         email: 'O email é obrigatório.',
         password: 'A senha é obrigatória.',
-        cpf: 'O CPF é obrigatório.',
-        birthday: 'A data de nascimento é obrigatória.',
-        phone: 'O telefone é obrigatório.',
-        role: 'O tipo de perfil é obrigatório.',
-        crmv: 'O CRMV é obrigatório para médico veterinário.',
+        gender: 'O gênero é obrigatório.',
       };
 
-      return { kind: 'error' as const, message: messages[fieldName] };
+      return {
+        kind: 'error' as const,
+        message: messages[fieldName],
+      };
     }
 
     if (fieldName === 'email' && control.hasError('email')) {
@@ -95,20 +80,10 @@ export class Cadastro {
       };
     }
 
-    return { kind: 'success' as const, message: 'OK.' };
-  }
-
-  private syncCrmvValidation(role: user_role | null) {
-    const crmvControl = this.registrationForm.controls.crmv;
-
-    if (role === user_role.DOCTOR) {
-      crmvControl.setValidators([Validators.required]);
-    } else {
-      crmvControl.clearValidators();
-      crmvControl.setValue(null);
-    }
-
-    crmvControl.updateValueAndValidity({ emitEvent: false });
+    return {
+      kind: 'success' as const,
+      message: 'OK.',
+    };
   }
 
   onSubmit() {
@@ -119,21 +94,58 @@ export class Cadastro {
 
     this.isLoading.set(true);
     this.errorMessage.set(null);
-    const userData = {
-      ...this.registrationForm.value,
-      cpf: (this.registrationForm.value.cpf ?? '').replace(/\D/g, ''),
-      crmv: (this.registrationForm.value.crmv ?? '').trim() || null,
-    } as any;
 
-    this.usersService.register(userData).subscribe({
+    const dto: iUser = {
+      name: this.registrationForm.value.name!,
+      email: this.registrationForm.value.email!,
+      password: this.registrationForm.value.password!,
+      cpf: this.registrationForm.value.cpf!,
+      birthday: this.registrationForm.value.birthday!,
+      phone: this.registrationForm.value.phone!,
+      gender: this.registrationForm.value.gender!,
+    };
+
+    this.userService.registerUser(dto).subscribe({
       next: () => {
+        this.errorMessage.set(
+          'Cadastro realizado. Verifique o código de confirmação enviado ao e-mail.'
+        );
+        this.errorMessageType.set('success');
+        this.showConfirmationModal.set(true);
         this.isLoading.set(false);
-        this.router.navigate(['/dashboard']);
       },
       error: (err) => {
+        this.errorMessage.set(
+          'Não foi possível realizar o cadastro, tente novamente.'
+        );
+        this.errorMessageType.set('error');
         this.isLoading.set(false);
-        this.errorMessage.set('Não foi possível realizar o cadastro, tente novamente');
+        console.error(err);
       },
     });
+  }
+
+  confirmCode() {
+    const code = this.confirmationCode().trim();
+    const email = this.registrationForm.value.email;
+
+    if (!email || !code) {
+      return;
+    }
+    this.userService.confirmRegister(email, code).subscribe({
+      next: () => {
+        this.showConfirmationModal.set(false);
+        this.confirmationCode.set('');
+        this.registrationForm.reset();
+        this.router.navigate(['/dashboard']);
+      },
+      error: (error) => {
+        console.error(error);
+      },
+    });
+  }
+
+  closeConfirmationModal() {
+    this.showConfirmationModal.set(false);
   }
 }

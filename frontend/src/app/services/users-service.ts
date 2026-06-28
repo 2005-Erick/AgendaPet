@@ -26,31 +26,42 @@ export class UsersService {
     };
   }
 
-  getUsers(): Observable<iUser[]> {
-    const url = `${this.apiUrl}?select=*`;
-    return this.http.get<iUser[]>(url, { headers: this.headers });
-  }
+  // getUsers(): Observable<iUser[]> {
+  //   const url = `${this.apiUrl}?select=*`;
+  //   return this.http.get<iUser[]>(url, { headers: this.headers });
+  // }
 
-  login(email: string, password: string): Observable<iUser> {
-    const url = `${this.apiUrl}?email=eq.${email}&password=eq.${password}&select=*`;
-    return this.http.get<iUser[]>(url, { headers: this.headers }).pipe(
-      map((users) => {
-        if (users.length === 0) {
-          throw new Error('Usuário ou senha inválidos');
-        }
-        return users[0];
-      }),
-      tap((user) => this.saveUser(user)),
-    );
-  }
+  // login(email: string, password: string): Observable<iUser> {
+  //   const url = `${this.apiUrl}?email=eq.${email}&password=eq.${password}&select=*`;
+  //   return this.http.get<iUser[]>(url, { headers: this.headers }).pipe(
+  //     map((users) => {
+  //       if (users.length === 0) {
+  //         throw new Error('Usuário ou senha inválidos');
+  //       }
+  //       return users[0];
+  //     }),
+  //     tap((user) => this.saveUser(user)),
+  //   );
+  // }
 
-  register(user: iUser): Observable<iUser> {
-    return this.http.post<iUser[]>(this.apiUrl, user, { headers: this.headers }).pipe(
-      map((users) => users[0]),
-      tap((user) => this.saveUser(user)),
-    );
-  }
+  // register(user: iUser): Observable<iUser> {
+  //   return this.http.post<iUser[]>(this.apiUrl, user, { headers: this.headers }).pipe(
+  //     map((users) => users[0]),
+  //     tap((user) => this.saveUser(user)),
+  //   );
+  // }
 
+  userlogin(email: string, password: string): Observable<UserResponseDTO> {
+    return this.http.post<UserResponseDTO>(`https://agendapet.onrender.com/auth/login`,{ email, password }
+  )};
+
+  confirmLogin(email: string, code: string) {
+    return this.http.post<void>(`https://agendapet.onrender.com/auth/login/confirm`,{ email, code },
+      {
+        withCredentials: true
+      }
+    )};  
+  
   registerUser(user: iUser): Observable<UserResponseDTO> {
     return this.http.post<UserResponseDTO>('https://agendapet.onrender.com/auth/register', user);
   }

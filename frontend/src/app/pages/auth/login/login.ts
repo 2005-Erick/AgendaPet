@@ -1,18 +1,20 @@
 import { Component, inject, signal } from '@angular/core';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule, FormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { UsersService } from '../../../services/users-service';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [ReactiveFormsModule, RouterLink],
+  imports: [ReactiveFormsModule, RouterLink, FormsModule],
   templateUrl: './login.html',
   styleUrl: './login.css',
 })
 export class Login {
   private usersService = inject(UsersService);
   private router = inject(Router);
+  showConfirmationModal = signal(false);
+  confirmationCode = signal('');
 
   loginForm = new FormGroup({
     email: new FormControl('', [Validators.required, Validators.email]),
@@ -59,15 +61,40 @@ export class Login {
     this.errorMessage.set(null);
     const { email, password } = this.loginForm.value;
 
-    this.usersService.login(email!, password!).subscribe({
+    this.usersService.userlogin(email!, password!).subscribe({
       next: () => {
         this.isLoading.set(false);
-        this.router.navigate(['/dashboard']);
+        this.showConfirmationModal.set(true);
       },
       error: (err) => {
+        console.log(err);
         this.isLoading.set(false);
         this.errorMessage.set(err.message || 'Erro ao realizar login');
       },
     });
+  }
+
+  confirmCode() {
+    const code = this.confirmationCode().trim();
+    const email = this.loginForm.value.email;
+
+    if (!email || !code) {
+      return;
+    }
+    this.usersService.confirmRegister(email, code).subscribe({
+      next: () => {
+        this.showConfirmationModal.set(false);
+        this.confirmationCode.set('');
+        this.loginForm.reset();
+        this.router.navigate(['/dashboard']);
+      },
+      error: (error) => {
+        console.error(error);
+      },
+    });
+  }
+
+  closeConfirmationModal() {
+    this.showConfirmationModal.set(false);
   }
 }
