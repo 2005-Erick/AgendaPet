@@ -4,6 +4,7 @@ import { environment } from '../../environments/environment-db';
 import { iUser } from '../models/users-model';
 import { map, Observable, tap } from 'rxjs';
 import { iPets } from '../models/pets-model';
+import { UserResponseDTO } from '../models/DTO/user-response-DTO';
 
 @Injectable({
   providedIn: 'root',
@@ -50,13 +51,17 @@ export class UsersService {
     );
   }
 
-  registerUser(user: iUser): Observable<iUser | any> {
-    return this.http.post<iUser | any>('https://agendapet.onrender.com/auth/register', user);
+  registerUser(user: iUser): Observable<UserResponseDTO> {
+    return this.http.post<UserResponseDTO>('https://agendapet.onrender.com/auth/register', user);
   }
 
   confirmRegister(email: string, code: string) {
     return this.http.post<{token: string}>('https://agendapet.onrender.com/auth/register/confirm',{email, code}
     );
+  }
+
+  getUsersResponseDTO(): Observable<UserResponseDTO[]> {
+    return this.http.get<UserResponseDTO[]>('https://agendapet.onrender.com/users');
   }
     
   deleteUser(id: string): Observable<void> {

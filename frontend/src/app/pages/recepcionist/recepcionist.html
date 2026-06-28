@@ -112,10 +112,12 @@
 
             <div class="flex flex-col gap-2">
               <label class="text-sm font-medium text-zinc-700" for="doctor">Veterinário</label>
-              <select id="doctor" formControlName="doctor" class="h-11 rounded-xl border border-[#D8F3DC] bg-[#F7FBF8] px-3 outline-none transition focus:border-[#40916C]">
-                <option>Dra. Ana Paula</option>
-                <option>Dr. João Mendes</option>
-                <option>Dra. Laura Souza</option>
+              <select id="doctor" formControlName="doctor">
+                @for (doctor of doctors; track doctor.id) {
+                  <option [value]="doctor.id">
+                    {{ doctor.name }}
+                  </option>
+                }
               </select>
               @if (getAppointmentFieldFeedback('doctor'); as feedback) {
                 <p [class]="feedback.kind === 'error' ? 'text-red-600' : 'text-emerald-600'" class="text-xs">{{ feedback.message }}</p>
@@ -126,6 +128,14 @@
               <label class="text-sm font-medium text-zinc-700" for="price">Preço</label>
               <input id="price" formControlName="price" type="number" class="h-11 rounded-xl border border-[#D8F3DC] bg-[#F7FBF8] px-3 outline-none transition focus:border-[#40916C]" />
               @if (getAppointmentFieldFeedback('price'); as feedback) {
+                <p [class]="feedback.kind === 'error' ? 'text-red-600' : 'text-emerald-600'" class="text-xs">{{ feedback.message }}</p>
+              }
+            </div>
+
+            <div class="flex flex-col gap-2">
+              <label class="text-sm font-medium text-zinc-700" for="cpf">CPF do tutor</label>
+              <input id="cpf" formControlName="cpf" type="text" class="h-11 rounded-xl border border-[#D8F3DC] bg-[#F7FBF8] px-3 outline-none transition focus:border-[#40916C]" />
+              @if (getAppointmentFieldFeedback('cpf'); as feedback) {
                 <p [class]="feedback.kind === 'error' ? 'text-red-600' : 'text-emerald-600'" class="text-xs">{{ feedback.message }}</p>
               }
             </div>

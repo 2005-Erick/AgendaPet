@@ -5,6 +5,8 @@ import { UsersService } from '../../services/users-service';
 import { iPets, pets_species } from '../../models/pets-model';
 import { PetsService } from '../../services/pets-service';
 import { AppointmentsService } from '../../services/appointments-service';
+import { DoctorsServices } from '../../services/doctors-service';
+import {DoctorResponseDTO} from "../../models/DTO/doctor-response-DTO";
 
 @Component({
   selector: 'app-recepcionist',
@@ -13,18 +15,22 @@ import { AppointmentsService } from '../../services/appointments-service';
   templateUrl: './recepcionist.html',
   styleUrl: './recepcionist.css',
 })
+
 export class Recepcionist {
   private userService = inject(UsersService);
   private petsService = inject(PetsService);
   private appointmentsService = inject(AppointmentsService);
+  private doctorsService = inject(DoctorsServices);
+  doctors: DoctorResponseDTO[] = [];
 
   appointmentForm = new FormGroup({
     personName: new FormControl('', [Validators.required]),
     petName: new FormControl('', [Validators.required]),
     service: new FormControl('Consulta', [Validators.required]),
     dateTime: new FormControl('', [Validators.required]),
-    doctor: new FormControl('Dra. Ana Paula', [Validators.required]), 
-    price: new FormControl<number | null>(null, [Validators.required, Validators.min(0)])
+    doctor: new FormControl('', [Validators.required]), 
+    price: new FormControl<number | null>(null, [Validators.required, Validators.min(0)]),
+    cpf: new FormControl('', [Validators.required, Validators.pattern(/^\d{11}$/)])
   });
   
   petForm = new FormGroup({
@@ -62,7 +68,7 @@ export class Recepcionist {
   showConfirmationModal = signal(false);
   confirmationCode = signal('');
 
-  getAppointmentFieldFeedback(fieldName: 'personName' | 'petName' | 'service' | 'dateTime' | 'doctor' | 'price' ) {
+  getAppointmentFieldFeedback(fieldName: 'personName' | 'petName' | 'service' | 'dateTime' | 'doctor' | 'price' | 'cpf') {
     const messages = {
       personName: 'Informe o nome do cliente.',
       petName: 'Informe o nome do animal.',
@@ -70,6 +76,7 @@ export class Recepcionist {
       dateTime: 'Escolha a data e hora.',
       doctor: 'Selecione um veterinário.',
       price: 'Informe o preço do serviço.',
+      cpf: 'Informe o CPF do tutor.'
     };
 
     return this.getFieldFeedback(this.appointmentForm.get(fieldName), messages[fieldName]);
@@ -104,6 +111,18 @@ export class Recepcionist {
     return this.getFieldFeedback(this.personForm.get(fieldName), messages[fieldName]);
   }
 
+  ngOnInit() {
+    this.doctorsService.getDoctors().subscribe({
+      next: (doctors) => {
+        console.log(doctors);
+        console.log('Doctors fetched successfully');
+        this.doctors = doctors;
+      }, error: (err) => {
+        console.error('Erro ao carregar médicos', err);
+      },
+    });
+  }
+
   onAppointmentSubmit() {
     if (this.appointmentForm.invalid) {
       this.appointmentForm.markAllAsTouched();
@@ -118,7 +137,8 @@ export class Recepcionist {
       service: this.appointmentForm.value.service,
       dateTime: this.appointmentForm.value.dateTime,
       doctor: this.appointmentForm.value.doctor,
-      price: this.appointmentForm.value.price
+      price: this.appointmentForm.value.price,
+      doctor_id: this.appointmentForm.value.doctor
     };
 
     this.appointmentsService.registerAppointment(iAppointment).subscribe({
