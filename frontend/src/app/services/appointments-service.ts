@@ -17,7 +17,9 @@ export class AppointmentsService {
   }
 
   getAppointmentsResponseDTO(): Observable<AppointmentResponseDTO[]> {
-    return this.http.get<AppointmentResponseDTO[]>('https://agendapet.onrender.com/appointments');
+    return this.http.get<AppointmentResponseDTO[]>('https://agendapet.onrender.com/appointments',{
+      withCredentials: true
+    });
   }
 
   registerAppointmentResponseDTO(appointment: AppointmentResponseDTO): Observable<AppointmentResponseDTO> {

@@ -7,6 +7,8 @@ import { PetsService } from '../../services/pets-service';
 import { AppointmentsService } from '../../services/appointments-service';
 import { DoctorsServices } from '../../services/doctors-service';
 import {DoctorResponseDTO} from "../../models/DTO/doctor-response-DTO";
+import { UserResponseDTO } from '../../models/DTO/user-response-DTO';
+import { AppointmentResponseDTO } from '../../models/DTO/appointment-response-DTO';
 
 @Component({
   selector: 'app-recepcionist',
@@ -22,6 +24,8 @@ export class Recepcionist {
   private appointmentsService = inject(AppointmentsService);
   private doctorsService = inject(DoctorsServices);
   doctors: DoctorResponseDTO[] = [];
+  users: UserResponseDTO[] = [];
+  appointments: AppointmentResponseDTO[] = [];
 
   appointmentForm = new FormGroup({
     personName: new FormControl('', [Validators.required]),
@@ -112,13 +116,30 @@ export class Recepcionist {
   }
 
   ngOnInit() {
-    this.doctorsService.getDoctors().subscribe({
+    this.initDoctors();
+    this.initAppointment();
+  }
+
+  private initDoctors() {
+      this.doctorsService.getDoctors().subscribe({
       next: (doctors) => {
         console.log(doctors);
         console.log('Doctors fetched successfully');
         this.doctors = doctors;
       }, error: (err) => {
         console.error('Erro ao carregar médicos', err);
+      },
+    });
+  }
+
+  private initAppointment(){
+      this.appointmentsService.getAppointmentsResponseDTO().subscribe({
+      next: (appointments) => {
+        console.log(appointments);
+        console.log('Appointments fetched successfully');
+        this.appointments = appointments;
+      }, error: (err) => {
+        console.error('Erro ao carregar agendamentos', err);
       },
     });
   }

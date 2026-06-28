@@ -392,44 +392,28 @@
       </div>
 
       <div class="mt-5 space-y-3">
+      @for (appointment of appointments; track appointment.id) {
         <article class="rounded-2xl border border-[#D8F3DC] bg-[#F7FBF8] p-4">
           <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
             <div>
-              <h3 class="font-semibold text-zinc-800">Maria Silva</h3>
-              <p class="text-sm text-zinc-500">Pet: Luna • Consulta de rotina</p>
+              <h3 class="font-semibold text-zinc-800">
+                {{ appointment.doctor_name }}
+              </h3>
+              <p class="text-sm text-zinc-500">
+                Pet: {{ appointment.pet_name }} • {{ appointment.type }}
+              </p>
             </div>
             <div class="flex flex-wrap items-center gap-2">
-              <span class="rounded-full bg-[#D8F3DC] px-3 py-1 text-sm font-medium text-[#2D6A4F]">Confirmado</span>
-              <span class="text-sm text-zinc-500">Hoje • 14:30</span>
+              <span class="rounded-full bg-[#D8F3DC] px-3 py-1 text-sm font-medium text-[#2D6A4F]">
+                {{ appointment.status }}
+              </span>
+              <span class="text-sm text-zinc-500">
+                {{ appointment.scheduled_at }}
+              </span>
             </div>
           </div>
-        </article>
-
-        <article class="rounded-2xl border border-[#D8F3DC] bg-[#F7FBF8] p-4">
-          <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-            <div>
-              <h3 class="font-semibold text-zinc-800">João Pereira</h3>
-              <p class="text-sm text-zinc-500">Pet: Thor • Vacina</p>
-            </div>
-            <div class="flex flex-wrap items-center gap-2">
-              <span class="rounded-full bg-[#FFF4D6] px-3 py-1 text-sm font-medium text-[#A06A00]">Pendente</span>
-              <span class="text-sm text-zinc-500">Amanhã • 09:00</span>
-            </div>
-          </div>
-        </article>
-
-        <article class="rounded-2xl border border-[#D8F3DC] bg-[#F7FBF8] p-4">
-          <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-            <div>
-              <h3 class="font-semibold text-zinc-800">Ana Costa</h3>
-              <p class="text-sm text-zinc-500">Pet: Mimi • Banho e tosa</p>
-            </div>
-            <div class="flex flex-wrap items-center gap-2">
-              <span class="rounded-full bg-[#D8F3DC] px-3 py-1 text-sm font-medium text-[#2D6A4F]">Confirmado</span>
-              <span class="text-sm text-zinc-500">Quarta • 16:00</span>
-            </div>
-          </div>
-        </article>
+        </article> 
+      } 
       </div>
     </section>
   </div>
