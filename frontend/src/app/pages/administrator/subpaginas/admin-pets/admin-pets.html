@@ -1,0 +1,185 @@
+<section class="min-h-screen bg-surface-container-high px-4 py-8 sm:px-6 lg:px-10">
+    <div class="mx-auto max-w-[1280px] space-y-8">
+        <div class="rounded-[32px] bg-white p-6 shadow-[0_20px_40px_rgba(15,82,56,0.06)] ring-1 ring-black/5">
+            <div class="flex flex-wrap items-center justify-between gap-4">
+                <div>
+                    <p class="text-sm font-semibold uppercase tracking-[0.24em] text-secondary">Gestão de pets</p>
+                    <h2 class="mt-3 text-2xl font-semibold text-on-surface">Pets cadastrados</h2>
+                </div>
+                <button type="button" (click)="openCreateModal()"
+                    class="rounded-2xl bg-primary px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:opacity-90">
+                    Cadastrar pet
+                </button>
+            </div>
+
+            <div class="mt-5">
+                <input type="text" placeholder="Buscar por nome ou raça" [value]="searchTerm()"
+                    (input)="updateSearch($event)"
+                    class="w-full rounded-2xl border border-outline bg-white px-4 py-3 text-sm outline-none transition focus:ring-2 focus:ring-primary/30" />
+            </div>
+
+            <div class="mt-6 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+                @for (pet of filteredPets(); track pet.id) {
+                <article class="rounded-[28px] border border-outline bg-surface p-5 shadow-sm">
+                    <div class="flex items-center gap-4">
+                        <img [src]="pet.imagem || 'https://placehold.co/600x400?text=Pet'" [alt]="pet.nome"
+                            class="h-20 w-20 rounded-3xl object-cover" />
+                        <div>
+                            <h3 class="text-lg font-semibold text-on-surface">{{ pet.nome }}</h3>
+                            <p class="text-sm text-on-surface-variant">{{ pet.raca }} · {{ pet.idade }} anos</p>
+                            <span
+                                class="mt-2 inline-flex items-center gap-2 rounded-full px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em]"
+                                [class]="getStatusClass(pet.status)">
+                                <span class="h-2 w-2 rounded-full bg-current"></span>
+                                {{ pet.status }}
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="mt-5 space-y-3 rounded-2xl bg-surface-container p-4 text-sm text-on-surface-variant">
+                        <p><span class="font-semibold text-on-surface">Próximo:</span> {{ pet.proximo }}</p>
+                        <p><span class="font-semibold text-on-surface">Resumo:</span> Animal cadastrado para
+                            acompanhamento veterinário.</p>
+                    </div>
+
+                    <div class="mt-5 flex gap-3">
+                        <button type="button" (click)="openEditModal(pet)"
+                            class="flex-1 rounded-2xl border border-outline px-4 py-2 text-sm font-semibold text-on-surface transition hover:bg-surface-container">
+                            Editar
+                        </button>
+                        <button type="button" (click)="deletePet(pet.id)"
+                            class="inline-flex h-10 w-10 items-center justify-center rounded-2xl bg-red-100 text-red-600 transition hover:bg-red-200"
+                            title="Excluir pet">
+                            <span class="material-symbols-outlined text-[20px]">delete</span>
+                        </button>
+                    </div>
+                </article>
+                }
+            </div>
+        </div>
+    </div>
+</section>
+
+@if (showCreateModal()) {
+<div class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
+    <div class="w-full max-w-2xl rounded-[32px] bg-white p-6 shadow-2xl ring-1 ring-black/10">
+        <div class="flex items-start justify-between gap-4">
+            <div>
+                <p class="text-sm font-semibold uppercase tracking-[0.24em] text-secondary">Novo pet</p>
+                <h2 class="mt-2 text-2xl font-semibold text-on-surface">Cadastrar pet</h2>
+            </div>
+            <button type="button" (click)="closeCreateModal()"
+                class="rounded-full p-2 transition hover:bg-surface-container">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+        </div>
+
+        <div class="mt-6 grid gap-4 sm:grid-cols-2">
+            <label class="space-y-2">
+                <span class="text-sm font-semibold text-on-surface">Nome *</span>
+                <input type="text" [value]="newPet().nome" (input)="updateNewPetField('nome', $event)"
+                    class="w-full rounded-2xl border border-outline px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-primary/30" />
+            </label>
+            <label class="space-y-2">
+                <span class="text-sm font-semibold text-on-surface">Raça *</span>
+                <input type="text" [value]="newPet().raca" (input)="updateNewPetField('raca', $event)"
+                    class="w-full rounded-2xl border border-outline px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-primary/30" />
+            </label>
+            <label class="space-y-2">
+                <span class="text-sm font-semibold text-on-surface">Idade</span>
+                <input type="number" min="0" [value]="newPet().idade" (input)="updateNewPetField('idade', $event)"
+                    class="w-full rounded-2xl border border-outline px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-primary/30" />
+            </label>
+            <label class="space-y-2">
+                <span class="text-sm font-semibold text-on-surface">Status</span>
+                <select [value]="newPet().status" (change)="updateNewPetField('status', $event)"
+                    class="w-full rounded-2xl border border-outline px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-primary/30">
+                    <option value="Ativo">Ativo</option>
+                    <option value="Em tratamento">Em tratamento</option>
+                    <option value="Inativo">Inativo</option>
+                </select>
+            </label>
+            <label class="space-y-2">
+                <span class="text-sm font-semibold text-on-surface">Próximo atendimento *</span>
+                <input type="text" [value]="newPet().proximo" (input)="updateNewPetField('proximo', $event)"
+                    class="w-full rounded-2xl border border-outline px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-primary/30" />
+            </label>
+            <label class="space-y-2">
+                <span class="text-sm font-semibold text-on-surface">URL da imagem</span>
+                <input type="text" [value]="newPet().imagem" (input)="updateNewPetField('imagem', $event)"
+                    class="w-full rounded-2xl border border-outline px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-primary/30" />
+            </label>
+        </div>
+
+        <div class="mt-6 flex justify-end gap-3">
+            <button type="button" (click)="closeCreateModal()"
+                class="rounded-2xl border border-outline px-5 py-3 text-sm font-semibold text-on-surface transition hover:bg-surface-container">Cancelar</button>
+            <button type="button" (click)="createPet()"
+                class="rounded-2xl bg-primary px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:opacity-90">Salvar
+                pet</button>
+        </div>
+    </div>
+</div>
+}
+
+@if (showEditModal()) {
+<div class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
+    <div class="w-full max-w-2xl rounded-[32px] bg-white p-6 shadow-2xl ring-1 ring-black/10">
+        <div class="flex items-start justify-between gap-4">
+            <div>
+                <p class="text-sm font-semibold uppercase tracking-[0.24em] text-secondary">Editar pet</p>
+                <h2 class="mt-2 text-2xl font-semibold text-on-surface">Atualizar dados do pet</h2>
+            </div>
+            <button type="button" (click)="closeEditModal()"
+                class="rounded-full p-2 transition hover:bg-surface-container">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+        </div>
+
+        <div class="mt-6 grid gap-4 sm:grid-cols-2">
+            <label class="space-y-2">
+                <span class="text-sm font-semibold text-on-surface">Nome *</span>
+                <input type="text" [value]="editPet().nome" (input)="updateEditPetField('nome', $event)"
+                    class="w-full rounded-2xl border border-outline px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-primary/30" />
+            </label>
+            <label class="space-y-2">
+                <span class="text-sm font-semibold text-on-surface">Raça *</span>
+                <input type="text" [value]="editPet().raca" (input)="updateEditPetField('raca', $event)"
+                    class="w-full rounded-2xl border border-outline px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-primary/30" />
+            </label>
+            <label class="space-y-2">
+                <span class="text-sm font-semibold text-on-surface">Idade</span>
+                <input type="number" min="0" [value]="editPet().idade" (input)="updateEditPetField('idade', $event)"
+                    class="w-full rounded-2xl border border-outline px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-primary/30" />
+            </label>
+            <label class="space-y-2">
+                <span class="text-sm font-semibold text-on-surface">Status</span>
+                <select [value]="editPet().status" (change)="updateEditPetField('status', $event)"
+                    class="w-full rounded-2xl border border-outline px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-primary/30">
+                    <option value="Ativo">Ativo</option>
+                    <option value="Em tratamento">Em tratamento</option>
+                    <option value="Inativo">Inativo</option>
+                </select>
+            </label>
+            <label class="space-y-2">
+                <span class="text-sm font-semibold text-on-surface">Próximo atendimento *</span>
+                <input type="text" [value]="editPet().proximo" (input)="updateEditPetField('proximo', $event)"
+                    class="w-full rounded-2xl border border-outline px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-primary/30" />
+            </label>
+            <label class="space-y-2">
+                <span class="text-sm font-semibold text-on-surface">URL da imagem</span>
+                <input type="text" [value]="editPet().imagem" (input)="updateEditPetField('imagem', $event)"
+                    class="w-full rounded-2xl border border-outline px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-primary/30" />
+            </label>
+        </div>
+
+        <div class="mt-6 flex justify-end gap-3">
+            <button type="button" (click)="closeEditModal()"
+                class="rounded-2xl border border-outline px-5 py-3 text-sm font-semibold text-on-surface transition hover:bg-surface-container">Cancelar</button>
+            <button type="button" (click)="saveEditedPet()"
+                class="rounded-2xl bg-primary px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:opacity-90">Salvar
+                alterações</button>
+        </div>
+    </div>
+</div>
+}

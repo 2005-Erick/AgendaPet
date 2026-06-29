@@ -1,5 +1,11 @@
 import { Component, inject, signal } from '@angular/core';
-import { FormControl, FormGroup, ReactiveFormsModule, FormsModule, Validators } from '@angular/forms';
+import {
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  FormsModule,
+  Validators,
+} from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { UsersService } from '../../../services/users-service';
 
@@ -81,15 +87,18 @@ export class Login {
     if (!email || !code) {
       return;
     }
-    this.usersService.confirmRegister(email, code).subscribe({
+
+    // CORREÇÃO: Estava 'this.usersService.confirmRegister'
+    this.usersService.confirmLogin(email, code).subscribe({
       next: () => {
         this.showConfirmationModal.set(false);
         this.confirmationCode.set('');
         this.loginForm.reset();
-        this.router.navigate(['/dashboard']);
+        this.router.navigate(['/admin-dashboard']); // Ajuste a rota para o seu dashboard
       },
       error: (error) => {
-        console.error(error);
+        console.error('Erro na confirmação de login:', error);
+        this.errorMessage.set('Código inválido ou expirado.');
       },
     });
   }

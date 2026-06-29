@@ -34,15 +34,5 @@ export class Dashboard {
     if (!confirmed) {
       return;
     }
-
-    this.usersService.deleteCurrentUser().subscribe({
-      next: () => {
-        this.usersService.logout();
-        this.router.navigate(['/login']);
-      },
-      error: () => {
-        alert('Não foi possível excluir a conta.');
-      },
-    });
   }
 }
