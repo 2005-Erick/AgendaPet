@@ -7,5 +7,4 @@ import java.util.UUID;
 
 @Repository
 public interface PetRepository extends JpaRepository<Pet, UUID> {
-    boolean existsByTutor_Id(UUID id);
 }

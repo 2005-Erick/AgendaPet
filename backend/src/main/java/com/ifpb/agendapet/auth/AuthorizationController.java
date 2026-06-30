@@ -9,17 +9,35 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
+import java.time.Duration;
 
 @RestController
 @RequestMapping("/auth")
+@CrossOrigin(
+    origins = "http://localhost:4200",
+    allowCredentials = "true"
+)
 @RequiredArgsConstructor
 public class AuthorizationController {
 
     private final AuthService authService;
+
+    private ResponseCookie createAuthCookie(String token) {
+    return ResponseCookie.from("auth_token", token)
+            .httpOnly(true)
+            .secure(false) // true apenas em produção com HTTPS
+            .path("/")
+            .maxAge(Duration.ofDays(7))
+            .sameSite("Lax")
+            .build();
+}
 
     @PostMapping("/login")
     public ResponseEntity<StatusResponseDTO> login(@RequestBody @Valid LoginRequestDTO dto) {
@@ -29,9 +47,14 @@ public class AuthorizationController {
 
     @PostMapping("/login/confirm")
     public ResponseEntity<AuthenticateResponseDTO> confirmLogin(@RequestBody @Valid VerifyMfaRequestDTO dto) {
-        String token = authService.confirmLogin(dto);
-        return ResponseEntity.ok(new AuthenticateResponseDTO(token));
-    }
+    String token = authService.confirmLogin(dto);
+
+    ResponseCookie cookie = createAuthCookie(token);
+
+    return ResponseEntity.ok()
+            .header(HttpHeaders.SET_COOKIE, cookie.toString())
+            .body(new AuthenticateResponseDTO(token));
+}
 
     @PostMapping("/register")
     public ResponseEntity<StatusResponseDTO> register(@RequestBody @Valid RegisterRequestDTO dto) {
@@ -41,7 +64,12 @@ public class AuthorizationController {
 
     @PostMapping("/register/confirm")
     public ResponseEntity<AuthenticateResponseDTO> confirmRegistration(@RequestBody @Valid VerifyMfaRequestDTO dto) {
-        String token = authService.confirmRegistration(dto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(new AuthenticateResponseDTO(token));
-    }
+    String token = authService.confirmRegistration(dto);
+
+    ResponseCookie cookie = createAuthCookie(token);
+
+    return ResponseEntity.status(HttpStatus.CREATED)
+            .header(HttpHeaders.SET_COOKIE, cookie.toString())
+            .body(new AuthenticateResponseDTO(token));
+}
 }

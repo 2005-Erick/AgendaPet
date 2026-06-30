@@ -2,6 +2,7 @@ package com.ifpb.agendapet.pet;
 
 import com.ifpb.agendapet.pet.dto.PetCreateDTO;
 import com.ifpb.agendapet.pet.dto.PetResponseDTO;
+import com.ifpb.agendapet.pet.dto.PetUpdateDTO;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -13,6 +14,10 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/pets")
+@CrossOrigin(
+    origins = "http://localhost:4200",
+    allowCredentials = "true"
+)
 @RequiredArgsConstructor
 public class PetController {
     private final PetService petService;
@@ -36,5 +41,22 @@ public class PetController {
         PetResponseDTO pet = petService.create(dto);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(pet);
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<PetResponseDTO> update(
+            @PathVariable UUID id,
+            @Valid @RequestBody PetUpdateDTO dto
+    ) {
+        PetResponseDTO pet = petService.update(id, dto);
+
+        return ResponseEntity.ok(pet);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteById(@PathVariable UUID id) {
+        petService.deleteById(id);
+
+        return ResponseEntity.noContent().build();
     }
 }

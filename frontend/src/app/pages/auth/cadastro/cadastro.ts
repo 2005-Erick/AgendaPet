@@ -1,5 +1,11 @@
 import { Component, inject, signal } from '@angular/core';
-import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  FormControl,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { UsersService } from '../../../services/users-service';
 import { MatIconModule } from '@angular/material/icon';
@@ -13,16 +19,16 @@ import { iUser } from '../../../models/users-model';
   styleUrl: './cadastro.css',
 })
 export class Cadastro {
-    private userService = inject(UsersService);
+  private userService = inject(UsersService);
 
   registrationForm = new FormGroup({
     name: new FormControl('', [Validators.required]),
-    cpf: new FormControl('', [ Validators.required, Validators.pattern(/^\d{11}$/)]),
+    cpf: new FormControl('', [Validators.required, Validators.pattern(/^\d{11}$/)]),
     phone: new FormControl('', [Validators.required]),
     birthday: new FormControl('', [Validators.required]),
     email: new FormControl('', [Validators.required, Validators.email]),
     password: new FormControl('', [Validators.required, Validators.minLength(6)]),
-    gender: new FormControl<'MALE' | 'FEMALE' | null>(null,[Validators.required]),
+    gender: new FormControl<'MALE' | 'FEMALE' | null>(null, [Validators.required]),
   });
 
   errorMessage = signal<string | null>(null);
@@ -35,7 +41,9 @@ export class Cadastro {
 
   private router = inject(Router);
 
-  getFieldFeedback( fieldName:'name' | 'cpf' | 'phone' | 'birthday' | 'email' | 'password'| 'gender') {
+  getFieldFeedback(
+    fieldName: 'name' | 'cpf' | 'phone' | 'birthday' | 'email' | 'password' | 'gender',
+  ) {
     const control = this.registrationForm.get(fieldName);
 
     if (!control || (!control.touched && !control.dirty)) {
@@ -108,16 +116,14 @@ export class Cadastro {
     this.userService.registerUser(dto).subscribe({
       next: () => {
         this.errorMessage.set(
-          'Cadastro realizado. Verifique o código de confirmação enviado ao e-mail.'
+          'Cadastro realizado. Verifique o código de confirmação enviado ao e-mail.',
         );
         this.errorMessageType.set('success');
         this.showConfirmationModal.set(true);
         this.isLoading.set(false);
       },
       error: (err) => {
-        this.errorMessage.set(
-          'Não foi possível realizar o cadastro, tente novamente.'
-        );
+        this.errorMessage.set('Não foi possível realizar o cadastro, tente novamente.');
         this.errorMessageType.set('error');
         this.isLoading.set(false);
         console.error(err);

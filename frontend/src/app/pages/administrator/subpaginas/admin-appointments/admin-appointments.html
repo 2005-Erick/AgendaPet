@@ -1,193 +1,512 @@
 <section class="min-h-screen bg-surface-container-high px-4 py-8 sm:px-6 lg:px-10">
     <div class="mx-auto max-w-[1280px] space-y-8">
         <div class="rounded-[32px] bg-white p-6 shadow-[0_20px_40px_rgba(15,82,56,0.06)] ring-1 ring-black/5">
+
             <div class="flex flex-wrap items-center justify-between gap-4">
                 <div>
-                    <p class="text-sm font-semibold uppercase tracking-[0.24em] text-secondary">Gestão de agendamentos
+                    <p class="text-sm font-semibold uppercase tracking-[0.24em] text-secondary">
+                        Gestão de consultas
                     </p>
-                    <h2 class="mt-3 text-2xl font-semibold text-on-surface">Agendamentos cadastrados</h2>
+                    <h2 class="mt-3 text-2xl font-semibold text-on-surface">
+                        Agendamentos cadastrados
+                    </h2>
                 </div>
+
                 <button type="button" (click)="openCreateModal()"
                     class="rounded-2xl bg-primary px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:opacity-90">
                     Novo agendamento
                 </button>
             </div>
 
+            @if (listMessage()) {
+            <div class="mt-4 rounded-2xl border px-4 py-3 text-sm" [class]="listMessageType() === 'success'
+          ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+          : 'bg-red-50 text-red-700 border-red-200'">
+                {{ listMessage() }}
+            </div>
+            }
+
             <div class="mt-5">
-                <input type="text" placeholder="Buscar por pet ou tutor" [value]="searchTerm()"
-                    (input)="updateSearch($event)"
+                <input type="text" placeholder="Buscar por pet, médico, tipo, status ou pagamento..."
+                    [value]="searchTerm()" (input)="updateSearch($event)"
                     class="w-full rounded-2xl border border-outline bg-white px-4 py-3 text-sm outline-none transition focus:ring-2 focus:ring-primary/30" />
             </div>
 
+            @if (isLoading()) {
+            <p class="mt-6 text-center text-sm text-on-surface-variant">
+                Consultando base de dados de agendamentos...
+            </p>
+            }
+
+            @if (!isLoading()) {
             <div class="mt-6 flex flex-col gap-4">
                 @for (appointment of filteredAppointments(); track appointment.id) {
-                <article class="rounded-[28px] border border-outline bg-surface p-5 shadow-sm">
-                    <div class="flex flex-wrap items-start justify-between gap-4">
-                        <div>
-                            <h3 class="text-lg font-semibold text-on-surface">{{ appointment.type }} · {{
-                                appointment.petName }}</h3>
-                            <p class="mt-2 text-sm text-on-surface-variant">Tutor: {{ appointment.ownerName }}</p>
-                            <p class="mt-1 text-sm text-on-surface-variant">{{ appointment.date }} às {{
-                                appointment.time }}</p>
+                <article
+                    class="flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-outline bg-surface p-5 shadow-sm transition hover:bg-surface-container-low">
+                    <div class="flex items-center gap-4">
+                        <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+                            <span class="material-symbols-outlined">calendar_today</span>
                         </div>
-                        <span
-                            class="inline-flex items-center gap-2 rounded-full px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em]"
-                            [class]="getStatusClass(appointment.status)">
-                            <span class="h-2 w-2 rounded-full bg-current"></span>
-                            {{ appointment.status }}
-                        </span>
+
+                        <div>
+                            <h3 class="text-base font-semibold text-on-surface">
+                                Paciente: {{ appointment.pet_name }}
+                            </h3>
+
+                            <p class="mt-0.5 text-sm text-on-surface-variant">
+                                Veterinário:
+                                <span class="font-medium text-on-surface">
+                                    {{ appointment.doctor_name }}
+                                </span>
+                                · Tipo: {{ formatType(appointment.type) }}
+                            </p>
+
+                            @if (appointment.note) {
+                            <p class="mt-1 text-xs italic text-zinc-500">
+                                Obs: "{{ appointment.note }}"
+                            </p>
+                            }
+                        </div>
                     </div>
 
-                    <div class="mt-5 flex gap-3">
+                    <div class="flex flex-wrap items-center gap-4 sm:gap-6">
+                        <div class="text-right">
+                            <p class="text-sm font-semibold text-on-surface">
+                                {{ appointment.scheduled_at | date:'dd/MM/yyyy · HH:mm' }}
+                            </p>
+
+                            <p class="mt-0.5 text-xs text-on-surface-variant">
+                                Custo:
+                                {{ appointment.price | currency:'BRL':'symbol':'1.2-2' }}
+                                ({{ formatPaymentStatus(appointment.paymentStatus) }})
+                            </p>
+                        </div>
+
+                        <span class="rounded-full px-3 py-1 text-xs font-semibold tracking-wide uppercase"
+                            [class]="getStatusClass(appointment.status)">
+                            {{ formatStatus(appointment.status) }}
+                        </span>
+
                         <button type="button" (click)="openEditModal(appointment)"
-                            class="flex-1 rounded-2xl border border-outline px-4 py-2 text-sm font-semibold text-on-surface transition hover:bg-surface-container">
+                            class="rounded-2xl border border-outline px-4 py-2 text-sm font-semibold text-on-surface transition hover:bg-surface-container">
                             Editar
                         </button>
+
                         <button type="button" (click)="deleteAppointment(appointment.id)"
-                            class="inline-flex h-10 w-10 items-center justify-center rounded-2xl bg-red-100 text-red-600 transition hover:bg-red-200"
-                            title="Excluir agendamento">
+                            class="inline-flex h-10 w-10 items-center justify-center rounded-2xl bg-red-50 text-red-600 transition hover:bg-red-100"
+                            title="Remover agendamento">
                             <span class="material-symbols-outlined text-[20px]">delete</span>
                         </button>
                     </div>
                 </article>
                 }
+
+                @empty {
+                <p
+                    class="text-center text-sm text-on-surface-variant py-8 rounded-2xl border border-dashed border-outline bg-surface-container-lowest">
+                    Nenhum agendamento encontrado no sistema.
+                </p>
+                }
             </div>
+            }
         </div>
     </div>
 </section>
 
 @if (showCreateModal()) {
 <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
-    <div class="w-full max-w-2xl rounded-[32px] bg-white p-6 shadow-2xl ring-1 ring-black/10">
+    <div
+        class="w-full max-w-2xl rounded-[32px] bg-white p-6 shadow-2xl ring-1 ring-black/10 max-h-[90vh] overflow-y-auto">
+
         <div class="flex items-start justify-between gap-4">
             <div>
-                <p class="text-sm font-semibold uppercase tracking-[0.24em] text-secondary">Novo agendamento</p>
-                <h2 class="mt-2 text-2xl font-semibold text-on-surface">Cadastrar agendamento</h2>
+                <p class="text-sm font-semibold uppercase tracking-[0.24em] text-secondary">
+                    Novo Atendimento
+                </p>
+                <h2 class="mt-2 text-2xl font-semibold text-on-surface">
+                    Registrar Agendamento
+                </h2>
             </div>
+
             <button type="button" (click)="closeCreateModal()"
                 class="rounded-full p-2 transition hover:bg-surface-container">
                 <span class="material-symbols-outlined">close</span>
             </button>
         </div>
 
-        <div class="mt-6 grid gap-4 sm:grid-cols-2">
-            <label class="space-y-2">
-                <span class="text-sm font-semibold text-on-surface">Pet *</span>
-                <input type="text" [value]="newAppointment().petName"
-                    (input)="updateNewAppointmentField('petName', $event)"
-                    class="w-full rounded-2xl border border-outline px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-primary/30" />
-            </label>
-            <label class="space-y-2">
-                <span class="text-sm font-semibold text-on-surface">Tutor *</span>
-                <input type="text" [value]="newAppointment().ownerName"
-                    (input)="updateNewAppointmentField('ownerName', $event)"
-                    class="w-full rounded-2xl border border-outline px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-primary/30" />
-            </label>
-            <label class="space-y-2">
-                <span class="text-sm font-semibold text-on-surface">Data *</span>
-                <input type="date" [value]="newAppointment().date" (input)="updateNewAppointmentField('date', $event)"
-                    class="w-full rounded-2xl border border-outline px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-primary/30" />
-            </label>
-            <label class="space-y-2">
-                <span class="text-sm font-semibold text-on-surface">Horário *</span>
-                <input type="time" [value]="newAppointment().time" (input)="updateNewAppointmentField('time', $event)"
-                    class="w-full rounded-2xl border border-outline px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-primary/30" />
-            </label>
-            <label class="space-y-2">
-                <span class="text-sm font-semibold text-on-surface">Tipo</span>
-                <select [value]="newAppointment().type" (change)="updateNewAppointmentField('type', $event)"
-                    class="w-full rounded-2xl border border-outline px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-primary/30">
-                    <option value="Consulta">Consulta</option>
-                    <option value="Vacinação">Vacinação</option>
-                    <option value="Cirurgia">Cirurgia</option>
-                </select>
-            </label>
-            <label class="space-y-2">
-                <span class="text-sm font-semibold text-on-surface">Status</span>
-                <select [value]="newAppointment().status" (change)="updateNewAppointmentField('status', $event)"
-                    class="w-full rounded-2xl border border-outline px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-primary/30">
-                    <option value="Confirmado">Confirmado</option>
-                    <option value="Pendente">Pendente</option>
-                    <option value="Cancelado">Cancelado</option>
-                </select>
-            </label>
+        @if (createMessage()) {
+        <div class="mt-4 rounded-2xl border px-4 py-3 text-sm" [class]="createMessageType() === 'success'
+        ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+        : 'bg-red-50 text-red-700 border-red-200'">
+            {{ createMessage() }}
         </div>
+        }
 
-        <div class="mt-6 flex justify-end gap-3">
-            <button type="button" (click)="closeCreateModal()"
-                class="rounded-2xl border border-outline px-5 py-3 text-sm font-semibold text-on-surface transition hover:bg-surface-container">Cancelar</button>
-            <button type="button" (click)="createAppointment()"
-                class="rounded-2xl bg-primary px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:opacity-90">Salvar
-                agendamento</button>
-        </div>
+        <form [formGroup]="createForm" (ngSubmit)="createAppointment()" class="mt-6 grid gap-4 sm:grid-cols-2">
+
+            <div class="flex flex-col gap-2 sm:col-span-2">
+                <label class="text-sm font-semibold text-on-surface" for="petSelect">
+                    Animal paciente *
+                </label>
+
+                <select id="petSelect" formControlName="pet_id"
+                    class="w-full rounded-2xl border border-outline px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-primary/30">
+                    <option value="">Selecione o pet</option>
+
+                    @for (pet of pets(); track pet.id) {
+                    <option [value]="pet.id">
+                        {{ pet.name }} (Tutor: {{ pet.tutor_name }})
+                    </option>
+                    }
+                </select>
+
+                @if (getCreateFieldFeedback('pet_id'); as feedback) {
+                <p [class]="feedback.kind === 'error' ? 'text-red-600' : 'text-emerald-600'" class="text-xs">
+                    {{ feedback.message }}
+                </p>
+                }
+            </div>
+
+            <div class="flex flex-col gap-2">
+                <label class="text-sm font-semibold text-on-surface" for="docSelect">
+                    Médico veterinário *
+                </label>
+
+                <select id="docSelect" formControlName="doctor_id"
+                    class="w-full rounded-2xl border border-outline px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-primary/30">
+                    <option value="">Selecione o profissional</option>
+
+                    @for (doctor of doctors(); track doctor.doctor_profile_id) {
+                    <option [value]="doctor.doctor_profile_id">
+                        {{ doctor.name }} (CRMV: {{ doctor.crmv }})
+                    </option>
+                    }
+                </select>
+
+                @if (getCreateFieldFeedback('doctor_id'); as feedback) {
+                <p [class]="feedback.kind === 'error' ? 'text-red-600' : 'text-emerald-600'" class="text-xs">
+                    {{ feedback.message }}
+                </p>
+                }
+            </div>
+
+            <div class="flex flex-col gap-2">
+                <label class="text-sm font-semibold text-on-surface" for="typeSelect">
+                    Tipo de procedimento *
+                </label>
+
+                <select id="typeSelect" formControlName="type"
+                    class="w-full rounded-2xl border border-outline px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-primary/30">
+                    <option [ngValue]="null">Selecione</option>
+                    <option [value]="AppointmentTypes.CONSULTATION">Consulta Geral</option>
+                    <option [value]="AppointmentTypes.VACCINATION">Aplicação de Vacina</option>
+                    <option [value]="AppointmentTypes.SURGERY">Procedimento Cirúrgico</option>
+                </select>
+
+                @if (getCreateFieldFeedback('type'); as feedback) {
+                <p [class]="feedback.kind === 'error' ? 'text-red-600' : 'text-emerald-600'" class="text-xs">
+                    {{ feedback.message }}
+                </p>
+                }
+            </div>
+
+            <div class="flex flex-col gap-2 sm:col-span-2">
+                <label class="text-sm font-semibold text-on-surface" for="scheduledAt">
+                    Data e horário do atendimento *
+                </label>
+
+                <input id="scheduledAt" type="datetime-local" formControlName="scheduled_at"
+                    class="w-full rounded-2xl border border-outline px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-primary/30" />
+
+                @if (getCreateFieldFeedback('scheduled_at'); as feedback) {
+                <p [class]="feedback.kind === 'error' ? 'text-red-600' : 'text-emerald-600'" class="text-xs">
+                    {{ feedback.message }}
+                </p>
+                }
+            </div>
+
+            <div class="flex flex-col gap-2">
+                <label class="text-sm font-semibold text-on-surface" for="statusSelect">
+                    Status *
+                </label>
+
+                <select id="statusSelect" formControlName="status"
+                    class="w-full rounded-2xl border border-outline px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-primary/30">
+                    <option [value]="AppointmentStatus.SCHEDULED">Agendado</option>
+                    <option [value]="AppointmentStatus.COMPLETED">Concluído</option>
+                    <option [value]="AppointmentStatus.CANCELED">Cancelado</option>
+                    <option [value]="AppointmentStatus.NO_SHOW">Falta</option>
+                </select>
+
+                @if (getCreateFieldFeedback('status'); as feedback) {
+                <p [class]="feedback.kind === 'error' ? 'text-red-600' : 'text-emerald-600'" class="text-xs">
+                    {{ feedback.message }}
+                </p>
+                }
+            </div>
+
+            <div class="flex flex-col gap-2">
+                <label class="text-sm font-semibold text-on-surface" for="paymentStatusSelect">
+                    Pagamento *
+                </label>
+
+                <select id="paymentStatusSelect" formControlName="paymentStatus"
+                    class="w-full rounded-2xl border border-outline px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-primary/30">
+                    <option [value]="PaymentStatus.PENDING">Pendente</option>
+                    <option [value]="PaymentStatus.PAID">Pago</option>
+                    <option [value]="PaymentStatus.REFUNDED">Reembolsado</option>
+                </select>
+
+                @if (getCreateFieldFeedback('paymentStatus'); as feedback) {
+                <p [class]="feedback.kind === 'error' ? 'text-red-600' : 'text-emerald-600'" class="text-xs">
+                    {{ feedback.message }}
+                </p>
+                }
+            </div>
+
+            <div class="flex flex-col gap-2 sm:col-span-2">
+                <label class="text-sm font-semibold text-on-surface" for="priceInput">
+                    Valor *
+                </label>
+
+                <input id="priceInput" type="number" min="0" step="0.01" formControlName="price"
+                    class="w-full rounded-2xl border border-outline px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-primary/30" />
+
+                @if (getCreateFieldFeedback('price'); as feedback) {
+                <p [class]="feedback.kind === 'error' ? 'text-red-600' : 'text-emerald-600'" class="text-xs">
+                    {{ feedback.message }}
+                </p>
+                }
+            </div>
+
+            <div class="flex flex-col gap-2 sm:col-span-2">
+                <label class="text-sm font-semibold text-on-surface" for="notes">
+                    Notas clínicas adicionais
+                </label>
+
+                <textarea id="notes" rows="3" formControlName="note" maxlength="300"
+                    placeholder="Histórico breve de sintomas ou observações para o médico..."
+                    class="w-full rounded-2xl border border-outline px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-primary/30">
+        </textarea>
+
+                @if (getCreateFieldFeedback('note'); as feedback) {
+                <p [class]="feedback.kind === 'error' ? 'text-red-600' : 'text-emerald-600'" class="text-xs">
+                    {{ feedback.message }}
+                </p>
+                }
+            </div>
+
+            <div class="mt-2 flex justify-end gap-3 sm:col-span-2">
+                <button type="button" (click)="closeCreateModal()"
+                    class="rounded-2xl border border-outline px-5 py-3 text-sm font-semibold text-on-surface transition hover:bg-surface-container">
+                    Cancelar
+                </button>
+
+                <button type="submit"
+                    class="rounded-2xl bg-primary px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:opacity-90">
+                    Confirmar Agendamento
+                </button>
+            </div>
+        </form>
     </div>
 </div>
 }
 
 @if (showEditModal()) {
 <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
-    <div class="w-full max-w-2xl rounded-[32px] bg-white p-6 shadow-2xl ring-1 ring-black/10">
+    <div
+        class="w-full max-w-2xl rounded-[32px] bg-white p-6 shadow-2xl ring-1 ring-black/10 max-h-[90vh] overflow-y-auto">
+
         <div class="flex items-start justify-between gap-4">
             <div>
-                <p class="text-sm font-semibold uppercase tracking-[0.24em] text-secondary">Editar agendamento</p>
-                <h2 class="mt-2 text-2xl font-semibold text-on-surface">Atualizar agendamento</h2>
+                <p class="text-sm font-semibold uppercase tracking-[0.24em] text-secondary">
+                    Editar atendimento
+                </p>
+                <h2 class="mt-2 text-2xl font-semibold text-on-surface">
+                    Atualizar agendamento
+                </h2>
             </div>
+
             <button type="button" (click)="closeEditModal()"
                 class="rounded-full p-2 transition hover:bg-surface-container">
                 <span class="material-symbols-outlined">close</span>
             </button>
         </div>
 
-        <div class="mt-6 grid gap-4 sm:grid-cols-2">
-            <label class="space-y-2">
-                <span class="text-sm font-semibold text-on-surface">Pet *</span>
-                <input type="text" [value]="editAppointment().petName"
-                    (input)="updateEditAppointmentField('petName', $event)"
-                    class="w-full rounded-2xl border border-outline px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-primary/30" />
-            </label>
-            <label class="space-y-2">
-                <span class="text-sm font-semibold text-on-surface">Tutor *</span>
-                <input type="text" [value]="editAppointment().ownerName"
-                    (input)="updateEditAppointmentField('ownerName', $event)"
-                    class="w-full rounded-2xl border border-outline px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-primary/30" />
-            </label>
-            <label class="space-y-2">
-                <span class="text-sm font-semibold text-on-surface">Data *</span>
-                <input type="date" [value]="editAppointment().date" (input)="updateEditAppointmentField('date', $event)"
-                    class="w-full rounded-2xl border border-outline px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-primary/30" />
-            </label>
-            <label class="space-y-2">
-                <span class="text-sm font-semibold text-on-surface">Horário *</span>
-                <input type="time" [value]="editAppointment().time" (input)="updateEditAppointmentField('time', $event)"
-                    class="w-full rounded-2xl border border-outline px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-primary/30" />
-            </label>
-            <label class="space-y-2">
-                <span class="text-sm font-semibold text-on-surface">Tipo</span>
-                <select [value]="editAppointment().type" (change)="updateEditAppointmentField('type', $event)"
-                    class="w-full rounded-2xl border border-outline px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-primary/30">
-                    <option value="Consulta">Consulta</option>
-                    <option value="Vacinação">Vacinação</option>
-                    <option value="Cirurgia">Cirurgia</option>
-                </select>
-            </label>
-            <label class="space-y-2">
-                <span class="text-sm font-semibold text-on-surface">Status</span>
-                <select [value]="editAppointment().status" (change)="updateEditAppointmentField('status', $event)"
-                    class="w-full rounded-2xl border border-outline px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-primary/30">
-                    <option value="Confirmado">Confirmado</option>
-                    <option value="Pendente">Pendente</option>
-                    <option value="Cancelado">Cancelado</option>
-                </select>
-            </label>
+        @if (editMessage()) {
+        <div class="mt-4 rounded-2xl border px-4 py-3 text-sm" [class]="editMessageType() === 'success'
+        ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+        : 'bg-red-50 text-red-700 border-red-200'">
+            {{ editMessage() }}
         </div>
+        }
 
-        <div class="mt-6 flex justify-end gap-3">
-            <button type="button" (click)="closeEditModal()"
-                class="rounded-2xl border border-outline px-5 py-3 text-sm font-semibold text-on-surface transition hover:bg-surface-container">Cancelar</button>
-            <button type="button" (click)="saveEditedAppointment()"
-                class="rounded-2xl bg-primary px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:opacity-90">Salvar
-                alterações</button>
-        </div>
+        <form [formGroup]="editForm" (ngSubmit)="saveEditedAppointment()" class="mt-6 grid gap-4 sm:grid-cols-2">
+
+            <div class="flex flex-col gap-2 sm:col-span-2">
+                <label class="text-sm font-semibold text-on-surface" for="editPetSelect">
+                    Animal paciente *
+                </label>
+
+                <select id="editPetSelect" formControlName="pet_id"
+                    class="w-full rounded-2xl border border-outline px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-primary/30">
+                    <option value="">Selecione o pet</option>
+
+                    @for (pet of pets(); track pet.id) {
+                    <option [value]="pet.id">
+                        {{ pet.name }} (Tutor: {{ pet.tutor_name }})
+                    </option>
+                    }
+                </select>
+
+                @if (getEditFieldFeedback('pet_id'); as feedback) {
+                <p [class]="feedback.kind === 'error' ? 'text-red-600' : 'text-emerald-600'" class="text-xs">
+                    {{ feedback.message }}
+                </p>
+                }
+            </div>
+
+            <div class="flex flex-col gap-2">
+                <label class="text-sm font-semibold text-on-surface" for="editDocSelect">
+                    Médico veterinário *
+                </label>
+
+                <select id="editDocSelect" formControlName="doctor_id"
+                    class="w-full rounded-2xl border border-outline px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-primary/30">
+                    <option value="">Selecione o profissional</option>
+
+                    @for (doctor of doctors(); track doctor.doctor_profile_id) {
+                    <option [value]="doctor.doctor_profile_id">
+                        {{ doctor.name }} (CRMV: {{ doctor.crmv }})
+                    </option>
+                    }
+                </select>
+
+                @if (getEditFieldFeedback('doctor_id'); as feedback) {
+                <p [class]="feedback.kind === 'error' ? 'text-red-600' : 'text-emerald-600'" class="text-xs">
+                    {{ feedback.message }}
+                </p>
+                }
+            </div>
+
+            <div class="flex flex-col gap-2">
+                <label class="text-sm font-semibold text-on-surface" for="editTypeSelect">
+                    Tipo de procedimento *
+                </label>
+
+                <select id="editTypeSelect" formControlName="type"
+                    class="w-full rounded-2xl border border-outline px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-primary/30">
+                    <option [ngValue]="null">Selecione</option>
+                    <option [value]="AppointmentTypes.CONSULTATION">Consulta Geral</option>
+                    <option [value]="AppointmentTypes.VACCINATION">Aplicação de Vacina</option>
+                    <option [value]="AppointmentTypes.SURGERY">Procedimento Cirúrgico</option>
+                </select>
+
+                @if (getEditFieldFeedback('type'); as feedback) {
+                <p [class]="feedback.kind === 'error' ? 'text-red-600' : 'text-emerald-600'" class="text-xs">
+                    {{ feedback.message }}
+                </p>
+                }
+            </div>
+
+            <div class="flex flex-col gap-2 sm:col-span-2">
+                <label class="text-sm font-semibold text-on-surface" for="editScheduledAt">
+                    Data e horário do atendimento *
+                </label>
+
+                <input id="editScheduledAt" type="datetime-local" formControlName="scheduled_at"
+                    class="w-full rounded-2xl border border-outline px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-primary/30" />
+
+                @if (getEditFieldFeedback('scheduled_at'); as feedback) {
+                <p [class]="feedback.kind === 'error' ? 'text-red-600' : 'text-emerald-600'" class="text-xs">
+                    {{ feedback.message }}
+                </p>
+                }
+            </div>
+
+            <div class="flex flex-col gap-2">
+                <label class="text-sm font-semibold text-on-surface" for="editStatusSelect">
+                    Status *
+                </label>
+
+                <select id="editStatusSelect" formControlName="status"
+                    class="w-full rounded-2xl border border-outline px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-primary/30">
+                    <option [value]="AppointmentStatus.SCHEDULED">Agendado</option>
+                    <option [value]="AppointmentStatus.COMPLETED">Concluído</option>
+                    <option [value]="AppointmentStatus.CANCELED">Cancelado</option>
+                    <option [value]="AppointmentStatus.NO_SHOW">Falta</option>
+                </select>
+
+                @if (getEditFieldFeedback('status'); as feedback) {
+                <p [class]="feedback.kind === 'error' ? 'text-red-600' : 'text-emerald-600'" class="text-xs">
+                    {{ feedback.message }}
+                </p>
+                }
+            </div>
+
+            <div class="flex flex-col gap-2">
+                <label class="text-sm font-semibold text-on-surface" for="editPaymentStatusSelect">
+                    Pagamento *
+                </label>
+
+                <select id="editPaymentStatusSelect" formControlName="paymentStatus"
+                    class="w-full rounded-2xl border border-outline px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-primary/30">
+                    <option [value]="PaymentStatus.PENDING">Pendente</option>
+                    <option [value]="PaymentStatus.PAID">Pago</option>
+                    <option [value]="PaymentStatus.REFUNDED">Reembolsado</option>
+                </select>
+
+                @if (getEditFieldFeedback('paymentStatus'); as feedback) {
+                <p [class]="feedback.kind === 'error' ? 'text-red-600' : 'text-emerald-600'" class="text-xs">
+                    {{ feedback.message }}
+                </p>
+                }
+            </div>
+
+            <div class="flex flex-col gap-2 sm:col-span-2">
+                <label class="text-sm font-semibold text-on-surface" for="editPriceInput">
+                    Valor *
+                </label>
+
+                <input id="editPriceInput" type="number" min="0" step="0.01" formControlName="price"
+                    class="w-full rounded-2xl border border-outline px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-primary/30" />
+
+                @if (getEditFieldFeedback('price'); as feedback) {
+                <p [class]="feedback.kind === 'error' ? 'text-red-600' : 'text-emerald-600'" class="text-xs">
+                    {{ feedback.message }}
+                </p>
+                }
+            </div>
+
+            <div class="flex flex-col gap-2 sm:col-span-2">
+                <label class="text-sm font-semibold text-on-surface" for="editNotes">
+                    Notas clínicas adicionais
+                </label>
+
+                <textarea id="editNotes" rows="3" formControlName="note" maxlength="300"
+                    placeholder="Histórico breve de sintomas ou observações para o médico..."
+                    class="w-full rounded-2xl border border-outline px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-primary/30">
+        </textarea>
+
+                @if (getEditFieldFeedback('note'); as feedback) {
+                <p [class]="feedback.kind === 'error' ? 'text-red-600' : 'text-emerald-600'" class="text-xs">
+                    {{ feedback.message }}
+                </p>
+                }
+            </div>
+
+            <div class="mt-2 flex justify-end gap-3 sm:col-span-2">
+                <button type="button" (click)="closeEditModal()"
+                    class="rounded-2xl border border-outline px-5 py-3 text-sm font-semibold text-on-surface transition hover:bg-surface-container">
+                    Cancelar
+                </button>
+
+                <button type="submit"
+                    class="rounded-2xl bg-primary px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:opacity-90">
+                    Salvar alterações
+                </button>
+            </div>
+        </form>
     </div>
 </div>
 }

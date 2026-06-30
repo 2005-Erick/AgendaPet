@@ -1,107 +1,144 @@
 import { inject, Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { environment } from '../../environments/environment-db';
+import { Observable, tap } from 'rxjs';
 import { iUser } from '../models/users-model';
-import { map, Observable, tap } from 'rxjs';
-import { iPets } from '../models/pets-model';
-import { UserResponseDTO } from '../models/DTO/user-response-DTO';
+import { UserResponseDTO, RoleEnum, GenderEnum } from '../models/DTO/user-response-DTO';
 
-export type UserUpdatePayload = {
-  name?: string;
-  phone?: string;
-  gender?: 'MALE' | 'FEMALE';
+export interface AdminCreateUserDTO {
+  name: string;
+  email: string;
+  password: string;
+  cpf: string;
+  phone: string;
+  birthday: string;
+  gender: 'MALE' | 'FEMALE';
+  role: RoleEnum;
+  crmv?: string;
   avatarUrl?: string;
-};
+}
 
 @Injectable({
   providedIn: 'root',
 })
 export class UsersService {
   private http = inject(HttpClient);
-  private readonly baseUrl = 'https://agendapet.onrender.com';
 
-  currentUser = signal<iUser | null>(this.loadUser());
+  private readonly backendUrl = 'http://localhost:8080';
+  private readonly storageKey = 'agendaPetUser';
+
+  currentUser = signal<UserResponseDTO | null>(this.loadUser());
 
   // -------------------------------------------------------
-  // Auth
+  // Auth público
   // -------------------------------------------------------
 
-  userlogin(email: string, password: string): Observable<{ message: string }> {
-    // Back espera { login, password } — não { email, password }
-    return this.http.post<{ message: string }>(`${this.baseUrl}/auth/login`, {
-      login: email,
+  userlogin(login: string, password: string) {
+    return this.http.post(`${this.backendUrl}/auth/login`, {
+      login,
       password,
     });
   }
 
-  confirmLogin(email: string, code: string): Observable<{ token: string }> {
+  confirmLogin(email: string, code: string) {
     return this.http
-      .post<{ token: string }>(`${this.baseUrl}/auth/login/confirm`, { email, code })
+      .post(`${this.backendUrl}/auth/login/confirm`, { email, code }, { withCredentials: true })
       .pipe(
-        tap((response) => {
-          // Salva o token — usado pelo interceptor em todas as requisições protegidas
-          localStorage.setItem('token', response.token);
+        tap(() => {
+          this.getCurrentUser().subscribe({
+            next: (user) => this.saveUser(user),
+            error: (err) => console.error('Erro ao carregar usuário logado', err),
+          });
         }),
       );
   }
 
-  registerUser(user: iUser): Observable<{ message: string }> {
-    // POST /auth/register — retorna StatusResponseDTO { message }, não UserResponseDTO
-    return this.http.post<{ message: string }>(`${this.baseUrl}/auth/register`, user);
+  registerUser(user: iUser) {
+    return this.http.post(`${this.backendUrl}/auth/register`, user);
   }
 
-  confirmRegister(email: string, code: string): Observable<{ token: string }> {
+  confirmRegister(email: string, code: string) {
     return this.http
-      .post<{ token: string }>(`${this.baseUrl}/auth/register/confirm`, { email, code })
+      .post(`${this.backendUrl}/auth/register/confirm`, { email, code }, { withCredentials: true })
       .pipe(
-        tap((response) => {
-          localStorage.setItem('token', response.token);
+        tap(() => {
+          this.getCurrentUser().subscribe({
+            next: (user) => this.saveUser(user),
+            error: (err) => console.error('Erro ao carregar usuário logado', err),
+          });
         }),
       );
   }
-
-  // -------------------------------------------------------
-  // CRUD de usuários (requer autenticação)
-  // -------------------------------------------------------
-
-  getUsersResponseDTO(): Observable<UserResponseDTO[]> {
-    // GET /users — autenticado, qualquer role
-    return this.http.get<UserResponseDTO[]>(`${this.baseUrl}/users`);
-  }
-
-  getUserById(id: string): Observable<UserResponseDTO> {
-    // GET /users/{id}
-    return this.http.get<UserResponseDTO>(`${this.baseUrl}/users/${id}`);
-  }
-
-  updateUser(id: string, payload: UserUpdatePayload): Observable<UserResponseDTO> {
-    // PATCH /users/{id} — atualiza nome, telefone, gênero, avatarUrl
-    return this.http.patch<UserResponseDTO>(`${this.baseUrl}/users/${id}`, payload);
-  }
-
-  deleteUser(id: string): Observable<void> {
-    // DELETE /users/{id}
-    return this.http.delete<void>(`${this.baseUrl}/users/${id}`);
-  }
-
-  // -------------------------------------------------------
-  // Sessão local
-  // -------------------------------------------------------
 
   logout() {
     this.currentUser.set(null);
-    localStorage.removeItem('token');
-    localStorage.removeItem('agendaPetUser');
+    localStorage.removeItem(this.storageKey);
+
+    // Se depois vocês criarem um endpoint /auth/logout no back,
+    // aqui poderá chamar esse endpoint para zerar o cookie HttpOnly.
   }
 
-  private saveUser(user: iUser) {
+  // -------------------------------------------------------
+  // Usuário logado
+  // -------------------------------------------------------
+
+  getCurrentUser(): Observable<UserResponseDTO> {
+    return this.http.get<UserResponseDTO>(`${this.backendUrl}/users/me`, {
+      withCredentials: true,
+    });
+  }
+
+  loadCurrentUser(): Observable<UserResponseDTO> {
+    return this.getCurrentUser().pipe(tap((user) => this.saveUser(user)));
+  }
+
+  // -------------------------------------------------------
+  // Administração de usuários
+  // -------------------------------------------------------
+
+  getUsersResponseDTO(): Observable<UserResponseDTO[]> {
+    return this.http.get<UserResponseDTO[]>(`${this.backendUrl}/users`, {
+      withCredentials: true,
+    });
+  }
+
+  adminCreateUser(user: AdminCreateUserDTO): Observable<UserResponseDTO> {
+    return this.http.post<UserResponseDTO>(`${this.backendUrl}/users`, user, {
+      withCredentials: true,
+    });
+  }
+
+  deleteUser(id: string): Observable<void> {
+    return this.http.delete<void>(`${this.backendUrl}/users/${id}`, {
+      withCredentials: true,
+    });
+  }
+
+  deleteCurrentUser(): Observable<void> {
+    const user = this.currentUser();
+
+    if (!user?.id) {
+      throw new Error('Usuário não encontrado');
+    }
+
+    return this.deleteUser(user.id);
+  }
+
+  // -------------------------------------------------------
+  // Persistência local dos dados do usuário
+  // -------------------------------------------------------
+
+  private saveUser(user: UserResponseDTO) {
     this.currentUser.set(user);
-    localStorage.setItem('agendaPetUser', JSON.stringify(user));
+    localStorage.setItem(this.storageKey, JSON.stringify(user));
   }
 
-  private loadUser() {
-    const user = localStorage.getItem('agendaPetUser');
-    if (!user) return null;
-    return JSON.parse(user) as iUser;
+  private loadUser(): UserResponseDTO | null {
+    const user = localStorage.getItem(this.storageKey);
+
+    if (!user) {
+      return null;
+    }
+
+    return JSON.parse(user) as UserResponseDTO;
   }
 }

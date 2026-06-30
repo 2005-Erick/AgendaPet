@@ -1,5 +1,5 @@
 export interface DoctorResponseDTO {
-  id: string;
+  doctor_profile_id: string;
   user_id: string;
   name: string;
   crmv: string;

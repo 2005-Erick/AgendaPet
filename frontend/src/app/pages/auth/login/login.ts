@@ -8,6 +8,7 @@ import {
 } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { UsersService } from '../../../services/users-service';
+import { RoleEnum, UserResponseDTO } from '../../../models/DTO/user-response-DTO';
 
 @Component({
   selector: 'app-login',
@@ -19,16 +20,17 @@ import { UsersService } from '../../../services/users-service';
 export class Login {
   private usersService = inject(UsersService);
   private router = inject(Router);
+
   showConfirmationModal = signal(false);
   confirmationCode = signal('');
+
+  isLoading = signal(false);
+  errorMessage = signal<string | null>(null);
 
   loginForm = new FormGroup({
     email: new FormControl('', [Validators.required, Validators.email]),
     password: new FormControl('', [Validators.required]),
   });
-
-  isLoading = signal(false);
-  errorMessage = signal<string | null>(null);
 
   getFieldFeedback(fieldName: 'email' | 'password') {
     const control = this.loginForm.get(fieldName);
@@ -65,6 +67,7 @@ export class Login {
 
     this.isLoading.set(true);
     this.errorMessage.set(null);
+
     const { email, password } = this.loginForm.value;
 
     this.usersService.userlogin(email!, password!).subscribe({
@@ -73,9 +76,9 @@ export class Login {
         this.showConfirmationModal.set(true);
       },
       error: (err) => {
-        console.log(err);
+        console.error(err);
         this.isLoading.set(false);
-        this.errorMessage.set(err.message || 'Erro ao realizar login');
+        this.errorMessage.set('E-mail ou senha inválidos.');
       },
     });
   }
@@ -88,22 +91,62 @@ export class Login {
       return;
     }
 
-    // CORREÇÃO: Estava 'this.usersService.confirmRegister'
+    this.isLoading.set(true);
+    this.errorMessage.set(null);
+
     this.usersService.confirmLogin(email, code).subscribe({
       next: () => {
-        this.showConfirmationModal.set(false);
-        this.confirmationCode.set('');
-        this.loginForm.reset();
-        this.router.navigate(['/admin-dashboard']); // Ajuste a rota para o seu dashboard
+        this.usersService.getCurrentUser().subscribe({
+          next: (user) => {
+            this.isLoading.set(false);
+            this.showConfirmationModal.set(false);
+            this.confirmationCode.set('');
+            this.loginForm.reset();
+
+            this.redirectByRole(user);
+          },
+          error: (err) => {
+            console.error('Erro ao buscar usuário logado', err);
+            this.isLoading.set(false);
+            this.errorMessage.set('Login confirmado, mas não foi possível carregar o usuário.');
+          },
+        });
       },
       error: (error) => {
-        console.error('Erro na confirmação de login:', error);
-        this.errorMessage.set('Código inválido ou expirado.');
+        console.error(error);
+        this.isLoading.set(false);
+        this.errorMessage.set('Código de confirmação inválido ou expirado.');
       },
     });
   }
 
   closeConfirmationModal() {
     this.showConfirmationModal.set(false);
+  }
+
+  private redirectByRole(user: UserResponseDTO) {
+    const roles = user.roles || [];
+
+    if (roles.includes(RoleEnum.ADMIN)) {
+      this.router.navigate(['/admin-dashboard']);
+      return;
+    }
+
+    if (roles.includes(RoleEnum.RECEPTIONIST)) {
+      this.router.navigate(['/dashboard-recepcionist']);
+      return;
+    }
+
+    if (roles.includes(RoleEnum.TUTOR)) {
+      this.router.navigate(['/dashboard']);
+      return;
+    }
+
+    if (roles.includes(RoleEnum.DOCTOR)) {
+      this.router.navigate(['/dashboard']);
+      return;
+    }
+
+    this.router.navigate(['/dashboard']);
   }
 }

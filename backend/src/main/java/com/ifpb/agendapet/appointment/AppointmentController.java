@@ -2,7 +2,7 @@ package com.ifpb.agendapet.appointment;
 
 import com.ifpb.agendapet.appointment.dto.AppointmentCreateDTO;
 import com.ifpb.agendapet.appointment.dto.AppointmentResponseDTO;
-import com.ifpb.agendapet.exception.dto.StatusResponseDTO;
+import com.ifpb.agendapet.appointment.dto.AppointmentUpdateDTO;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -14,6 +14,10 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/appointments")
+@CrossOrigin(
+        origins = "http://localhost:4200",
+        allowCredentials = "true"
+)
 @RequiredArgsConstructor
 public class AppointmentController {
     private final AppointmentService appointmentService;
@@ -37,6 +41,16 @@ public class AppointmentController {
         AppointmentResponseDTO appointment = appointmentService.create(dto);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(appointment);
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<AppointmentResponseDTO> update(
+            @PathVariable UUID id,
+            @Valid @RequestBody AppointmentUpdateDTO dto
+    ) {
+        AppointmentResponseDTO appointment = appointmentService.update(id, dto);
+
+        return ResponseEntity.ok(appointment);
     }
 
     @DeleteMapping("/{id}")
