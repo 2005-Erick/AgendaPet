@@ -1,86 +1,121 @@
 import { inject, Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { environment } from '../../environments/environment-db';
+import { Observable, tap, switchMap } from 'rxjs';
 import { iUser } from '../models/users-model';
-import { map, Observable, tap } from 'rxjs';
-import { iPets } from '../models/pets-model';
-import { UserResponseDTO } from '../models/DTO/user-response-DTO';
-import { StatusResponseDTO } from '../models/DTO/status-response-DTO';
+import { UserResponseDTO, RoleEnum, GenderEnum } from '../models/DTO/user-response-DTO';
+
+export interface AdminCreateUserDTO {
+  name: string;
+  email: string;
+  password: string;
+  cpf: string;
+  phone: string;
+  birthday: string;
+  gender: 'MALE' | 'FEMALE';
+  role: RoleEnum;
+  crmv?: string;
+  avatarUrl?: string;
+}
 
 @Injectable({
   providedIn: 'root',
 })
 export class UsersService {
   private http = inject(HttpClient);
-  private readonly apiUrl = `${environment.supabaseUrl}/rest/v1/users`;
-  private readonly apiKey = environment.supabasePublishableKey;
-  private readonly storageKey = 'agendaPetUser';
 
-    currentUser = signal<iUser | null>(this.loadUser());
+  private readonly backendUrl = 'http://localhost:8080';
 
-    private get headers() {
-      return {
-      apikey: this.apiKey,
-      Authorization: `Bearer ${this.apiKey}`,
-      'Content-Type': 'application/json',
-      Prefer: 'return=representation',
-    };
+  currentUser = signal<UserResponseDTO | null>(null);
+
+  // -------------------------------------------------------
+  // Auth público — Fluxo de Login com 2FA
+  // -------------------------------------------------------
+
+  /** Passo 1: Envia email + senha. O backend dispara o código MFA por e-mail. */
+  userlogin(login: string, password: string): Observable<any> {
+    return this.http.post(
+      `${this.backendUrl}/auth/login`,
+      {
+        login,
+        password,
+      },
+      { withCredentials: true },
+    );
   }
 
-  // getUsers(): Observable<iUser[]> {
-  //   const url = `${this.apiUrl}?select=*`;
-  //   return this.http.get<iUser[]>(url, { headers: this.headers });
-  // }
-
-  // login(email: string, password: string): Observable<iUser> {
-  //   const url = `${this.apiUrl}?email=eq.${email}&password=eq.${password}&select=*`;
-  //   return this.http.get<iUser[]>(url, { headers: this.headers }).pipe(
-  //     map((users) => {
-  //       if (users.length === 0) {
-  //         throw new Error('Usuário ou senha inválidos');
-  //       }
-  //       return users[0];
-  //     }),
-  //     tap((user) => this.saveUser(user)),
-  //   );
-  // }
-
-  // register(user: iUser): Observable<iUser> {
-  //   return this.http.post<iUser[]>(this.apiUrl, user, { headers: this.headers }).pipe(
-  //     map((users) => users[0]),
-  //     tap((user) => this.saveUser(user)),
-  //   );
-  // }
-
-  userlogin(login: string, password: string): Observable<StatusResponseDTO> {
-    return this.http.post<StatusResponseDTO>(`https://agendapet.onrender.com/auth/login`,{ login, password }
-  )};
-
-  confirmLogin(email: string, code: string): Observable<void> {
-    return this.http.post<void>(`https://agendapet.onrender.com/auth/login/confirm`,{ email, code },
-      {
-        withCredentials: true
-      }
-    )};  
-  
-  registerUser(user: iUser): Observable<StatusResponseDTO> {
-    return this.http.post<StatusResponseDTO>('https://agendapet.onrender.com/auth/register', user);
+  /** Passo 2: Confirma o código MFA. O backend seta o cookie HttpOnly e retorna o token. */
+  confirmLogin(email: string, code: string): Observable<UserResponseDTO> {
+    return this.http
+      .post(`${this.backendUrl}/auth/login/confirm`, { email, code }, { withCredentials: true })
+      .pipe(
+        switchMap(() => this.getCurrentUser()),
+        tap((user) => this.currentUser.set(user)),
+      );
   }
 
-  confirmRegister(email: string, code: string): Observable<void> {
-    return this.http.post<void>('https://agendapet.onrender.com/auth/register/confirm',{email, code},
-      {
-        withCredentials: true
-      }
-  )};
+  // -------------------------------------------------------
+  // Auth público — Fluxo de Cadastro com confirmação por e-mail
+  // -------------------------------------------------------
+
+  registerUser(user: iUser) {
+    return this.http.post(`${this.backendUrl}/auth/register`, user);
+  }
+
+  confirmRegister(email: string, code: string): Observable<UserResponseDTO> {
+    return this.http
+      .post(`${this.backendUrl}/auth/register/confirm`, { email, code }, { withCredentials: true })
+      .pipe(
+        switchMap(() => this.getCurrentUser()),
+        tap((user) => this.currentUser.set(user)),
+      );
+  }
+
+  // -------------------------------------------------------
+  // Logout — limpa cookie HttpOnly via backend
+  // -------------------------------------------------------
+
+  logout(): Observable<any> {
+    return this.http.post(`${this.backendUrl}/auth/logout`, {}, { withCredentials: true });
+  }
+
+  clearSession() {
+    this.currentUser.set(null);
+  }
+
+  // -------------------------------------------------------
+  // Usuário logado
+  // -------------------------------------------------------
+
+  getCurrentUser(): Observable<UserResponseDTO> {
+    return this.http.get<UserResponseDTO>(`${this.backendUrl}/users/me`, {
+      withCredentials: true,
+    });
+  }
+
+  loadCurrentUser(): Observable<UserResponseDTO> {
+    return this.getCurrentUser().pipe(tap((user) => this.currentUser.set(user)));
+  }
+
+  // -------------------------------------------------------
+  // Administração de usuários
+  // -------------------------------------------------------
 
   getUsersResponseDTO(): Observable<UserResponseDTO[]> {
-    return this.http.get<UserResponseDTO[]>('https://agendapet.onrender.com/users');
+    return this.http.get<UserResponseDTO[]>(`${this.backendUrl}/users`, {
+      withCredentials: true,
+    });
   }
-    
+
+  adminCreateUser(user: AdminCreateUserDTO): Observable<UserResponseDTO> {
+    return this.http.post<UserResponseDTO>(`${this.backendUrl}/users`, user, {
+      withCredentials: true,
+    });
+  }
+
   deleteUser(id: string): Observable<void> {
-    const url = `${this.apiUrl}?id=eq.${id}`;
-    return this.http.delete<void>(url, { headers: this.headers });
+    return this.http.delete<void>(`${this.backendUrl}/users/${id}`, {
+      withCredentials: true,
+    });
   }
 
   deleteCurrentUser(): Observable<void> {
@@ -91,25 +126,5 @@ export class UsersService {
     }
 
     return this.deleteUser(user.id);
-  }
-
-  logout() {
-    this.currentUser.set(null);
-    localStorage.removeItem(this.storageKey);
-  }
-
-  private saveUser(user: iUser) {
-    this.currentUser.set(user);
-    localStorage.setItem(this.storageKey, JSON.stringify(user));
-  }
-
-  private loadUser() {
-    const user = localStorage.getItem(this.storageKey);
-
-    if (!user) {
-      return null;
-    }
-
-    return JSON.parse(user) as iUser;
   }
 }

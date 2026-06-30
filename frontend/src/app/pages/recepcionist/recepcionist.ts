@@ -1,18 +1,25 @@
 import { Component, signal, inject } from '@angular/core';
-import { FormControl, FormGroup, Validators, ReactiveFormsModule, FormsModule, type AbstractControl } from '@angular/forms';
+import {
+  FormControl,
+  FormGroup,
+  Validators,
+  ReactiveFormsModule,
+  FormsModule,
+  type AbstractControl,
+} from '@angular/forms';
 import { iUser } from '../../models/users-model';
 import { UsersService } from '../../services/users-service';
-import { iPets, pets_species } from '../../models/pets-model';
-import { PetsService } from '../../services/pets-service';
+import { PetsService, PetCreateDTO } from '../../services/pets-service';
 import { AppointmentsService } from '../../services/appointments-service';
 import { DoctorsServices } from '../../services/doctors-service';
-import {DoctorResponseDTO} from "../../models/DTO/doctor-response-DTO";
-import { UserResponseDTO } from '../../models/DTO/user-response-DTO';
-import { AppointmentResponseDTO } from '../../models/DTO/appointment-response-DTO';
-import {PetResponseDTO} from "../../models/DTO/pet-response-DTO";
-import { PetSpecies } from '../../models/DTO/pet-response-DTO';
-import { PetGenderEnum } from '../../models/DTO/pet-response-DTO';
-import {PetCreateDTO} from "../../models/DTO/petCreate-response-DTO";
+import { DoctorResponseDTO } from '../../models/DTO/doctor-response-DTO';
+import { UserResponseDTO, RoleEnum } from '../../models/DTO/user-response-DTO';
+import {
+  AppointmentResponseDTO,
+  AppointmentTypes,
+  PaymentStatus,
+} from '../../models/DTO/appointment-response-DTO';
+import { PetGenderEnum, PetResponseDTO, PetSpecies } from '../../models/DTO/pet-response-DTO';
 
 @Component({
   selector: 'app-recepcionist',
@@ -21,33 +28,41 @@ import {PetCreateDTO} from "../../models/DTO/petCreate-response-DTO";
   templateUrl: './recepcionist.html',
   styleUrl: './recepcionist.css',
 })
-
 export class Recepcionist {
   private userService = inject(UsersService);
   private petsService = inject(PetsService);
   private appointmentsService = inject(AppointmentsService);
   private doctorsService = inject(DoctorsServices);
+
   doctors: DoctorResponseDTO[] = [];
   users: UserResponseDTO[] = [];
+  tutors: UserResponseDTO[] = [];
+  pets: PetResponseDTO[] = [];
   appointments: AppointmentResponseDTO[] = [];
 
+  appointmentTypes = AppointmentTypes;
+  paymentStatus = PaymentStatus;
+
+  petsSpecies = PetSpecies;
+  petGenderEnum = PetGenderEnum;
+
   appointmentForm = new FormGroup({
-    personName: new FormControl('', [Validators.required]),
-    petName: new FormControl('', [Validators.required]),
-    service: new FormControl('Consulta', [Validators.required]),
-    dateTime: new FormControl('', [Validators.required]),
-    doctor: new FormControl('', [Validators.required]), 
+    pet_id: new FormControl('', [Validators.required]),
+    doctor_id: new FormControl('', [Validators.required]),
+    type: new FormControl<AppointmentTypes | null>(null, [Validators.required]),
+    scheduled_at: new FormControl('', [Validators.required]),
     price: new FormControl<number | null>(null, [Validators.required, Validators.min(0)]),
-    cpf: new FormControl('', [Validators.required, Validators.pattern(/^\d{11}$/)])
+    note: new FormControl('', [Validators.maxLength(300)]),
   });
-  
+
   petForm = new FormGroup({
+    tutor_id: new FormControl('', [Validators.required]),
     name: new FormControl('', [Validators.required]),
     species: new FormControl<PetSpecies | null>(null, [Validators.required]),
     breed: new FormControl('', [Validators.required]),
     weight: new FormControl<number | null>(null, [Validators.required, Validators.min(0.1)]),
     birthday: new FormControl('', [Validators.required]),
-    photoUrl: new FormControl('', [Validators.required]),
+    photoUrl: new FormControl(''),
     description: new FormControl('', [Validators.required]),
     gender: new FormControl<PetGenderEnum | null>(null, [Validators.required]),
   });
@@ -65,8 +80,6 @@ export class Recepcionist {
   appointmentMessage = signal<string | null>(null);
   appointmentMessageType = signal<'success' | 'error' | null>(null);
 
-  petsSpecies = PetSpecies;
-
   petMessage = signal<string | null>(null);
   petMessageType = signal<'success' | 'error' | null>(null);
 
@@ -76,22 +89,87 @@ export class Recepcionist {
   showConfirmationModal = signal(false);
   confirmationCode = signal('');
 
-  getAppointmentFieldFeedback(fieldName: 'personName' | 'petName' | 'service' | 'dateTime' | 'doctor' | 'price' | 'cpf') {
+  ngOnInit() {
+    this.initDoctors();
+    this.initAppointment();
+    this.initTutors();
+    this.initPets();
+  }
+
+  private initDoctors() {
+    this.doctorsService.getDoctors().subscribe({
+      next: (doctors) => {
+        this.doctors = doctors;
+      },
+      error: (err) => {
+        console.error('Erro ao carregar médicos', err);
+      },
+    });
+  }
+
+  private initAppointment() {
+    this.appointmentsService.getAppointmentsResponseDTO().subscribe({
+      next: (appointments) => {
+        this.appointments = appointments;
+      },
+      error: (err) => {
+        console.error('Erro ao carregar agendamentos', err);
+      },
+    });
+  }
+
+  private initTutors() {
+    this.userService.getUsersResponseDTO().subscribe({
+      next: (users) => {
+        this.users = users;
+        this.tutors = users.filter((user) => user.roles.includes(RoleEnum.TUTOR));
+      },
+      error: (err) => {
+        console.error('Erro ao carregar tutores', err);
+      },
+    });
+  }
+
+  private initPets() {
+    this.petsService.getPetsResponseDTO().subscribe({
+      next: (pets) => {
+        this.pets = pets;
+      },
+      error: (err) => {
+        console.error('Erro ao carregar pets', err);
+      },
+    });
+  }
+
+  getAppointmentFieldFeedback(
+    fieldName: 'pet_id' | 'doctor_id' | 'type' | 'scheduled_at' | 'price' | 'note',
+  ) {
     const messages = {
-      personName: 'Informe o nome do cliente.',
-      petName: 'Informe o nome do animal.',
-      service: 'Selecione um serviço.',
-      dateTime: 'Escolha a data e hora.',
-      doctor: 'Selecione um veterinário.',
+      pet_id: 'Selecione o pet.',
+      doctor_id: 'Selecione um veterinário.',
+      type: 'Selecione o tipo de atendimento.',
+      scheduled_at: 'Escolha a data e hora.',
       price: 'Informe o preço do serviço.',
-      cpf: 'Informe o CPF do tutor.'
+      note: 'A observação deve ter no máximo 300 caracteres.',
     };
 
     return this.getFieldFeedback(this.appointmentForm.get(fieldName), messages[fieldName]);
   }
 
-  getPetFieldFeedback(fieldName: 'name' | 'species' | 'breed' | 'weight' | 'birthday' | 'photoUrl' | 'description' | 'gender') {
+  getPetFieldFeedback(
+    fieldName:
+      | 'tutor_id'
+      | 'name'
+      | 'species'
+      | 'breed'
+      | 'weight'
+      | 'birthday'
+      | 'photoUrl'
+      | 'description'
+      | 'gender',
+  ) {
     const messages = {
+      tutor_id: 'Selecione o tutor responsável.',
       name: 'Informe o nome do pet.',
       species: 'Informe a espécie.',
       breed: 'Informe a raça.',
@@ -105,7 +183,9 @@ export class Recepcionist {
     return this.getFieldFeedback(this.petForm.get(fieldName), messages[fieldName]);
   }
 
-  getPersonFieldFeedback(fieldName: 'fullName' | 'cpf' | 'phone' | 'birthday' | 'email' | 'password' | 'gender') {
+  getPersonFieldFeedback(
+    fieldName: 'fullName' | 'cpf' | 'phone' | 'birthday' | 'email' | 'password' | 'gender',
+  ) {
     const messages = {
       fullName: 'Informe o nome completo.',
       cpf: 'Informe um CPF válido com 11 números.',
@@ -119,35 +199,6 @@ export class Recepcionist {
     return this.getFieldFeedback(this.personForm.get(fieldName), messages[fieldName]);
   }
 
-  ngOnInit() {
-    this.initDoctors();
-    this.initAppointment();
-  }
-
-  private initDoctors() {
-      this.doctorsService.getDoctors().subscribe({
-      next: (doctors) => {
-        console.log(doctors);
-        console.log('Doctors fetched successfully');
-        this.doctors = doctors;
-      }, error: (err) => {
-        console.error('Erro ao carregar médicos', err);
-      },
-    });
-  }
-
-  private initAppointment(){
-      this.appointmentsService.getAppointmentsResponseDTO().subscribe({
-      next: (appointments) => {
-        console.log(appointments);
-        console.log('Appointments fetched successfully');
-        this.appointments = appointments;
-      }, error: (err) => {
-        console.error('Erro ao carregar agendamentos', err);
-      },
-    });
-  }
-
   onAppointmentSubmit() {
     if (this.appointmentForm.invalid) {
       this.appointmentForm.markAllAsTouched();
@@ -156,28 +207,40 @@ export class Recepcionist {
       return;
     }
 
-    const iAppointment = {
-      personName: this.appointmentForm.value.personName,
-      petName: this.appointmentForm.value.petName,
-      service: this.appointmentForm.value.service,
-      dateTime: this.appointmentForm.value.dateTime,
-      doctor: this.appointmentForm.value.doctor,
-      price: this.appointmentForm.value.price,
-      doctor_id: this.appointmentForm.value.doctor
-    };
+    const formValues = this.appointmentForm.value;
 
-    this.appointmentsService.registerAppointment(iAppointment).subscribe({
-      next: () => {
-        this.appointmentMessage.set('Agendamento salvo com sucesso!');
-        this.appointmentMessageType.set('success');
-        this.appointmentForm.reset();
-      },
-      error: (err) => {
-        this.appointmentMessage.set('Erro ao salvar o agendamento.');
-        this.appointmentMessageType.set('error');
-        console.error(err);
-      },
-    });
+    this.appointmentsService
+      .registerAppointment({
+        pet_id: formValues.pet_id!,
+        doctor_id: formValues.doctor_id!,
+        scheduled_at: formValues.scheduled_at!,
+        type: formValues.type!,
+        price: Number(formValues.price!),
+        paymentStatus: PaymentStatus.PENDING,
+        note: formValues.note || undefined,
+      })
+      .subscribe({
+        next: () => {
+          this.appointmentMessage.set('Agendamento salvo com sucesso!');
+          this.appointmentMessageType.set('success');
+
+          this.appointmentForm.reset({
+            pet_id: '',
+            doctor_id: '',
+            type: null,
+            scheduled_at: '',
+            price: null,
+            note: '',
+          });
+
+          this.initAppointment();
+        },
+        error: (err) => {
+          this.appointmentMessage.set('Erro ao salvar o agendamento.');
+          this.appointmentMessageType.set('error');
+          console.error(err);
+        },
+      });
   }
 
   onPetSubmit() {
@@ -188,14 +251,18 @@ export class Recepcionist {
       return;
     }
 
+    const formValues = this.petForm.value;
+
     const dto: PetCreateDTO = {
-      name: this.petForm.value.name!,
-      weight: Number(this.petForm.value.weight!!),
-      breed: this.petForm.value.breed!,
-      species: this.petForm.value.species ?? PetSpecies.OTHER,
-      birthday: new Date(this.petForm.value.birthday!).toISOString(),
-      description: this.petForm.value.description!,
-      gender: this.petForm.value.gender!,
+      tutor_id: formValues.tutor_id!,
+      name: formValues.name!,
+      weight: Number(formValues.weight!),
+      breed: formValues.breed!,
+      species: formValues.species!,
+      birthday: formValues.birthday!,
+      avatarUrl: formValues.photoUrl || undefined,
+      description: formValues.description || undefined,
+      gender: formValues.gender!,
     };
 
     this.petsService.registerPet(dto).subscribe({
@@ -203,6 +270,7 @@ export class Recepcionist {
         this.petMessage.set('Animal cadastrado com sucesso!');
         this.petMessageType.set('success');
         this.petForm.reset();
+        this.initPets();
       },
       error: (err) => {
         this.petMessage.set('Erro ao criar pet.');
@@ -234,7 +302,9 @@ export class Recepcionist {
 
     this.userService.registerUser(dto).subscribe({
       next: () => {
-        this.personMessage.set('Cadastro realizado. Verifique o código de confirmação enviado ao e-mail.');
+        this.personMessage.set(
+          'Cadastro realizado. Verifique o código de confirmação enviado ao e-mail.',
+        );
         this.personMessageType.set('success');
         this.showConfirmationModal.set(true);
       },
@@ -263,6 +333,7 @@ export class Recepcionist {
         this.showConfirmationModal.set(false);
         this.confirmationCode.set('');
         this.personForm.reset();
+        this.initTutors();
       },
       error: (error) => {
         console.error(error);
@@ -302,4 +373,3 @@ export class Recepcionist {
     return { kind: 'success' as const, message: '' };
   }
 }
-

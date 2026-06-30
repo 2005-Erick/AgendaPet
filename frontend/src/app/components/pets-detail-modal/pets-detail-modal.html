@@ -17,17 +17,17 @@
             <!-- Foto e Info Básica -->
             <div class="space-y-4">
                 <div class="relative aspect-video w-full overflow-hidden rounded-3xl bg-surface-container shadow-md">
-                    <img [src]="pet()?.imagem" class="h-full w-full object-cover" />
+                    <img [src]="pet()?.avatarUrl || '/assets/default-pet.png'" class="h-full w-full object-cover" />
                 </div>
                 
                 <div class="space-y-3">
                     <div class="flex items-center justify-between gap-4">
                         <div>
-                            <h3 class="text-3xl font-semibold text-on-surface">{{pet()?.nome}}</h3>
-                            <p class="mt-1 text-on-surface-variant">{{pet()?.raca}} • {{pet()?.idade}}</p>
+                            <h3 class="text-3xl font-semibold text-on-surface">{{pet()?.name}}</h3>
+                            <p class="mt-1 text-on-surface-variant">{{pet()?.breed}} • {{idade()}} anos</p>
                         </div>
                         <span class="shrink-0 rounded-full bg-primary/10 px-4 py-2 text-sm font-semibold text-primary">
-                            {{pet()?.status}}
+                            Saudável
                         </span>
                     </div>
                 </div>
@@ -37,22 +37,22 @@
             <div class="grid gap-4 sm:grid-cols-2">
                 <article class="rounded-3xl border border-outline-variant/40 bg-surface-container-low p-4">
                     <p class="text-xs uppercase tracking-wider text-on-surface-variant">Peso</p>
-                    <p class="mt-2 text-2xl font-semibold text-on-surface">12 kg</p>
+                    <p class="mt-2 text-2xl font-semibold text-on-surface">{{pet()?.weight}} kg</p>
                 </article>
                 
                 <article class="rounded-3xl border border-outline-variant/40 bg-surface-container-low p-4">
                     <p class="text-xs uppercase tracking-wider text-on-surface-variant">Microchip</p>
-                    <p class="mt-2 text-lg font-mono text-on-surface">023847#</p>
+                    <p class="mt-2 text-lg font-mono text-on-surface">N/A</p>
                 </article>
 
                 <article class="rounded-3xl border border-outline-variant/40 bg-surface-container-low p-4">
                     <p class="text-xs uppercase tracking-wider text-on-surface-variant">Dono</p>
-                    <p class="mt-2 text-xl font-semibold text-on-surface">Usuário</p>
+                    <p class="mt-2 text-xl font-semibold text-on-surface">{{pet()?.tutor_name}}</p>
                 </article>
 
                 <article class="rounded-3xl border border-outline-variant/40 bg-surface-container-low p-4">
                     <p class="text-xs uppercase tracking-wider text-on-surface-variant">Telefone</p>
-                    <p class="mt-2 text-lg font-semibold text-on-surface">(11) 9999-9999</p>
+                    <p class="mt-2 text-lg font-semibold text-on-surface">Não informado</p>
                 </article>
             </div>
         <div class="space-y-3">
@@ -63,9 +63,9 @@
 
             <div class="space-y-2">
 
-                @for (agendamento of agendamentos; track agendamento.id) {
+                @for (agendamento of agendamentos(); track agendamento.id) {
 
-                    @if (id() === agendamento.petId) {
+                    @if (id() === agendamento.pet_id && agendamento.status === 'SCHEDULED') {
 
                         <div class="flex items-center gap-3 rounded-2xl border border-primary/20 bg-primary/5 p-4">
 
@@ -75,10 +75,10 @@
 
                         <div class="flex-1">
                             <p class="font-semibold text-on-surface">
-                            {{ agendamento.data }} • {{ agendamento.horario }}
+                            {{ agendamento.scheduled_at | date:'dd/MM/yyyy • HH:mm' }}
                             </p>
                             <p class="text-sm text-on-surface-variant">
-                            {{ agendamento.titulo }}
+                            {{ agendamento.type }}
                             </p>
                         </div>
 
@@ -92,13 +92,13 @@
 
             <div class="space-y-3">
                 <p class="text-sm font-semibold uppercase tracking-wider text-on-surface-variant">Histórico recente</p>
-            @for (agendamento of agendamentos; track agendamento.titulo) {
+            @for (agendamento of agendamentos(); track agendamento.id) {
             <!-- Histórico Recente -->
-                @if (id() === agendamento.petId && agendamento.status === 'Concluido') {
+                @if (id() === agendamento.pet_id && agendamento.status === 'COMPLETED') {
                         <div class="space-y-2">
                             <div class="rounded-2xl border border-outline-variant/40 bg-surface-container-low p-4">
-                                <p class="font-semibold text-on-surface">{{agendamento.titulo}}</p>
-                                <p class="mt-1 text-sm text-on-surface-variant">{{agendamento.data}} • {{agendamento.descricao}}</p>
+                                <p class="font-semibold text-on-surface">{{agendamento.type}}</p>
+                                <p class="mt-1 text-sm text-on-surface-variant">{{agendamento.scheduled_at | date:'dd/MM/yyyy HH:mm'}} • {{agendamento.note}}</p>
                             </div>
                         </div>
                 }

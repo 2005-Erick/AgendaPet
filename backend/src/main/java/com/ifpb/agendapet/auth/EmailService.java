@@ -14,6 +14,13 @@ public class EmailService {
     private String resendApiKey;
 
     private void sendHtmlEmail(String to, String subject, String name, String contextMessage, String code) {
+        if (resendApiKey == null || resendApiKey.isBlank()) {
+            System.out.println("[MOCK EMAIL] To: " + to);
+            System.out.println("[MOCK EMAIL] Subject: " + subject);
+            System.out.println("[MOCK EMAIL] Code: " + code);
+            return;
+        }
+
         String htmlTemplate = """
                 <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #e0e0e0; border-radius: 8px; padding: 20px; background-color: #f9f9f9;">
                     <div style="text-align: center; margin-bottom: 20px;">

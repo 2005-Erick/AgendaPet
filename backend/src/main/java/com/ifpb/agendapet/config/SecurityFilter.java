@@ -28,32 +28,34 @@ public class SecurityFilter extends OncePerRequestFilter {
     if (token != null) {
         try {
             var subject = tokenService.validateToken(token);
-
-            UserDetails user = userRepository.findByEmail(subject);
-
-            var authentication = new UsernamePasswordAuthenticationToken(
-                    user,
-                    null,
-                    user.getAuthorities()
-            );
-
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-
-        } catch (Exception e) {
-            SecurityContextHolder.clearContext();
+            if (subject != null && !subject.isEmpty()) {
+                UserDetails user = userRepository.findByEmail(subject);
+                
+                if (user != null) {
+                    var authentication =  new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
+                }
+            }
         }
     }
         filterChain.doFilter(request, response);
     }
 
     private String recoverToken(HttpServletRequest request) {
-        if (request.getCookies() != null) {
-            for (Cookie cookie : request.getCookies()) {
-                if ("access_token".equals(cookie.getName())) {
-                    return cookie.getValue();
-                }
+    if (request.getCookies() != null) {
+        for (var cookie : request.getCookies()) {
+            if ("auth_token".equals(cookie.getName())) {
+                return cookie.getValue();
             }
         }
+    }
+
+    var authHeader = request.getHeader("Authorization");
+
+    if (authHeader == null) {
         return null;
     }
+
+    return authHeader.replace("Bearer ", "");
+}
 }

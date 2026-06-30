@@ -1,25 +1,72 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { iPets } from '../models/pets-model';
 import { HttpClient } from '@angular/common/http';
-import { PetResponseDTO } from '../models/DTO/pet-response-DTO';
-import {PetCreateDTO} from "../models/DTO/petCreate-response-DTO";
+import { PetGenderEnum, PetResponseDTO, PetSpecies } from '../models/DTO/pet-response-DTO';
+
+export interface PetCreateDTO {
+  tutor_id: string;
+  name: string;
+  weight: number;
+  avatarUrl?: string;
+  gender: PetGenderEnum;
+  birthday: string;
+  species: PetSpecies;
+  breed: string;
+  description?: string;
+}
+
+export interface PetUpdateDTO {
+  tutor_id?: string;
+  name?: string;
+  weight?: number;
+  avatarUrl?: string;
+  gender?: PetGenderEnum;
+  birthday?: string;
+  species?: PetSpecies;
+  breed?: string;
+  description?: string;
+}
 
 @Injectable({
   providedIn: 'root',
 })
 export class PetsService {
+  private readonly backendUrl = 'http://localhost:8080';
+
   constructor(private http: HttpClient) {}
 
-    getPetsResponseDTO(): Observable<PetResponseDTO[]> {
-      return this.http.get<PetResponseDTO[]>('https://agendapet.onrender.com/pets',       {
-        withCredentials: true
-      });
-    }
+  getPetsResponseDTO(): Observable<PetResponseDTO[]> {
+    return this.http.get<PetResponseDTO[]>(`${this.backendUrl}/pets`, {
+      withCredentials: true,
+    });
+  }
 
-    registerPet(pet: PetCreateDTO): Observable<PetResponseDTO> {
-      return this.http.post<PetResponseDTO>('https://agendapet.onrender.com/pets', pet, {
-        withCredentials: true
-      });
-    }
+  getPetById(id: string): Observable<PetResponseDTO> {
+    return this.http.get<PetResponseDTO>(`${this.backendUrl}/pets/${id}`, {
+      withCredentials: true,
+    });
+  }
+
+  createPet(pet: PetCreateDTO): Observable<PetResponseDTO> {
+    return this.http.post<PetResponseDTO>(`${this.backendUrl}/pets`, pet, {
+      withCredentials: true,
+    });
+  }
+
+  updatePet(id: string, pet: PetUpdateDTO): Observable<PetResponseDTO> {
+    return this.http.patch<PetResponseDTO>(`${this.backendUrl}/pets/${id}`, pet, {
+      withCredentials: true,
+    });
+  }
+
+  deletePet(id: string): Observable<void> {
+    return this.http.delete<void>(`${this.backendUrl}/pets/${id}`, {
+      withCredentials: true,
+    });
+  }
+
+  // Mantém compatibilidade caso algum componente antigo ainda use registerPet()
+  registerPet(pet: PetCreateDTO): Observable<PetResponseDTO> {
+    return this.createPet(pet);
+  }
 }

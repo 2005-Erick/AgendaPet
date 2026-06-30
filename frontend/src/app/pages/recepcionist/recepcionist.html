@@ -13,7 +13,7 @@
         <div class="min-w-[220px] rounded-2xl border border-white/20 bg-white/15 p-4 backdrop-blur-sm">
           <p class="text-sm text-emerald-50/80">Hoje</p>
           <p class="mt-1 text-3xl font-semibold">?</p>
-          <p class="text-sm text-emerald-50/80">co  nsultas confirmadas</p>
+          <p class="text-sm text-emerald-50/80">consultas confirmadas</p>
         </div>
       </div>
     </header>
@@ -27,7 +27,7 @@
           </div>
           <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#D8F3DC] text-[#40916C]">
             <span class="material-symbols-outlined">calendar_today</span>
-          </div>    
+          </div>
         </div>
       </div>
 
@@ -68,80 +68,116 @@
 
           <form [formGroup]="appointmentForm" (ngSubmit)="onAppointmentSubmit()" class="mt-5 grid gap-4 md:grid-cols-2">
             @if (appointmentMessage()) {
-              <div [class]="appointmentMessageType() === 'success' ? 'bg-emerald-50 text-emerald-700' : 'bg-red-50 text-red-700'" class="md:col-span-2 rounded-xl border px-4 py-3 text-sm">
-                {{ appointmentMessage() }}
-              </div>
+            <div
+              [class]="appointmentMessageType() === 'success' ? 'bg-emerald-50 text-emerald-700' : 'bg-red-50 text-red-700'"
+              class="md:col-span-2 rounded-xl border px-4 py-3 text-sm">
+              {{ appointmentMessage() }}
+            </div>
             }
 
             <div class="flex flex-col gap-2">
-              <label class="text-sm font-medium text-zinc-700" for="cliente">Nome do cliente</label>
-              <input id="cliente" formControlName="personName" type="text" class="h-11 rounded-xl border border-[#D8F3DC] bg-[#F7FBF8] px-3 outline-none transition focus:border-[#40916C]" />
-              @if (getAppointmentFieldFeedback('personName'); as feedback) {
-                <p [class]="feedback.kind === 'error' ? 'text-red-600' : 'text-emerald-600'" class="text-xs">{{ feedback.message }}</p>
-              }
-            </div>
+              <label class="text-sm font-medium text-zinc-700" for="appointmentPet">Pet</label>
 
-            <div class="flex flex-col gap-2">
-              <label class="text-sm font-medium text-zinc-700" for="pet">Animal</label>
-              <input id="pet" formControlName="petName" type="text" class="h-11 rounded-xl border border-[#D8F3DC] bg-[#F7FBF8] px-3 outline-none transition focus:border-[#40916C]" />
-              @if (getAppointmentFieldFeedback('petName'); as feedback) {
-                <p [class]="feedback.kind === 'error' ? 'text-red-600' : 'text-emerald-600'" class="text-xs">{{ feedback.message }}</p>
-              }
-            </div>
+              <select id="appointmentPet" formControlName="pet_id"
+                class="h-11 rounded-xl border border-[#D8F3DC] bg-[#F7FBF8] px-3 outline-none transition focus:border-[#40916C]">
+                <option value="">Selecione o pet</option>
 
-            <div class="flex flex-col gap-2">
-              <label class="text-sm font-medium text-zinc-700" for="servico">Serviço</label>
-              <select id="servico" formControlName="service" class="h-11 rounded-xl border border-[#D8F3DC] bg-[#F7FBF8] px-3 outline-none transition focus:border-[#40916C]">
-                <option>Consulta</option>
-                <option>Vacina</option>
-                <option>Banho e tosa</option>
-                <option>Exame</option>
-              </select>
-              @if (getAppointmentFieldFeedback('service'); as feedback) {
-                <p [class]="feedback.kind === 'error' ? 'text-red-600' : 'text-emerald-600'" class="text-xs">{{ feedback.message }}</p>
-              }
-            </div>
-
-            <div class="flex flex-col gap-2">
-              <label class="text-sm font-medium text-zinc-700" for="data">Data e hora</label>
-              <input id="data" formControlName="dateTime" type="datetime-local" class="h-11 rounded-xl border border-[#D8F3DC] bg-[#F7FBF8] px-3 outline-none transition focus:border-[#40916C]" />
-              @if (getAppointmentFieldFeedback('dateTime'); as feedback) {
-                <p [class]="feedback.kind === 'error' ? 'text-red-600' : 'text-emerald-600'" class="text-xs">{{ feedback.message }}</p>
-              }
-            </div>
-
-            <div class="flex flex-col gap-2">
-              <label class="text-sm font-medium text-zinc-700" for="doctor">Veterinário</label>
-              <select id="doctor" formControlName="doctor">
-                @for (doctor of doctors; track doctor.id) {
-                  <option [value]="doctor.id">
-                    {{ doctor.name }}
-                  </option>
+                @for (pet of pets; track pet.id) {
+                <option [value]="pet.id">
+                  {{ pet.name }} - Tutor: {{ pet.tutor_name }}
+                </option>
                 }
               </select>
-              @if (getAppointmentFieldFeedback('doctor'); as feedback) {
-                <p [class]="feedback.kind === 'error' ? 'text-red-600' : 'text-emerald-600'" class="text-xs">{{ feedback.message }}</p>
+
+              @if (getAppointmentFieldFeedback('pet_id'); as feedback) {
+              <p [class]="feedback.kind === 'error' ? 'text-red-600' : 'text-emerald-600'" class="text-xs">
+                {{ feedback.message }}
+              </p>
               }
             </div>
 
             <div class="flex flex-col gap-2">
-              <label class="text-sm font-medium text-zinc-700" for="price">Preço</label>
-              <input id="price" formControlName="price" type="number" class="h-11 rounded-xl border border-[#D8F3DC] bg-[#F7FBF8] px-3 outline-none transition focus:border-[#40916C]" />
+              <label class="text-sm font-medium text-zinc-700" for="appointmentDoctor">Veterinário</label>
+
+              <select id="appointmentDoctor" formControlName="doctor_id"
+                class="h-11 rounded-xl border border-[#D8F3DC] bg-[#F7FBF8] px-3 outline-none transition focus:border-[#40916C]">
+                <option value="">Selecione o veterinário</option>
+
+                @for (doctor of doctors; track doctor.doctor_profile_id) {
+                <option [value]="doctor.doctor_profile_id">
+                  {{ doctor.name }} - CRMV {{ doctor.crmv }}
+                </option>
+                }
+              </select>
+
+              @if (getAppointmentFieldFeedback('doctor_id'); as feedback) {
+              <p [class]="feedback.kind === 'error' ? 'text-red-600' : 'text-emerald-600'" class="text-xs">
+                {{ feedback.message }}
+              </p>
+              }
+            </div>
+
+            <div class="flex flex-col gap-2">
+              <label class="text-sm font-medium text-zinc-700" for="appointmentType">Serviço</label>
+
+              <select id="appointmentType" formControlName="type"
+                class="h-11 rounded-xl border border-[#D8F3DC] bg-[#F7FBF8] px-3 outline-none transition focus:border-[#40916C]">
+                <option [ngValue]="null">Selecione</option>
+                <option [ngValue]="appointmentTypes.CONSULTATION">Consulta</option>
+                <option [ngValue]="appointmentTypes.VACCINATION">Vacina</option>
+                <option [ngValue]="appointmentTypes.SURGERY">Cirurgia</option>
+              </select>
+
+              @if (getAppointmentFieldFeedback('type'); as feedback) {
+              <p [class]="feedback.kind === 'error' ? 'text-red-600' : 'text-emerald-600'" class="text-xs">
+                {{ feedback.message }}
+              </p>
+              }
+            </div>
+
+            <div class="flex flex-col gap-2">
+              <label class="text-sm font-medium text-zinc-700" for="appointmentDate">Data e hora</label>
+
+              <input id="appointmentDate" formControlName="scheduled_at" type="datetime-local"
+                class="h-11 rounded-xl border border-[#D8F3DC] bg-[#F7FBF8] px-3 outline-none transition focus:border-[#40916C]" />
+
+              @if (getAppointmentFieldFeedback('scheduled_at'); as feedback) {
+              <p [class]="feedback.kind === 'error' ? 'text-red-600' : 'text-emerald-600'" class="text-xs">
+                {{ feedback.message }}
+              </p>
+              }
+            </div>
+
+            <div class="flex flex-col gap-2">
+              <label class="text-sm font-medium text-zinc-700" for="appointmentPrice">Preço</label>
+
+              <input id="appointmentPrice" formControlName="price" type="number" min="0" step="0.01"
+                class="h-11 rounded-xl border border-[#D8F3DC] bg-[#F7FBF8] px-3 outline-none transition focus:border-[#40916C]" />
+
               @if (getAppointmentFieldFeedback('price'); as feedback) {
-                <p [class]="feedback.kind === 'error' ? 'text-red-600' : 'text-emerald-600'" class="text-xs">{{ feedback.message }}</p>
+              <p [class]="feedback.kind === 'error' ? 'text-red-600' : 'text-emerald-600'" class="text-xs">
+                {{ feedback.message }}
+              </p>
               }
             </div>
 
-            <div class="flex flex-col gap-2">
-              <label class="text-sm font-medium text-zinc-700" for="cpf">CPF do tutor</label>
-              <input id="cpf" formControlName="cpf" type="text" class="h-11 rounded-xl border border-[#D8F3DC] bg-[#F7FBF8] px-3 outline-none transition focus:border-[#40916C]" />
-              @if (getAppointmentFieldFeedback('cpf'); as feedback) {
-                <p [class]="feedback.kind === 'error' ? 'text-red-600' : 'text-emerald-600'" class="text-xs">{{ feedback.message }}</p>
+            <div class="flex flex-col gap-2 md:col-span-2">
+              <label class="text-sm font-medium text-zinc-700" for="appointmentNote">Observações</label>
+
+              <textarea id="appointmentNote" formControlName="note" rows="2" maxlength="300"
+                class="rounded-xl border border-[#D8F3DC] bg-[#F7FBF8] px-3 py-2 outline-none transition focus:border-[#40916C]">
+      </textarea>
+
+              @if (getAppointmentFieldFeedback('note'); as feedback) {
+              <p [class]="feedback.kind === 'error' ? 'text-red-600' : 'text-emerald-600'" class="text-xs">
+                {{ feedback.message }}
+              </p>
               }
             </div>
 
             <div class="md:col-span-2 flex flex-wrap gap-3">
-              <button type="submit" class="w-full rounded-xl bg-[#40916C] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#357a57]">
+              <button type="submit"
+                class="w-full rounded-xl bg-[#40916C] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#357a57]">
                 Salvar agendamento
               </button>
             </div>
@@ -158,33 +194,41 @@
 
           <form [formGroup]="personForm" (ngSubmit)="onPersonSubmit()" class="mt-5 flex flex-col gap-4">
             @if (personMessage()) {
-              <div [class]="personMessageType() === 'success' ? 'bg-emerald-50 text-emerald-700' : 'bg-red-50 text-red-700'" class="rounded-xl border px-4 py-3 text-sm">
-                {{ personMessage() }}
-              </div>
+            <div
+              [class]="personMessageType() === 'success' ? 'bg-emerald-50 text-emerald-700' : 'bg-red-50 text-red-700'"
+              class="rounded-xl border px-4 py-3 text-sm">
+              {{ personMessage() }}
+            </div>
             }
 
             <div class="flex flex-col gap-2">
               <label class="text-sm font-medium text-zinc-700" for="name">Nome completo</label>
-              <input id="nomePessoa" formControlName="fullName" type="text" class="h-11 rounded-xl border border-[#D8F3DC] bg-[#F7FBF8] px-3 outline-none transition focus:border-[#40916C]" />
+              <input id="nomePessoa" formControlName="fullName" type="text"
+                class="h-11 rounded-xl border border-[#D8F3DC] bg-[#F7FBF8] px-3 outline-none transition focus:border-[#40916C]" />
               @if (getPersonFieldFeedback('fullName'); as feedback) {
-                <p [class]="feedback.kind === 'error' ? 'text-red-600' : 'text-emerald-600'" class="text-xs">{{ feedback.message }}</p>
+              <p [class]="feedback.kind === 'error' ? 'text-red-600' : 'text-emerald-600'" class="text-xs">{{
+                feedback.message }}</p>
               }
             </div>
 
             <div class="grid gap-4 sm:grid-cols-2">
               <div class="flex flex-col gap-2">
                 <label class="text-sm font-medium text-zinc-700" for="cpf">CPF</label>
-                <input id="cpfPessoa" formControlName="cpf" type="text" class="h-11 rounded-xl border border-[#D8F3DC] bg-[#F7FBF8] px-3 outline-none transition focus:border-[#40916C]" />
+                <input id="cpfPessoa" formControlName="cpf" type="text"
+                  class="h-11 rounded-xl border border-[#D8F3DC] bg-[#F7FBF8] px-3 outline-none transition focus:border-[#40916C]" />
                 @if (getPersonFieldFeedback('cpf'); as feedback) {
-                  <p [class]="feedback.kind === 'error' ? 'text-red-600' : 'text-emerald-600'" class="text-xs">{{ feedback.message }}</p>
+                <p [class]="feedback.kind === 'error' ? 'text-red-600' : 'text-emerald-600'" class="text-xs">{{
+                  feedback.message }}</p>
                 }
               </div>
 
               <div class="flex flex-col gap-2">
                 <label class="text-sm font-medium text-zinc-700" for="phone">Telefone</label>
-                <input id="telefonePessoa" formControlName="phone" type="text" class="h-11 rounded-xl border border-[#D8F3DC] bg-[#F7FBF8] px-3 outline-none transition focus:border-[#40916C]" />
+                <input id="telefonePessoa" formControlName="phone" type="text"
+                  class="h-11 rounded-xl border border-[#D8F3DC] bg-[#F7FBF8] px-3 outline-none transition focus:border-[#40916C]" />
                 @if (getPersonFieldFeedback('phone'); as feedback) {
-                  <p [class]="feedback.kind === 'error' ? 'text-red-600' : 'text-emerald-600'" class="text-xs">{{ feedback.message }}</p>
+                <p [class]="feedback.kind === 'error' ? 'text-red-600' : 'text-emerald-600'" class="text-xs">{{
+                  feedback.message }}</p>
                 }
               </div>
             </div>
@@ -192,17 +236,21 @@
             <div class="grid gap-4 sm:grid-cols-2">
               <div class="flex flex-col gap-2">
                 <label class="text-sm font-medium text-zinc-700" for="birthday">Aniversário</label>
-                <input id="aniversarioPessoa" formControlName="birthday" type="date" class="h-11 rounded-xl border border-[#D8F3DC] bg-[#F7FBF8] px-3 outline-none transition focus:border-[#40916C]" />
+                <input id="aniversarioPessoa" formControlName="birthday" type="date"
+                  class="h-11 rounded-xl border border-[#D8F3DC] bg-[#F7FBF8] px-3 outline-none transition focus:border-[#40916C]" />
                 @if (getPersonFieldFeedback('birthday'); as feedback) {
-                  <p [class]="feedback.kind === 'error' ? 'text-red-600' : 'text-emerald-600'" class="text-xs">{{ feedback.message }}</p>
+                <p [class]="feedback.kind === 'error' ? 'text-red-600' : 'text-emerald-600'" class="text-xs">{{
+                  feedback.message }}</p>
                 }
               </div>
 
               <div class="flex flex-col gap-2">
                 <label class="text-sm font-medium text-zinc-700" for="email">E-mail</label>
-                <input id="emailPessoa" formControlName="email" type="email" class="h-11 rounded-xl border border-[#D8F3DC] bg-[#F7FBF8] px-3 outline-none transition focus:border-[#40916C]" />
+                <input id="emailPessoa" formControlName="email" type="email"
+                  class="h-11 rounded-xl border border-[#D8F3DC] bg-[#F7FBF8] px-3 outline-none transition focus:border-[#40916C]" />
                 @if (getPersonFieldFeedback('email'); as feedback) {
-                  <p [class]="feedback.kind === 'error' ? 'text-red-600' : 'text-emerald-600'" class="text-xs">{{ feedback.message }}</p>
+                <p [class]="feedback.kind === 'error' ? 'text-red-600' : 'text-emerald-600'" class="text-xs">{{
+                  feedback.message }}</p>
                 }
               </div>
             </div>
@@ -211,34 +259,39 @@
               <div class="flex flex-col gap-2">
                 <label class="text-sm font-medium text-zinc-700" for="gender">Gênero</label>
                 <div class="rounded-xl border border-[#D8F3DC] bg-[#F7FBF8] p-1.5">
-                  <select id="genderPessoa" formControlName="gender" class="h-10 w-full rounded-lg border-0 bg-transparent px-3 text-sm outline-none">
+                  <select id="genderPessoa" formControlName="gender"
+                    class="h-10 w-full rounded-lg border-0 bg-transparent px-3 text-sm outline-none">
                     <option value="">Selecione</option>
                     <option value="MALE">Masculino</option>
                     <option value="FEMALE">Feminino</option>
                   </select>
                 </div>
                 @if (getPersonFieldFeedback('gender'); as feedback) {
-                  <p [class]="feedback.kind === 'error' ? 'text-red-600' : 'text-emerald-600'" class="text-xs">{{ feedback.message }}</p>
+                <p [class]="feedback.kind === 'error' ? 'text-red-600' : 'text-emerald-600'" class="text-xs">{{
+                  feedback.message }}</p>
                 }
               </div>
 
               <div class="flex flex-col gap-2">
                 <label class="text-sm font-medium text-zinc-700" for="password">Senha</label>
-                <input id="passwordPessoa" formControlName="password" type="password" class="h-11 rounded-xl border border-[#D8F3DC] bg-[#F7FBF8] px-3 outline-none transition focus:border-[#40916C]" />
+                <input id="passwordPessoa" formControlName="password" type="password"
+                  class="h-11 rounded-xl border border-[#D8F3DC] bg-[#F7FBF8] px-3 outline-none transition focus:border-[#40916C]" />
                 @if (getPersonFieldFeedback('password'); as feedback) {
-                  <p [class]="feedback.kind === 'error' ? 'text-red-600' : 'text-emerald-600'" class="text-xs">{{ feedback.message }}</p>
+                <p [class]="feedback.kind === 'error' ? 'text-red-600' : 'text-emerald-600'" class="text-xs">{{
+                  feedback.message }}</p>
                 }
               </div>
             </div>
 
-            <button type="submit" class="rounded-xl bg-[#2D6A4F] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#24553d]">
+            <button type="submit"
+              class="rounded-xl bg-[#2D6A4F] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#24553d]">
               Cadastrar pessoa
             </button>
           </form>
         </section>
       </div>
 
-    <section class="rounded-[28px] border border-[#D8F3DC] bg-white p-6 shadow-sm">    
+      <section class="rounded-[28px] border border-[#D8F3DC] bg-white p-6 shadow-sm">
         <div class="flex items-center justify-between">
           <div>
             <h2 class="text-xl font-semibold text-zinc-800">Cadastrar animal</h2>
@@ -248,25 +301,55 @@
 
         <form [formGroup]="petForm" (ngSubmit)="onPetSubmit()" class="mt-5 flex flex-col gap-4">
           @if (petMessage()) {
-            <div [class]="petMessageType() === 'success' ? 'bg-emerald-50 text-emerald-700' : 'bg-red-50 text-red-700'" class="rounded-xl border px-4 py-3 text-sm">
-              {{ petMessage() }}
-            </div>
+          <div [class]="petMessageType() === 'success' ? 'bg-emerald-50 text-emerald-700' : 'bg-red-50 text-red-700'"
+            class="rounded-xl border px-4 py-3 text-sm">
+            {{ petMessage() }}
+          </div>
           }
+
+          <div class="flex flex-col gap-2">
+            <label class="text-sm font-medium text-zinc-700" for="tutorPet">Tutor responsável</label>
+
+            <select id="tutorPet" formControlName="tutor_id"
+              class="h-11 rounded-xl border border-[#D8F3DC] bg-[#F7FBF8] px-3 outline-none transition focus:border-[#40916C]">
+              <option value="">Selecione um tutor</option>
+
+              @for (tutor of tutors; track tutor.id) {
+              <option [value]="tutor.id">
+                {{ tutor.name }} - {{ tutor.email }}
+              </option>
+              }
+            </select>
+
+            @if (getPetFieldFeedback('tutor_id'); as feedback) {
+            <p [class]="feedback.kind === 'error' ? 'text-red-600' : 'text-emerald-600'" class="text-xs">
+              {{ feedback.message }}
+            </p>
+            }
+          </div>
 
           <div class="grid gap-4 sm:grid-cols-2">
             <div class="flex flex-col gap-2">
               <label class="text-sm font-medium text-zinc-700" for="nomePet">Nome do pet</label>
-              <input id="nomePet" formControlName="name" type="text" class="h-11 rounded-xl border border-[#D8F3DC] bg-[#F7FBF8] px-3 outline-none transition focus:border-[#40916C]" />
+              <input id="nomePet" formControlName="name" type="text"
+                class="h-11 rounded-xl border border-[#D8F3DC] bg-[#F7FBF8] px-3 outline-none transition focus:border-[#40916C]" />
+
               @if (getPetFieldFeedback('name'); as feedback) {
-                <p [class]="feedback.kind === 'error' ? 'text-red-600' : 'text-emerald-600'" class="text-xs">{{ feedback.message }}</p>
+              <p [class]="feedback.kind === 'error' ? 'text-red-600' : 'text-emerald-600'" class="text-xs">
+                {{ feedback.message }}
+              </p>
               }
             </div>
 
             <div class="flex flex-col gap-2">
               <label class="text-sm font-medium text-zinc-700" for="peso">Peso</label>
-              <input id="peso" formControlName="weight" type="number" min="0.1" class="h-11 rounded-xl border border-[#D8F3DC] bg-[#F7FBF8] px-3 outline-none transition focus:border-[#40916C]" />
+              <input id="peso" formControlName="weight" type="number" min="0.1" step="0.1"
+                class="h-11 rounded-xl border border-[#D8F3DC] bg-[#F7FBF8] px-3 outline-none transition focus:border-[#40916C]" />
+
               @if (getPetFieldFeedback('weight'); as feedback) {
-                <p [class]="feedback.kind === 'error' ? 'text-red-600' : 'text-emerald-600'" class="text-xs">{{ feedback.message }}</p>
+              <p [class]="feedback.kind === 'error' ? 'text-red-600' : 'text-emerald-600'" class="text-xs">
+                {{ feedback.message }}
+              </p>
               }
             </div>
           </div>
@@ -274,7 +357,9 @@
           <div class="grid gap-4 sm:grid-cols-2">
             <div class="flex flex-col gap-2">
               <label class="text-sm font-medium text-zinc-700" for="especie">Espécie</label>
-              <select id="especie" formControlName="species" class="h-11 rounded-xl border border-[#D8F3DC] bg-[#F7FBF8] px-3 outline-none transition focus:border-[#40916C]">
+
+              <select id="especie" formControlName="species"
+                class="h-11 rounded-xl border border-[#D8F3DC] bg-[#F7FBF8] px-3 outline-none transition focus:border-[#40916C]">
                 <option [ngValue]="null">Selecione</option>
                 <option [ngValue]="petsSpecies.CAT">Gato</option>
                 <option [ngValue]="petsSpecies.DOG">Cachorro</option>
@@ -283,60 +368,86 @@
                 <option [ngValue]="petsSpecies.REPTILE">Réptil</option>
                 <option [ngValue]="petsSpecies.OTHER">Outro</option>
               </select>
+
               @if (getPetFieldFeedback('species'); as feedback) {
-                <p [class]="feedback.kind === 'error' ? 'text-red-600' : 'text-emerald-600'" class="text-xs">{{ feedback.message }}</p>
+              <p [class]="feedback.kind === 'error' ? 'text-red-600' : 'text-emerald-600'" class="text-xs">
+                {{ feedback.message }}
+              </p>
               }
             </div>
 
             <div class="flex flex-col gap-2">
               <label class="text-sm font-medium text-zinc-700" for="raca">Raça</label>
-              <input id="raca" formControlName="breed" type="text" class="h-11 rounded-xl border border-[#D8F3DC] bg-[#F7FBF8] px-3 outline-none transition focus:border-[#40916C]" />
+              <input id="raca" formControlName="breed" type="text"
+                class="h-11 rounded-xl border border-[#D8F3DC] bg-[#F7FBF8] px-3 outline-none transition focus:border-[#40916C]" />
+
               @if (getPetFieldFeedback('breed'); as feedback) {
-                <p [class]="feedback.kind === 'error' ? 'text-red-600' : 'text-emerald-600'" class="text-xs">{{ feedback.message }}</p>
+              <p [class]="feedback.kind === 'error' ? 'text-red-600' : 'text-emerald-600'" class="text-xs">
+                {{ feedback.message }}
+              </p>
               }
             </div>
           </div>
 
           <div class="grid gap-4 sm:grid-cols-2">
             <div class="flex flex-col gap-2">
-              <label class="text-sm font-medium text-zinc-700" for="birthday">Data de nascimento</label>
-              <input id="birthday" formControlName="birthday" type="date" class="h-11 rounded-xl border border-[#D8F3DC] bg-[#F7FBF8] px-3 outline-none transition focus:border-[#40916C]" />
+              <label class="text-sm font-medium text-zinc-700" for="birthdayPet">Data de nascimento</label>
+              <input id="birthdayPet" formControlName="birthday" type="date"
+                class="h-11 rounded-xl border border-[#D8F3DC] bg-[#F7FBF8] px-3 outline-none transition focus:border-[#40916C]" />
+
               @if (getPetFieldFeedback('birthday'); as feedback) {
-                <p [class]="feedback.kind === 'error' ? 'text-red-600' : 'text-emerald-600'" class="text-xs">{{ feedback.message }}</p>
+              <p [class]="feedback.kind === 'error' ? 'text-red-600' : 'text-emerald-600'" class="text-xs">
+                {{ feedback.message }}
+              </p>
               }
             </div>
 
             <div class="flex flex-col gap-2">
-                <label class="text-sm font-medium text-zinc-700" for="gender">Gênero</label>
-                <div class="rounded-xl border border-[#D8F3DC] bg-[#F7FBF8] p-1.5">
-                    <select id="genderPessoa" formControlName="gender" class="h-10 w-full rounded-lg border-0 bg-transparent px-3 text-sm outline-none">
-                    <option value="">Selecione</option>
-                    <option value="MALE">Masculino</option>
-                    <option value="FEMALE">Feminino</option>
-                    </select>
-                </div>
-                @if (getPetFieldFeedback('gender'); as feedback) {
-                    <p [class]="feedback.kind === 'error' ? 'text-red-600' : 'text-emerald-600'" class="text-xs">{{ feedback.message }}</p>
-                }
-            </div>
-            </div>
-            <div class="flex flex-col gap-2">
-              <label class="text-sm font-medium text-zinc-700" for="URLPet">URL da foto</label>
-              <input id="URLPet" formControlName="photoUrl" type="text" class="h-11 rounded-xl border border-[#D8F3DC] bg-[#F7FBF8] px-3 outline-none transition focus:border-[#40916C]" />
-              @if (getPetFieldFeedback('photoUrl'); as feedback) {
-                <p [class]="feedback.kind === 'error' ? 'text-red-600' : 'text-emerald-600'" class="text-xs">{{ feedback.message }}</p>
+              <label class="text-sm font-medium text-zinc-700" for="genderPet">Gênero</label>
+
+              <div class="rounded-xl border border-[#D8F3DC] bg-[#F7FBF8] p-1.5">
+                <select id="genderPet" formControlName="gender"
+                  class="h-10 w-full rounded-lg border-0 bg-transparent px-3 text-sm outline-none">
+                  <option [ngValue]="null">Selecione</option>
+                  <option [ngValue]="petGenderEnum.MALE">Macho</option>
+                  <option [ngValue]="petGenderEnum.FEMALE">Fêmea</option>
+                </select>
+              </div>
+
+              @if (getPetFieldFeedback('gender'); as feedback) {
+              <p [class]="feedback.kind === 'error' ? 'text-red-600' : 'text-emerald-600'" class="text-xs">
+                {{ feedback.message }}
+              </p>
               }
             </div>
+          </div>
 
           <div class="flex flex-col gap-2">
-            <label class="text-sm font-medium text-zinc-700" for="descricaoPet">Descrição</label>
-            <input id="descricaoPet" formControlName="description" type="text" class="h-11 rounded-xl border border-[#D8F3DC] bg-[#F7FBF8] px-3 outline-none transition focus:border-[#40916C]" />
-            @if (getPetFieldFeedback('description'); as feedback) {
-              <p [class]="feedback.kind === 'error' ? 'text-red-600' : 'text-emerald-600'" class="text-xs">{{ feedback.message }}</p>
+            <label class="text-sm font-medium text-zinc-700" for="URLPet">URL da foto</label>
+            <input id="URLPet" formControlName="photoUrl" type="text" placeholder="https://..."
+              class="h-11 rounded-xl border border-[#D8F3DC] bg-[#F7FBF8] px-3 outline-none transition focus:border-[#40916C]" />
+
+            @if (getPetFieldFeedback('photoUrl'); as feedback) {
+            <p [class]="feedback.kind === 'error' ? 'text-red-600' : 'text-emerald-600'" class="text-xs">
+              {{ feedback.message }}
+            </p>
             }
           </div>
 
-          <button type="submit" class="rounded-xl bg-[#40916C] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#357a57]">
+          <div class="flex flex-col gap-2">
+            <label class="text-sm font-medium text-zinc-700" for="descricaoPet">Descrição</label>
+            <input id="descricaoPet" formControlName="description" type="text"
+              class="h-11 rounded-xl border border-[#D8F3DC] bg-[#F7FBF8] px-3 outline-none transition focus:border-[#40916C]" />
+
+            @if (getPetFieldFeedback('description'); as feedback) {
+            <p [class]="feedback.kind === 'error' ? 'text-red-600' : 'text-emerald-600'" class="text-xs">
+              {{ feedback.message }}
+            </p>
+            }
+          </div>
+
+          <button type="submit"
+            class="rounded-xl bg-[#40916C] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#357a57]">
             Cadastrar pet
           </button>
         </form>
@@ -344,33 +455,39 @@
     </div>
 
     @if (showConfirmationModal()) {
-      <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
-        <div class="w-full max-w-md rounded-[24px] border border-[#D8F3DC] bg-white p-6 shadow-xl">
-          <div class="flex items-start justify-between gap-3">
-            <div>
-              <h3 class="text-lg font-semibold text-zinc-800">Confirmar código</h3>
-              <p class="mt-1 text-sm text-zinc-500">Digite o código enviado para o e-mail do cadastro.</p>
-            </div>
-            <button type="button" (click)="closeConfirmationModal()" class="rounded-full p-2 text-zinc-500 transition hover:bg-zinc-100 hover:text-zinc-700" aria-label="Fechar modal">
-              <span class="material-symbols-outlined">close</span>
-            </button>
+    <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
+      <div class="w-full max-w-md rounded-[24px] border border-[#D8F3DC] bg-white p-6 shadow-xl">
+        <div class="flex items-start justify-between gap-3">
+          <div>
+            <h3 class="text-lg font-semibold text-zinc-800">Confirmar código</h3>
+            <p class="mt-1 text-sm text-zinc-500">Digite o código enviado para o e-mail do cadastro.</p>
           </div>
+          <button type="button" (click)="closeConfirmationModal()"
+            class="rounded-full p-2 text-zinc-500 transition hover:bg-zinc-100 hover:text-zinc-700"
+            aria-label="Fechar modal">
+            <span class="material-symbols-outlined">close</span>
+          </button>
+        </div>
 
-          <div class="mt-5 flex flex-col gap-3">
-            <label class="text-sm font-medium text-zinc-700" for="confirmationCode">Código</label>
-            <input id="confirmationCode" [(ngModel)]="confirmationCode" type="text" inputmode="numeric" maxlength="6" class="h-11 rounded-xl border border-[#D8F3DC] bg-[#F7FBF8] px-3 outline-none transition focus:border-[#40916C]" placeholder="Digite o código" />
-          </div>
+        <div class="mt-5 flex flex-col gap-3">
+          <label class="text-sm font-medium text-zinc-700" for="confirmationCode">Código</label>
+          <input id="confirmationCode" [(ngModel)]="confirmationCode" type="text" inputmode="numeric" maxlength="6"
+            class="h-11 rounded-xl border border-[#D8F3DC] bg-[#F7FBF8] px-3 outline-none transition focus:border-[#40916C]"
+            placeholder="Digite o código" />
+        </div>
 
-          <div class="mt-6 flex justify-end gap-3">
-            <button type="button" (click)="closeConfirmationModal()" class="rounded-xl border border-[#D8F3DC] px-4 py-2 text-sm font-medium text-zinc-600 transition hover:bg-zinc-50">
-              Cancelar
-            </button>
-            <button type="button" (click)="confirmCode()" class="rounded-xl bg-[#40916C] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#357a57]">
-              Confirmar
-            </button>
-          </div>
+        <div class="mt-6 flex justify-end gap-3">
+          <button type="button" (click)="closeConfirmationModal()"
+            class="rounded-xl border border-[#D8F3DC] px-4 py-2 text-sm font-medium text-zinc-600 transition hover:bg-zinc-50">
+            Cancelar
+          </button>
+          <button type="button" (click)="confirmCode()"
+            class="rounded-xl bg-[#40916C] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#357a57]">
+            Confirmar
+          </button>
         </div>
       </div>
+    </div>
     }
 
     <section class="rounded-[28px] border border-[#D8F3DC] bg-white p-6 shadow-sm">
@@ -381,18 +498,20 @@
         </div>
 
         <div class="flex flex-col gap-3 sm:flex-row">
-          <label class="flex items-center gap-2 rounded-xl border border-[#D8F3DC] bg-[#F7FBF8] px-3 py-2 text-sm text-zinc-500">
+          <label
+            class="flex items-center gap-2 rounded-xl border border-[#D8F3DC] bg-[#F7FBF8] px-3 py-2 text-sm text-zinc-500">
             <span class="material-symbols-outlined text-[#40916C]">search</span>
             <input type="text" class="w-full bg-transparent outline-none" />
           </label>
-          <button class="rounded-xl bg-[#D8F3DC] px-4 py-2 text-sm font-medium text-[#2D6A4F] transition hover:bg-[#ccebda]">
+          <button
+            class="rounded-xl bg-[#D8F3DC] px-4 py-2 text-sm font-medium text-[#2D6A4F] transition hover:bg-[#ccebda]">
             Filtrar
           </button>
         </div>
       </div>
 
       <div class="mt-5 space-y-3">
-      @for (appointment of appointments; track appointment.id) {
+        @for (appointment of appointments; track appointment.id) {
         <article class="rounded-2xl border border-[#D8F3DC] bg-[#F7FBF8] p-4">
           <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
             <div>
@@ -412,8 +531,8 @@
               </span>
             </div>
           </div>
-        </article> 
-      } 
+        </article>
+        }
       </div>
     </section>
   </div>

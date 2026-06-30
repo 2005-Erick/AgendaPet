@@ -13,6 +13,10 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/doctors")
+@CrossOrigin(
+    origins = "http://localhost:4200",
+    allowCredentials = "true"
+)
 @RequiredArgsConstructor
 public class DoctorController {
     private final DoctorService doctorService;

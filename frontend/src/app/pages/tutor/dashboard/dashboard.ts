@@ -4,6 +4,8 @@ import { Router, RouterLink, RouterOutlet, RouterLinkActive } from '@angular/rou
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { UsersService } from '../../../services/users-service';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { AgendarConsultaModalComponent } from '../../../components/modals/agendar-consulta-modal/agendar-consulta-modal';
 
 @Component({
   selector: 'app-dashboard',
@@ -14,6 +16,7 @@ import { UsersService } from '../../../services/users-service';
     RouterOutlet,
     RouterLink,
     RouterLinkActive,
+    MatDialogModule,
   ],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.css',
@@ -21,11 +24,20 @@ import { UsersService } from '../../../services/users-service';
 export class Dashboard {
   private usersService = inject(UsersService);
   private router = inject(Router);
+  private dialog = inject(MatDialog);
   currentUser = this.usersService.currentUser;
 
   logout() {
-    this.usersService.logout();
-    this.router.navigate(['/login']);
+    this.usersService.logout().subscribe({
+      next: () => {
+        this.usersService.clearSession();
+        this.router.navigate(['/login']);
+      },
+      error: () => {
+        this.usersService.clearSession();
+        this.router.navigate(['/login']);
+      },
+    });
   }
 
   deleteMyAccount() {
@@ -34,15 +46,21 @@ export class Dashboard {
     if (!confirmed) {
       return;
     }
+  }
 
-    this.usersService.deleteCurrentUser().subscribe({
-      next: () => {
-        this.usersService.logout();
-        this.router.navigate(['/login']);
-      },
-      error: () => {
-        alert('Não foi possível excluir a conta.');
-      },
+  openAgendarConsultaModal() {
+    const dialogRef = this.dialog.open(AgendarConsultaModalComponent, {
+      width: '500px',
+      maxWidth: '95vw',
+      panelClass: 'custom-dialog-container',
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        // If true, the appointment was created successfully
+        alert('Consulta agendada com sucesso!');
+        // Ideally we would refresh the appointments list if we were in the appointments page.
+      }
     });
   }
 }

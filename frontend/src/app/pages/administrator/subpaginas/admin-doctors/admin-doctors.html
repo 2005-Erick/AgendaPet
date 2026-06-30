@@ -1,0 +1,443 @@
+<section class="min-h-screen bg-surface-container-high px-4 py-8 sm:px-6 lg:px-10">
+    <div class="mx-auto max-w-[1280px] space-y-8">
+
+        <div
+            class="overflow-hidden rounded-[32px] bg-surface shadow-[0_20px_60px_rgba(15,82,56,0.08)] ring-1 ring-black/5">
+            <div class="bg-primary-container/10 px-6 py-8 sm:px-8 sm:py-10">
+                <div class="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+                    <div class="space-y-3">
+                        <p class="text-sm font-semibold uppercase tracking-[0.25em] text-secondary">
+                            Equipe médica
+                        </p>
+
+                        <h1 class="text-3xl font-semibold tracking-tight text-on-surface">
+                            Médicos da clínica
+                        </h1>
+
+                        <p class="max-w-2xl text-sm leading-6 text-on-surface-variant">
+                            Visualize os médicos cadastrados, acompanhe agenda, CRMV e vínculo com usuários do sistema.
+                        </p>
+                    </div>
+
+                    <button type="button" (click)="openCreateModal()"
+                        class="inline-flex items-center justify-center gap-2 rounded-2xl bg-primary px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:opacity-90">
+                        <span class="material-symbols-outlined text-lg">add</span>
+                        Vincular usuário como médico
+                    </button>
+                </div>
+            </div>
+
+            <div class="grid gap-6 p-6 sm:grid-cols-4 sm:p-8">
+                <article class="rounded-3xl bg-white p-5 shadow-sm ring-1 ring-black/5">
+                    <span class="text-xs font-semibold uppercase tracking-[0.24em] text-on-surface-variant">
+                        Total de médicos
+                    </span>
+                    <p class="mt-4 text-3xl font-semibold text-on-surface">
+                        {{ totalDoctors() }}
+                    </p>
+                    <p class="mt-2 text-sm text-on-surface-variant">
+                        Perfis médicos cadastrados.
+                    </p>
+                </article>
+
+                <article class="rounded-3xl bg-white p-5 shadow-sm ring-1 ring-black/5">
+                    <span class="text-xs font-semibold uppercase tracking-[0.24em] text-on-surface-variant">
+                        Agendamentos
+                    </span>
+                    <p class="mt-4 text-3xl font-semibold text-on-surface">
+                        {{ totalAppointments() }}
+                    </p>
+                    <p class="mt-2 text-sm text-on-surface-variant">
+                        Total vinculado à equipe.
+                    </p>
+                </article>
+
+                <article class="rounded-3xl bg-white p-5 shadow-sm ring-1 ring-black/5">
+                    <span class="text-xs font-semibold uppercase tracking-[0.24em] text-on-surface-variant">
+                        Situação
+                    </span>
+                    <p class="mt-4 text-3xl font-semibold text-on-surface">
+                        {{ availabilityStatus() }}
+                    </p>
+                    <p class="mt-2 text-sm text-on-surface-variant">
+                        Estado geral da equipe médica.
+                    </p>
+                </article>
+            </div>
+        </div>
+
+        @if (message()) {
+        <div class="rounded-2xl border px-4 py-3 text-sm" [class]="messageType() === 'success'
+        ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+        : 'bg-red-50 text-red-700 border-red-200'">
+            {{ message() }}
+        </div>
+        }
+
+        <div class="rounded-[32px] bg-white p-6 shadow-[0_20px_40px_rgba(15,82,56,0.06)] ring-1 ring-black/5">
+            <div class="flex flex-wrap items-center justify-between gap-4">
+                <div>
+                    <p class="text-sm font-semibold uppercase tracking-[0.24em] text-secondary">
+                        Equipe veterinária
+                    </p>
+
+                    <h2 class="mt-3 text-2xl font-semibold text-on-surface">
+                        Médicos cadastrados
+                    </h2>
+                </div>
+
+                <button type="button" (click)="loadDoctors()"
+                    class="rounded-full bg-primary/10 px-4 py-2 text-sm font-semibold text-primary transition hover:bg-primary/15">
+                    Atualizar lista
+                </button>
+            </div>
+
+            <div class="mt-5">
+                <input type="text" placeholder="Buscar por nome, CRMV, status ou ID" [value]="searchTerm()"
+                    (input)="updateSearch($event)"
+                    class="w-full rounded-2xl border border-outline bg-white px-4 py-3 text-sm outline-none transition focus:ring-2 focus:ring-primary/30" />
+            </div>
+
+            @if (isLoading()) {
+            <p class="mt-6 text-center text-sm text-on-surface-variant">
+                Carregando médicos...
+            </p>
+            }
+
+            @if (!isLoading()) {
+            <div class="mt-6 grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
+                @for (doctor of filteredDoctors(); track doctor.doctor_profile_id) {
+                <article
+                    class="rounded-[28px] border border-outline bg-surface p-5 shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
+
+                    <div class="flex items-center gap-4">
+                        <div
+                            class="flex h-20 w-20 shrink-0 items-center justify-center rounded-3xl bg-primary/10 text-xl font-bold text-primary ring-1 ring-black/5">
+                            {{ getInitials(doctor.name) }}
+                        </div>
+
+                        <div class="min-w-0">
+                            <h3 class="truncate text-lg font-semibold text-on-surface">
+                                {{ doctor.name }}
+                            </h3>
+
+                            <p class="text-sm text-on-surface-variant">
+                                CRMV: {{ doctor.crmv }}
+                            </p>
+
+                            <span
+                                class="mt-2 inline-flex items-center gap-2 rounded-full px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em]"
+                                [class]="getStatusClass(doctor)">
+                                <span class="h-2 w-2 rounded-full bg-current"></span>
+                                {{ getDoctorStatus(doctor) }}
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="mt-5 grid grid-cols-3 gap-3">
+                        <div class="rounded-2xl bg-white p-3 text-center ring-1 ring-black/5">
+                            <p class="text-xl font-semibold text-on-surface">
+                                {{ getDoctorAppointments(doctor).length }}
+                            </p>
+                            <p class="mt-1 text-[11px] uppercase tracking-[0.16em] text-on-surface-variant">
+                                Total
+                            </p>
+                        </div>
+
+                        <div class="rounded-2xl bg-white p-3 text-center ring-1 ring-black/5">
+                            <p class="text-xl font-semibold text-on-surface">
+                                {{ getDoctorScheduledAppointments(doctor).length }}
+                            </p>
+                            <p class="mt-1 text-[11px] uppercase tracking-[0.16em] text-on-surface-variant">
+                                Agenda
+                            </p>
+                        </div>
+
+                        <div class="rounded-2xl bg-white p-3 text-center ring-1 ring-black/5">
+                            <p class="text-xl font-semibold text-on-surface">
+                                {{ getDoctorCompletedAppointments(doctor).length }}
+                            </p>
+                            <p class="mt-1 text-[11px] uppercase tracking-[0.16em] text-on-surface-variant">
+                                Feitos
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="mt-5 space-y-3">
+                        <div class="rounded-2xl bg-surface-container p-4">
+                            <p class="text-xs font-semibold uppercase tracking-[0.18em] text-on-surface-variant">
+                                Próximo atendimento
+                            </p>
+
+                            @if (getNextAppointment(doctor); as nextAppointment) {
+                            <p class="mt-2 text-sm font-semibold text-on-surface">
+                                {{ nextAppointment.pet_name }}
+                            </p>
+                            <p class="mt-1 text-xs text-on-surface-variant">
+                                {{ nextAppointment.scheduled_at | date:'dd/MM/yyyy · HH:mm' }}
+                            </p>
+                            } @else {
+                            <p class="mt-2 text-sm text-on-surface-variant">
+                                Nenhum atendimento futuro.
+                            </p>
+                            }
+                        </div>
+
+                        <div class="rounded-2xl bg-white p-3 text-sm ring-1 ring-black/5">
+                            <p class="text-xs text-on-surface-variant">
+                                ID do usuário
+                            </p>
+                            <p class="mt-1 break-all font-mono text-xs text-on-surface">
+                                {{ doctor.user_id }}
+                            </p>
+                        </div>
+
+                        <div class="flex gap-3 pt-2">
+                            <button type="button" (click)="openProfile(doctor)"
+                                class="flex-1 rounded-2xl bg-primary px-4 py-2 text-sm font-semibold text-white transition hover:opacity-90">
+                                Ver perfil
+                            </button>
+                        </div>
+                    </div>
+                </article>
+                }
+
+                @empty {
+                <div class="col-span-full rounded-3xl border border-dashed border-outline bg-surface p-8 text-center">
+                    <p class="text-base font-semibold text-on-surface">
+                        Nenhum médico encontrado.
+                    </p>
+                    <p class="mt-2 text-sm text-on-surface-variant">
+                        Crie um usuário com cargo de veterinário na página de usuários ou vincule um usuário existente
+                        aqui.
+                    </p>
+                </div>
+                }
+            </div>
+            }
+        </div>
+    </div>
+</section>
+
+@if (showCreateModal()) {
+<div class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
+    <div class="w-full max-w-xl rounded-[32px] bg-white p-6 shadow-2xl ring-1 ring-black/10">
+
+        <div class="flex items-start justify-between gap-4">
+            <div>
+                <p class="text-sm font-semibold uppercase tracking-[0.24em] text-secondary">
+                    Novo perfil médico
+                </p>
+
+                <h2 class="mt-2 text-2xl font-semibold text-on-surface">
+                    Vincular usuário existente
+                </h2>
+
+                <p class="mt-2 text-sm text-on-surface-variant">
+                    Selecione um usuário existente para criar o perfil médico vinculado.
+                </p>
+            </div>
+
+            <button type="button" (click)="closeCreateModal()"
+                class="rounded-full p-2 transition hover:bg-surface-container">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+        </div>
+
+        <div class="mt-6 grid gap-4">
+            <label class="space-y-2">
+                <span class="text-sm font-semibold text-on-surface">
+                    Usuário *
+                </span>
+
+                <select [value]="newDoctor().user_id" (change)="updateNewDoctorField('user_id', $event)"
+                    class="w-full rounded-2xl border border-outline px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-primary/30">
+                    <option value="">Selecione um usuário</option>
+
+                    @for (user of availableUsersForDoctor(); track user.id) {
+                    <option [value]="user.id">
+                        {{ getUserLabel(user) }}
+                    </option>
+                    }
+                </select>
+            </label>
+
+            <label class="space-y-2">
+                <span class="text-sm font-semibold text-on-surface">
+                    CRMV *
+                </span>
+
+                <input type="text" [value]="newDoctor().crmv" (input)="updateNewDoctorField('crmv', $event)"
+                    placeholder="1234-PB" maxlength="9"
+                    class="w-full rounded-2xl border border-outline px-4 py-3 text-sm uppercase outline-none focus:ring-2 focus:ring-primary/30" />
+            </label>
+        </div>
+
+        @if (availableUsersForDoctor().length === 0) {
+        <div class="mt-6 rounded-2xl bg-amber-50 border border-amber-200 px-4 py-3 text-sm text-amber-700">
+            Não há usuários disponíveis para vincular. Crie um usuário novo na página de usuários.
+        </div>
+        } @else {
+        <div class="mt-6 rounded-2xl bg-amber-50 border border-amber-200 px-4 py-3 text-sm text-amber-700">
+            Para criar um médico novo do zero, prefira a página de usuários e selecione o cargo
+            <strong>Veterinário</strong>.
+        </div>
+        }
+
+        <div class="mt-6 flex justify-end gap-3">
+            <button type="button" (click)="closeCreateModal()"
+                class="rounded-2xl border border-outline px-5 py-3 text-sm font-semibold text-on-surface transition hover:bg-surface-container">
+                Cancelar
+            </button>
+
+            <button type="button" (click)="createDoctorProfile()"
+                class="rounded-2xl bg-primary px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:opacity-90">
+                Criar perfil médico
+            </button>
+        </div>
+    </div>
+</div>
+}
+
+@if (showProfileModal() && selectedDoctor()) {
+<div class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
+    <div
+        class="w-full max-w-2xl rounded-[32px] bg-white p-6 shadow-2xl ring-1 ring-black/10 max-h-[90vh] overflow-y-auto">
+
+        <div class="flex items-start justify-between gap-4">
+            <div>
+                <p class="text-sm font-semibold uppercase tracking-[0.24em] text-secondary">
+                    Perfil médico
+                </p>
+
+                <h2 class="mt-2 text-2xl font-semibold text-on-surface">
+                    {{ selectedDoctor()!.name }}
+                </h2>
+
+                <p class="mt-2 text-sm text-on-surface-variant">
+                    Informações do profissional e resumo de atendimentos.
+                </p>
+            </div>
+
+            <button type="button" (click)="closeProfile()"
+                class="rounded-full p-2 transition hover:bg-surface-container">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+        </div>
+
+        <div class="mt-6 flex flex-col items-center gap-4">
+            <div
+                class="flex h-28 w-28 items-center justify-center rounded-3xl bg-primary/10 text-3xl font-bold text-primary ring-1 ring-black/5">
+                {{ getInitials(selectedDoctor()!.name) }}
+            </div>
+
+            <span
+                class="inline-flex items-center gap-2 rounded-full px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em]"
+                [class]="getStatusClass(selectedDoctor()!)">
+                <span class="h-2 w-2 rounded-full bg-current"></span>
+                {{ getDoctorStatus(selectedDoctor()!) }}
+            </span>
+        </div>
+
+        <div class="mt-6 grid gap-4 sm:grid-cols-3">
+            <div class="rounded-2xl bg-surface-container p-4 text-center">
+                <p class="text-2xl font-semibold text-on-surface">
+                    {{ getDoctorAppointments(selectedDoctor()!).length }}
+                </p>
+                <p class="mt-1 text-xs uppercase tracking-[0.18em] text-on-surface-variant">
+                    Total
+                </p>
+            </div>
+
+            <div class="rounded-2xl bg-surface-container p-4 text-center">
+                <p class="text-2xl font-semibold text-on-surface">
+                    {{ getDoctorScheduledAppointments(selectedDoctor()!).length }}
+                </p>
+                <p class="mt-1 text-xs uppercase tracking-[0.18em] text-on-surface-variant">
+                    Agendados
+                </p>
+            </div>
+
+            <div class="rounded-2xl bg-surface-container p-4 text-center">
+                <p class="text-2xl font-semibold text-on-surface">
+                    {{ getDoctorCompletedAppointments(selectedDoctor()!).length }}
+                </p>
+                <p class="mt-1 text-xs uppercase tracking-[0.18em] text-on-surface-variant">
+                    Concluídos
+                </p>
+            </div>
+        </div>
+
+        <div class="mt-6 grid gap-4 sm:grid-cols-2">
+            <div class="rounded-2xl bg-surface-container p-4">
+                <p class="text-xs font-semibold uppercase tracking-[0.18em] text-on-surface-variant">
+                    ID do perfil médico
+                </p>
+                <p class="mt-2 break-all font-mono text-xs font-semibold text-on-surface">
+                    {{ selectedDoctor()!.doctor_profile_id }}
+                </p>
+            </div>
+
+            <div class="rounded-2xl bg-surface-container p-4">
+                <p class="text-xs font-semibold uppercase tracking-[0.18em] text-on-surface-variant">
+                    ID do usuário
+                </p>
+                <p class="mt-2 break-all font-mono text-xs font-semibold text-on-surface">
+                    {{ selectedDoctor()!.user_id }}
+                </p>
+            </div>
+
+            <div class="rounded-2xl bg-surface-container p-4">
+                <p class="text-xs font-semibold uppercase tracking-[0.18em] text-on-surface-variant">
+                    CRMV
+                </p>
+                <p class="mt-2 text-sm font-semibold text-on-surface">
+                    {{ selectedDoctor()!.crmv }}
+                </p>
+            </div>
+
+            <div class="rounded-2xl bg-surface-container p-4">
+                <p class="text-xs font-semibold uppercase tracking-[0.18em] text-on-surface-variant">
+                    Perfis
+                </p>
+                <p class="mt-2 text-sm font-semibold text-on-surface">
+                    {{ formatRoles(selectedDoctor()!.roles) }}
+                </p>
+            </div>
+        </div>
+
+        <div class="mt-6 rounded-2xl bg-primary/5 p-4">
+            <p class="text-sm font-semibold text-on-surface">
+                Próximos atendimentos
+            </p>
+
+            <div class="mt-3 space-y-2">
+                @for (appointment of getDoctorScheduledAppointments(selectedDoctor()!).slice(0, 5); track
+                appointment.id) {
+                <div class="rounded-xl bg-white p-3 text-sm ring-1 ring-black/5">
+                    <p class="font-semibold text-on-surface">
+                        {{ appointment.pet_name }}
+                    </p>
+                    <p class="mt-1 text-xs text-on-surface-variant">
+                        {{ appointment.scheduled_at | date:'dd/MM/yyyy · HH:mm' }}
+                    </p>
+                </div>
+                }
+
+                @if (getDoctorScheduledAppointments(selectedDoctor()!).length === 0) {
+                <p class="text-sm text-on-surface-variant">
+                    Nenhum atendimento agendado para este médico.
+                </p>
+                }
+            </div>
+        </div>
+
+        <div class="mt-6 flex justify-end">
+            <button type="button" (click)="closeProfile()"
+                class="rounded-2xl bg-primary px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:opacity-90">
+                Fechar
+            </button>
+        </div>
+    </div>
+</div>
+}

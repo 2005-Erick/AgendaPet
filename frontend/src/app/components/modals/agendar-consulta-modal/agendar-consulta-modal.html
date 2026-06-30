@@ -1,0 +1,83 @@
+<div class="p-6 bg-white rounded-xl shadow-lg w-[500px] max-w-full">
+  <div class="flex justify-between items-center mb-6">
+    <h2 class="text-2xl font-bold text-zinc-800 flex items-center gap-2">
+      <div class="bg-[#40916C] h-8 w-8 rounded-full content-center flex items-center justify-center">
+        <mat-icon class="text-white text-sm" style="font-size: 16px; width: 16px; height: 16px;">calendar_today</mat-icon>
+      </div>
+      Agendar Consulta
+    </h2>
+    <button mat-icon-button (click)="onCancel()" class="text-zinc-500 hover:text-zinc-800 transition-colors">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" class="flex flex-col gap-4">
+    <!-- Pet Selection -->
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>Selecione o Pet</mat-label>
+      <mat-select formControlName="pet_id">
+        <mat-option *ngFor="let pet of pets" [value]="pet.id">
+          {{ pet.name }} ({{ pet.species }})
+        </mat-option>
+      </mat-select>
+      <mat-error *ngIf="form.get('pet_id')?.hasError('required')">O pet é obrigatório</mat-error>
+    </mat-form-field>
+
+    <!-- Doctor Selection -->
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>Selecione o Médico Veterinário</mat-label>
+      <mat-select formControlName="doctor_id">
+        <mat-option *ngFor="let doctor of doctors" [value]="doctor.doctor_profile_id">
+          Dr(a). {{ doctor.name }} (CRMV: {{ doctor.crmv }})
+        </mat-option>
+      </mat-select>
+      <mat-error *ngIf="form.get('doctor_id')?.hasError('required')">O médico é obrigatório</mat-error>
+    </mat-form-field>
+
+    <div class="flex gap-4">
+      <!-- Appointment Type -->
+      <mat-form-field appearance="outline" class="w-1/2">
+        <mat-label>Tipo de Consulta</mat-label>
+        <mat-select formControlName="type">
+          <mat-option *ngFor="let type of appointmentTypes" [value]="type">
+            {{ type }}
+          </mat-option>
+        </mat-select>
+        <mat-error *ngIf="form.get('type')?.hasError('required')">O tipo é obrigatório</mat-error>
+      </mat-form-field>
+
+      <!-- Date and Time -->
+      <mat-form-field appearance="outline" class="w-1/2">
+        <mat-label>Data e Hora</mat-label>
+        <!-- Using native datetime-local for simplicity and built-in time support, or mat-datepicker + time picker -->
+        <input matInput type="datetime-local" formControlName="scheduled_at">
+        <mat-error *ngIf="form.get('scheduled_at')?.hasError('required')">A data/hora é obrigatória</mat-error>
+      </mat-form-field>
+    </div>
+
+    <!-- Notes -->
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>Observações (Opcional)</mat-label>
+      <textarea matInput formControlName="note" rows="3" placeholder="Sintomas, motivos da consulta, etc."></textarea>
+    </mat-form-field>
+
+    <!-- Action Buttons -->
+    <div class="flex justify-end gap-3 mt-4 pt-4 border-t border-zinc-100">
+      <button 
+        type="button" 
+        mat-button 
+        (click)="onCancel()"
+        class="text-zinc-600 hover:bg-zinc-100 rounded-lg px-6 py-2 transition-colors font-medium"
+      >
+        Cancelar
+      </button>
+      <button 
+        type="submit" 
+        [disabled]="form.invalid"
+        class="bg-[#40916C] text-white hover:bg-[#2d6a4f] rounded-lg px-6 py-2 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+      >
+        <mat-icon class="text-sm">check</mat-icon> Confirmar Agendamento
+      </button>
+    </div>
+  </form>
+</div>

@@ -1,6 +1,5 @@
 package com.ifpb.agendapet.auth;
 
-import com.ifpb.agendapet.auth.dto.AuthenticateResponseDTO;
 import com.ifpb.agendapet.auth.dto.LoginRequestDTO;
 import com.ifpb.agendapet.auth.dto.VerifyMfaRequestDTO;
 import com.ifpb.agendapet.exception.dto.StatusResponseDTO;
@@ -9,19 +8,35 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
+import java.time.Duration;
 
 @RestController
 @RequestMapping("/auth")
+@CrossOrigin(
+    origins = "http://localhost:4200",
+    allowCredentials = "true"
+)
 @RequiredArgsConstructor
 public class AuthorizationController {
 
     private final AuthService authService;
+
+    private ResponseCookie createAuthCookie(String token) {
+    return ResponseCookie.from("auth_token", token)
+            .httpOnly(true)
+            .secure(false) // true apenas em produção com HTTPS
+            .path("/")
+            .maxAge(Duration.ofDays(7))
+            .sameSite("Lax")
+            .build();
+}
 
     @PostMapping("/login")
     public ResponseEntity<StatusResponseDTO> login(@RequestBody @Valid LoginRequestDTO dto) {
@@ -30,17 +45,13 @@ public class AuthorizationController {
     }
 
     @PostMapping("/login/confirm")
-    public ResponseEntity<Void> confirmLogin(@RequestBody @Valid VerifyMfaRequestDTO dto, HttpServletResponse response) {
+    public ResponseEntity<StatusResponseDTO> confirmLogin(@RequestBody @Valid VerifyMfaRequestDTO dto) {
         String token = authService.confirmLogin(dto);
-        Cookie cookie = new Cookie("access_token", token);
-        cookie.setHttpOnly(true);
-        cookie.setSecure(true);
-        cookie.setPath("/");
-        cookie.setMaxAge(60 * 60);
+        ResponseCookie cookie = createAuthCookie(token);
 
-        response.addCookie(cookie);
-
-        return ResponseEntity.ok().build();    
+        return ResponseEntity.ok()
+                .header(HttpHeaders.SET_COOKIE, cookie.toString())
+                .body(new StatusResponseDTO("Login confirmado com sucesso."));
     }
 
     @PostMapping("/register")
@@ -50,16 +61,28 @@ public class AuthorizationController {
     }
 
     @PostMapping("/register/confirm")
-    public ResponseEntity<Void> confirmRegistration(@RequestBody @Valid VerifyMfaRequestDTO dto, HttpServletResponse response) {
+    public ResponseEntity<StatusResponseDTO> confirmRegistration(@RequestBody @Valid VerifyMfaRequestDTO dto) {
         String token = authService.confirmRegistration(dto);
-        Cookie cookie = new Cookie("access_token", token);
-        cookie.setHttpOnly(true);
-        cookie.setSecure(true);
-        cookie.setPath("/");
-        cookie.setMaxAge(60 * 60);
 
-        response.addCookie(cookie);
+        ResponseCookie cookie = createAuthCookie(token);
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .header(HttpHeaders.SET_COOKIE, cookie.toString())
+                .body(new StatusResponseDTO("Cadastro confirmado com sucesso."));
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<StatusResponseDTO> logout() {
+        ResponseCookie cookie = ResponseCookie.from("auth_token", "")
+                .httpOnly(true)
+                .secure(false)
+                .path("/")
+                .maxAge(0)
+                .sameSite("Lax")
+                .build();
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.SET_COOKIE, cookie.toString())
+                .body(new StatusResponseDTO("Logout realizado com sucesso."));
     }
 }

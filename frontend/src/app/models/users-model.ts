@@ -12,10 +12,12 @@ export interface iUser {
   gender?: 'MALE' | 'FEMALE';
   created_at?: string;
   updated_at?: string;
+  avatarUrl?: string;
 }
 
 export enum user_role {
   ADMIN = 'ADMIN',
   DOCTOR = 'DOCTOR',
   TUTOR = 'TUTOR',
+  RECEPTIONIST = 'RECEPTIONIST',
 }

@@ -9,6 +9,8 @@ import { NotFoundPage } from './pages/not-found/not-found';
 import { ConfigurationPage } from './pages/tutor/dashboard/subpaginas/configuration-page/configuration-page';
 import { configurationRoutes } from './pages/tutor/dashboard/subpaginas/configuration-page/configuration.routes';
 import { Recepcionist } from './pages/recepcionist/recepcionist';
+import { AdminDashboard } from './pages/administrator/admin-dashboard/admin-dashboard';
+import { adminDashboardRoutes } from './pages/administrator/admin-dashboard/admin-dashboard.routes';
 
 export const routes: Routes = [
   { path: '', component: Home, title: 'AgendaPet - Gestão de Clínicas Veterinárias e Pet Shops' },
@@ -20,6 +22,16 @@ export const routes: Routes = [
     component: Dashboard,
     children: dashboardRoutes,
   },
-  {path: 'recepcionist', component: Recepcionist, title: 'AgendaPet - Dashboard Recepcionista'},
+  {
+    path: 'admin-dashboard',
+    component: AdminDashboard,
+    title: 'AgendaPet - Dashboard Administrador',
+    children: adminDashboardRoutes,
+  },
+  {
+    path: 'dashboard-recepcionist',
+    component: Recepcionist,
+    title: 'AgendaPet - Dashboard Recepcionista',
+  },
   { path: '**', component: NotFoundPage, title: 'AgendaPet - 404' },
 ];

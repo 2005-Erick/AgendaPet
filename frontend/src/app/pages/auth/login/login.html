@@ -22,106 +22,134 @@
         <span class="font-headline-md text-headline-md text-primary font-bold tracking-tight">AgendaPet</span>
       </div>
 
-      <!-- Header -->
-      <header class="mb-8 text-center md:text-left">
-        <h1 class="text-3xl font-bold text-zinc-800 mb-2">Bem-vindo de volta</h1>
-        <p class="text-zinc-600">
-          Entre no console clínico para gerenciar agendamentos e registros.
-        </p>
-      </header>
+      <!-- ========== STEP 1: Email + Senha ========== -->
+      @if (!showMfaStep()) {
+        <!-- Header -->
+        <header class="mb-8 text-center md:text-left">
+          <h1 class="text-3xl font-bold text-zinc-800 mb-2">Bem-vindo de volta</h1>
+          <p class="text-zinc-600">
+            Entre no console clínico para gerenciar agendamentos e registros.
+          </p>
+        </header>
 
-      @if (errorMessage()) {
-      <div class="bg-error-container text-on-error-container p-4 rounded-lg mb-6 text-sm">
-        {{ errorMessage() }}
-      </div>
+        @if (errorMessage()) {
+          <div class="bg-error-container text-on-error-container p-4 rounded-lg mb-6 text-sm">
+            {{ errorMessage() }}
+          </div>
+        }
+
+        <!-- Form -->
+        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="flex flex-col gap-6">
+          <!-- Email -->
+          <div class="flex flex-col gap-2">
+            <label class="text-sm font-semibold text-zinc-800" for="email">Endereço de Email</label>
+            <div class="relative">
+              <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-outline">
+                <span class="material-symbols-outlined" style="font-size: 20px">mail</span>
+              </span>
+              <input formControlName="email"
+                class="w-full h-11 pl-10 pr-3 rounded-lg bg-surface-container-lowest border border-outline-variant text-zinc-800 focus:border-primary focus:border-2 focus:ring-4 focus:ring-primary/10 transition-all outline-none"
+                id="email" placeholder="doutor@clinica.com" type="email" />
+            </div>
+            @if (getFieldFeedback('email'); as feedback) {
+              <p [class.text-error]="feedback.kind === 'error'" [class.text-success]="feedback.kind === 'success'"
+                class="text-xs font-medium">
+                {{ feedback.message }}
+              </p>
+            }
+          </div>
+
+          <!-- Password -->
+          <div class="flex flex-col gap-2">
+            <div class="flex justify-between items-center">
+              <label class="text-sm font-semibold text-zinc-800" for="password">Senha</label>
+              <a class="text-sm font-semibold text-[#40916C] hover:text-[#357a57]" href="#">Esqueceu a senha?</a>
+            </div>
+            <div class="relative">
+              <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-outline">
+                <span class="material-symbols-outlined" style="font-size: 20px">lock</span>
+              </span>
+              <input formControlName="password"
+                class="w-full h-11 pl-10 pr-3 rounded-lg bg-surface-container-lowest border border-outline-variant text-zinc-800 focus:border-primary focus:border-2 focus:ring-4 focus:ring-primary/10 transition-all outline-none"
+                id="password" placeholder="••••••••" type="password" />
+            </div>
+            @if (getFieldFeedback('password'); as feedback) {
+              <p [class.text-error]="feedback.kind === 'error'" [class.text-success]="feedback.kind === 'success'"
+                class="text-xs font-medium">
+                {{ feedback.message }}
+              </p>
+            }
+          </div>
+
+          <!-- Submit Button -->
+          <button [disabled]="loginForm.invalid || isLoading()"
+            class="w-full h-11 mt-2 bg-[#40916C] text-on-primary rounded-lg font-semibold flex justify-center items-center hover:bg-[#357a57] disabled:opacity-50 transition-colors shadow-sm"
+            type="submit">
+            {{ isLoading() ? 'Entrando...' : 'Entrar' }}
+          </button>
+        </form>
+
+        <!-- Registration Link -->
+        <p class="mt-8 text-center text-sm text-zinc-600">
+          Novo no AgendaPet?
+          <a class="font-semibold text-[#40916C] hover:underline" routerLink="/cadastro">Criar uma Conta</a>
+        </p>
       }
 
-      <!-- Form -->
-      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="flex flex-col gap-6">
-        <!-- Email -->
-        <div class="flex flex-col gap-2">
-          <label class="text-sm font-semibold text-zinc-800" for="email">Endereço de Email</label>
-          <div class="relative">
-            <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-outline">
-              <span class="material-symbols-outlined" style="font-size: 20px">mail</span>
-            </span>
-            <input formControlName="email"
-              class="w-full h-11 pl-10 pr-3 rounded-lg bg-surface-container-lowest border border-outline-variant text-zinc-800 focus:border-primary focus:border-2 focus:ring-4 focus:ring-primary/10 transition-all outline-none"
-              id="email" placeholder="doutor@clinica.com" type="email" />
-          </div>
-          @if (getFieldFeedback('email'); as feedback) {
-          <p [class.text-error]="feedback.kind === 'error'" [class.text-success]="feedback.kind === 'success'"
-            class="text-xs font-medium">
-            {{ feedback.message }}
+      <!-- ========== STEP 2: Código MFA ========== -->
+      @if (showMfaStep()) {
+        <header class="mb-8 text-center md:text-left">
+          <h1 class="text-3xl font-bold text-zinc-800 mb-2">Verificação em duas etapas</h1>
+          <p class="text-zinc-600">
+            Enviamos um código de verificação para o seu e-mail. Insira-o abaixo para continuar.
           </p>
-          }
-        </div>
+        </header>
 
-        <!-- Password -->
-        <div class="flex flex-col gap-2">
-          <div class="flex justify-between items-center">
-            <label class="text-sm font-semibold text-zinc-800" for="password">Senha</label>
-            <a class="text-sm font-semibold text-[#40916C] hover:text-[#357a57]" href="#">Esqueceu a senha?</a>
+        @if (successMessage()) {
+          <div class="bg-green-50 border border-green-200 text-green-800 p-4 rounded-lg mb-6 text-sm flex items-center gap-2">
+            <span class="material-symbols-outlined" style="font-size: 20px">check_circle</span>
+            {{ successMessage() }}
           </div>
-          <div class="relative">
-            <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-outline">
-              <span class="material-symbols-outlined" style="font-size: 20px">lock</span>
-            </span>
-            <input formControlName="password"
-              class="w-full h-11 pl-10 pr-3 rounded-lg bg-surface-container-lowest border border-outline-variant text-zinc-800 focus:border-primary focus:border-2 focus:ring-4 focus:ring-primary/10 transition-all outline-none"
-              id="password" placeholder="••••••••" type="password" />
+        }
+
+        @if (errorMessage()) {
+          <div class="bg-error-container text-on-error-container p-4 rounded-lg mb-6 text-sm">
+            {{ errorMessage() }}
           </div>
-          @if (getFieldFeedback('password'); as feedback) {
-          <p [class.text-error]="feedback.kind === 'error'" [class.text-success]="feedback.kind === 'success'"
-            class="text-xs font-medium">
-            {{ feedback.message }}
-          </p>
-          }
-        </div>
+        }
 
-        <!-- Submit Button -->
-        <button [disabled]="loginForm.invalid || isLoading()"
-          class="w-full h-11 mt-2 bg-[#40916C] text-on-primary rounded-lg font-semibold flex justify-center items-center hover:bg-[#357a57] disabled:opacity-50 transition-colors shadow-sm"
-          type="submit">
-          {{ isLoading() ? 'Entrando...' : 'Entrar' }}
-        </button>
-      </form>
-
-      <!-- Registration Link -->
-      <p class="mt-8 text-center text-sm text-zinc-600">
-        Novo no AgendaPet?
-        <a class="font-semibold text-[#40916C] hover:underline" routerLink="/cadastro">Criar uma Conta</a>
-      </p>
-    </div>
-    
-    @if (showConfirmationModal()) {
-      <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
-        <div class="w-full max-w-md rounded-[24px] border border-[#D8F3DC] bg-white p-6 shadow-xl">
-          <div class="flex items-start justify-between gap-3">
-            <div>
-              <h3 class="text-lg font-semibold text-zinc-800">Confirmar código</h3>
-              <p class="mt-1 text-sm text-zinc-500">Digite o código enviado para o e-mail do cadastro.</p>
+        <div class="flex flex-col gap-6">
+          <!-- MFA Code Input -->
+          <div class="flex flex-col gap-2">
+            <label class="text-sm font-semibold text-zinc-800" for="mfa-code">Código de verificação</label>
+            <div class="relative">
+              <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-outline">
+                <span class="material-symbols-outlined" style="font-size: 20px">pin</span>
+              </span>
+              <input
+                [ngModel]="mfaCode()"
+                (ngModelChange)="mfaCode.set($event)"
+                class="w-full h-11 pl-10 pr-3 rounded-lg bg-surface-container-lowest border border-outline-variant text-zinc-800 focus:border-primary focus:border-2 focus:ring-4 focus:ring-primary/10 transition-all outline-none text-center text-xl tracking-[0.5em] font-mono"
+                id="mfa-code" placeholder="000000" type="text" maxlength="6"
+                (keydown.enter)="confirmMfa()" />
             </div>
-            <button type="button" (click)="closeConfirmationModal()" class="rounded-full p-2 text-zinc-500 transition hover:bg-zinc-100 hover:text-zinc-700" aria-label="Fechar modal">
-              <span class="material-symbols-outlined">close</span>
-            </button>
           </div>
 
-          <div class="mt-5 flex flex-col gap-3">
-            <label class="text-sm font-medium text-zinc-700" for="confirmationCode">Código</label>
-            <input id="confirmationCode" [(ngModel)]="confirmationCode" type="text" inputmode="numeric" maxlength="6" class="h-11 rounded-xl border border-[#D8F3DC] bg-[#F7FBF8] px-3 outline-none transition focus:border-[#40916C]" placeholder="Digite o código" />
-          </div>
+          <!-- Confirm Button -->
+          <button [disabled]="mfaCode().trim().length < 6 || isLoading()"
+            (click)="confirmMfa()"
+            class="w-full h-11 mt-2 bg-[#40916C] text-on-primary rounded-lg font-semibold flex justify-center items-center hover:bg-[#357a57] disabled:opacity-50 transition-colors shadow-sm">
+            {{ isLoading() ? 'Verificando...' : 'Verificar Código' }}
+          </button>
 
-          <div class="mt-6 flex justify-end gap-3">
-            <button type="button" (click)="closeConfirmationModal()" class="rounded-xl border border-[#D8F3DC] px-4 py-2 text-sm font-medium text-zinc-600 transition hover:bg-zinc-50">
-              Cancelar
-            </button>
-            <button type="button" (click)="confirmCode()" class="rounded-xl bg-[#40916C] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#357a57]">
-              Confirmar
-            </button>
-          </div>
+          <!-- Back to Login -->
+          <button (click)="backToLogin()"
+            class="w-full h-10 text-sm text-zinc-600 hover:text-zinc-800 transition-colors flex items-center justify-center gap-1">
+            <span class="material-symbols-outlined" style="font-size: 18px">arrow_back</span>
+            Voltar para o login
+          </button>
         </div>
-      </div>
-    }    
+      }
+    </div>
   </section>
 </main>
