@@ -9,6 +9,10 @@ import { DoctorsServices } from '../../services/doctors-service';
 import {DoctorResponseDTO} from "../../models/DTO/doctor-response-DTO";
 import { UserResponseDTO } from '../../models/DTO/user-response-DTO';
 import { AppointmentResponseDTO } from '../../models/DTO/appointment-response-DTO';
+import {PetResponseDTO} from "../../models/DTO/pet-response-DTO";
+import { PetSpecies } from '../../models/DTO/pet-response-DTO';
+import { PetGenderEnum } from '../../models/DTO/pet-response-DTO';
+import {PetCreateDTO} from "../../models/DTO/petCreate-response-DTO";
 
 @Component({
   selector: 'app-recepcionist',
@@ -39,13 +43,13 @@ export class Recepcionist {
   
   petForm = new FormGroup({
     name: new FormControl('', [Validators.required]),
-    species: new FormControl<pets_species | null>(null, [Validators.required]),
+    species: new FormControl<PetSpecies | null>(null, [Validators.required]),
     breed: new FormControl('', [Validators.required]),
     weight: new FormControl<number | null>(null, [Validators.required, Validators.min(0.1)]),
     birthday: new FormControl('', [Validators.required]),
     photoUrl: new FormControl('', [Validators.required]),
     description: new FormControl('', [Validators.required]),
-    gender: new FormControl<'MALE' | 'FEMALE' | null>(null, [Validators.required]),
+    gender: new FormControl<PetGenderEnum | null>(null, [Validators.required]),
   });
 
   personForm = new FormGroup({
@@ -55,13 +59,13 @@ export class Recepcionist {
     birthday: new FormControl('', [Validators.required]),
     email: new FormControl('', [Validators.required, Validators.email]),
     password: new FormControl('', [Validators.required, Validators.minLength(6)]),
-    gender: new FormControl<'MALE' | 'FEMALE' | null>(null, [Validators.required]),
+    gender: new FormControl<PetGenderEnum | null>(null, [Validators.required]),
   });
 
   appointmentMessage = signal<string | null>(null);
   appointmentMessageType = signal<'success' | 'error' | null>(null);
 
-  petsSpecies = pets_species;
+  petsSpecies = PetSpecies;
 
   petMessage = signal<string | null>(null);
   petMessageType = signal<'success' | 'error' | null>(null);
@@ -184,12 +188,12 @@ export class Recepcionist {
       return;
     }
 
-    const dto: iPets = {
+    const dto: PetCreateDTO = {
       name: this.petForm.value.name!,
       weight: Number(this.petForm.value.weight!!),
       breed: this.petForm.value.breed!,
-      species: this.petForm.value.species ?? pets_species.OTHER,
-      birthday: new Date(this.petForm.value.birthday!),
+      species: this.petForm.value.species ?? PetSpecies.OTHER,
+      birthday: new Date(this.petForm.value.birthday!).toISOString(),
       description: this.petForm.value.description!,
       gender: this.petForm.value.gender!,
     };

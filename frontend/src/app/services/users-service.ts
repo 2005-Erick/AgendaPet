@@ -5,6 +5,7 @@ import { iUser } from '../models/users-model';
 import { map, Observable, tap } from 'rxjs';
 import { iPets } from '../models/pets-model';
 import { UserResponseDTO } from '../models/DTO/user-response-DTO';
+import { StatusResponseDTO } from '../models/DTO/status-response-DTO';
 
 @Injectable({
   providedIn: 'root',
@@ -51,25 +52,27 @@ export class UsersService {
   //   );
   // }
 
-  userlogin(email: string, password: string): Observable<UserResponseDTO> {
-    return this.http.post<UserResponseDTO>(`https://agendapet.onrender.com/auth/login`,{ email, password }
+  userlogin(login: string, password: string): Observable<StatusResponseDTO> {
+    return this.http.post<StatusResponseDTO>(`https://agendapet.onrender.com/auth/login`,{ login, password }
   )};
 
-  confirmLogin(email: string, code: string) {
+  confirmLogin(email: string, code: string): Observable<void> {
     return this.http.post<void>(`https://agendapet.onrender.com/auth/login/confirm`,{ email, code },
       {
         withCredentials: true
       }
     )};  
   
-  registerUser(user: iUser): Observable<UserResponseDTO> {
-    return this.http.post<UserResponseDTO>('https://agendapet.onrender.com/auth/register', user);
+  registerUser(user: iUser): Observable<StatusResponseDTO> {
+    return this.http.post<StatusResponseDTO>('https://agendapet.onrender.com/auth/register', user);
   }
 
-  confirmRegister(email: string, code: string) {
-    return this.http.post<{token: string}>('https://agendapet.onrender.com/auth/register/confirm',{email, code}
-    );
-  }
+  confirmRegister(email: string, code: string): Observable<void> {
+    return this.http.post<void>('https://agendapet.onrender.com/auth/register/confirm',{email, code},
+      {
+        withCredentials: true
+      }
+  )};
 
   getUsersResponseDTO(): Observable<UserResponseDTO[]> {
     return this.http.get<UserResponseDTO[]>('https://agendapet.onrender.com/users');

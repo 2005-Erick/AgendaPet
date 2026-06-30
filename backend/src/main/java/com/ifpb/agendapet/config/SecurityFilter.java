@@ -11,7 +11,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-
+import jakarta.servlet.http.Cookie;
 import java.io.IOException;
 
 @Component
@@ -25,23 +25,35 @@ public class SecurityFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         var token = this.recoverToken(request);
 
-        if(token != null) {
+    if (token != null) {
+        try {
             var subject = tokenService.validateToken(token);
+
             UserDetails user = userRepository.findByEmail(subject);
 
-            var authentication =  new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
+            var authentication = new UsernamePasswordAuthenticationToken(
+                    user,
+                    null,
+                    user.getAuthorities()
+            );
 
             SecurityContextHolder.getContext().setAuthentication(authentication);
-        }
 
+        } catch (Exception e) {
+            SecurityContextHolder.clearContext();
+        }
+    }
         filterChain.doFilter(request, response);
     }
 
     private String recoverToken(HttpServletRequest request) {
-        var authHeader  = request.getHeader("Authorization");
-        if (authHeader == null) {
-            return null;
+        if (request.getCookies() != null) {
+            for (Cookie cookie : request.getCookies()) {
+                if ("access_token".equals(cookie.getName())) {
+                    return cookie.getValue();
+                }
+            }
         }
-        return authHeader.replace("Bearer ", "");
+        return null;
     }
 }

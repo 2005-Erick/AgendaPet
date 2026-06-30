@@ -20,6 +20,6 @@ export const routes: Routes = [
     component: Dashboard,
     children: dashboardRoutes,
   },
-  {path: 'dashboard-recepcionist', component: Recepcionist, title: 'AgendaPet - Dashboard Recepcionista'},
+  {path: 'recepcionist', component: Recepcionist, title: 'AgendaPet - Dashboard Recepcionista'},
   { path: '**', component: NotFoundPage, title: 'AgendaPet - 404' },
 ];

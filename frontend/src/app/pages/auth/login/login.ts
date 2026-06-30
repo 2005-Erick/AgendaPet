@@ -81,7 +81,7 @@ export class Login {
     if (!email || !code) {
       return;
     }
-    this.usersService.confirmRegister(email, code).subscribe({
+    this.usersService.confirmLogin(email, code).subscribe({
       next: () => {
         this.showConfirmationModal.set(false);
         this.confirmationCode.set('');
