@@ -52,19 +52,19 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.DELETE, "/users/**").hasRole("ADMIN")
 
                         // Appointments
-                        .requestMatchers(HttpMethod.GET, "/appointments/**").hasAnyRole("ADMIN", "RECEPTIONIST", "DOCTOR")
-                        .requestMatchers(HttpMethod.POST, "/appointments").hasAnyRole("ADMIN", "RECEPTIONIST")
-                        .requestMatchers(HttpMethod.PATCH, "/appointments/**").hasAnyRole("ADMIN", "RECEPTIONIST", "DOCTOR")
-                        .requestMatchers(HttpMethod.DELETE, "/appointments/**").hasAnyRole("ADMIN", "RECEPTIONIST")
+                        .requestMatchers(HttpMethod.GET, "/appointments/**").hasAnyRole("ADMIN", "RECEPTIONIST", "DOCTOR", "TUTOR")
+                        .requestMatchers(HttpMethod.POST, "/appointments").hasAnyRole("ADMIN", "RECEPTIONIST", "TUTOR")
+                        .requestMatchers(HttpMethod.PATCH, "/appointments/**").hasAnyRole("ADMIN", "RECEPTIONIST", "DOCTOR", "TUTOR")
+                        .requestMatchers(HttpMethod.DELETE, "/appointments/**").hasAnyRole("ADMIN", "RECEPTIONIST", "TUTOR")
 
                         // Pets
-                        .requestMatchers(HttpMethod.GET, "/pets/**").hasAnyRole("ADMIN", "RECEPTIONIST", "DOCTOR")
-                        .requestMatchers(HttpMethod.POST, "/pets").hasAnyRole("ADMIN", "RECEPTIONIST")
-                        .requestMatchers(HttpMethod.PATCH, "/pets/**").hasAnyRole("ADMIN", "RECEPTIONIST")
-                        .requestMatchers(HttpMethod.DELETE, "/pets/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/pets/**").hasAnyRole("ADMIN", "RECEPTIONIST", "DOCTOR", "TUTOR")
+                        .requestMatchers(HttpMethod.POST, "/pets").hasAnyRole("ADMIN", "RECEPTIONIST", "TUTOR")
+                        .requestMatchers(HttpMethod.PATCH, "/pets/**").hasAnyRole("ADMIN", "RECEPTIONIST", "TUTOR")
+                        .requestMatchers(HttpMethod.DELETE, "/pets/**").hasAnyRole("ADMIN", "RECEPTIONIST", "TUTOR")
 
                         // Doctors
-                        .requestMatchers(HttpMethod.GET, "/doctors/**").hasAnyRole("ADMIN", "RECEPTIONIST", "DOCTOR")
+                        .requestMatchers(HttpMethod.GET, "/doctors/**").hasAnyRole("ADMIN", "RECEPTIONIST", "DOCTOR", "TUTOR")
                         .requestMatchers(HttpMethod.POST, "/doctors").hasAnyRole("ADMIN", "RECEPTIONIST")
 
                         // Qualquer outra rota exige login

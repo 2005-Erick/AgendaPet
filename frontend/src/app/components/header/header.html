@@ -17,15 +17,25 @@
     <button (click)="toggleMenu()" class="md:hidden text-3xl text-[#40916C]">☰</button>
 
     <div class="hidden md:flex gap-3">
+      @if (usersService.currentUser()) {
+      <a [routerLink]="getDashboardLink()"
+        class="flex h-11 items-center px-4 rounded-lg bg-[#40916C] text-white hover:bg-tertiary transition active:scale-95">
+        Dashboard
+      </a>
+      <button (click)="logout()"
+        class="flex h-11 items-center px-4 rounded-lg border border-[#40916C] text-[#40916C] bg-transparent hover:bg-surface-container-low transition active:scale-95">
+        Sair
+      </button>
+      } @else {
       <a routerLink="/login"
         class="flex h-11 items-center px-4 rounded-lg border border-[#40916C] text-[#40916C] bg-transparent hover:bg-surface-container-low transition active:scale-95">
         Entrar
       </a>
-
       <a routerLink="/cadastro"
         class="flex h-11 items-center px-4 rounded-lg bg-[#40916C] text-white hover:bg-tertiary transition active:scale-95">
-        Começar
+        Criar Conta
       </a>
+      }
     </div>
   </div>
   @if (menuOpen()) {
@@ -40,15 +50,25 @@
     </a>
 
     <div class="flex flex-col gap-3 pt-2">
-      <button
+      @if (usersService.currentUser()) {
+      <button (click)="router.navigate([getDashboardLink()])"
+        class="w-full h-12 rounded-xl bg-[#40916C] text-white font-medium active:scale-95 transition-all duration-150">
+        Dashboard
+      </button>
+      <button (click)="logout()"
+        class="w-full h-12 rounded-xl border border-[#40916C] text-[#40916C] font-medium active:scale-95 transition-all duration-150">
+        Sair
+      </button>
+      } @else {
+      <button (click)="router.navigate(['/login'])"
         class="w-full h-12 rounded-xl border border-[#40916C] text-[#40916C] font-medium active:scale-95 transition-all duration-150">
         Entrar
       </button>
-
-      <button
+      <button (click)="router.navigate(['/cadastro'])"
         class="w-full h-12 rounded-xl bg-[#40916C] text-white font-medium active:scale-95 transition-all duration-150">
-        Começar
+        Criar Conta
       </button>
+      }
     </div>
   </div>
   }

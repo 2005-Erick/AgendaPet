@@ -18,9 +18,9 @@
       </p>
 
       <div class="flex flex-col sm:flex-row gap-4 mt-4">
-        <button
+        <button [routerLink]="getHeroLink()"
           class="h-[48px] md:h-[44px] px-6 rounded-lg bg-[#40916C] text-white font-label-md text-label-md hover:-translate-y-1 transition-all duration-300 ease-in-out hover:shadow-lg hover:scale-105">
-          Começar Agora
+          {{ getHeroButtonText() }}
         </button>
 
         <button

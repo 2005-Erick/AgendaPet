@@ -9,6 +9,6 @@ import { Component, input } from '@angular/core';
 export class ProximosAgendamentos {
   titulo = input.required<string>();
   data = input.required<string>();
-  cidade = input.required<string>();
+  status = input.required<string>();
   horario = input.required<string>();
 }

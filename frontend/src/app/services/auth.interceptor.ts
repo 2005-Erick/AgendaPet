@@ -1,17 +1,40 @@
-import { HttpInterceptorFn } from '@angular/common/http';
+import { HttpErrorResponse, HttpInterceptorFn } from '@angular/common/http';
+import { inject } from '@angular/core';
+import { Router } from '@angular/router';
+import { catchError } from 'rxjs/operators';
+import { throwError } from 'rxjs';
+import { UsersService } from './users-service';
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
-  // Busca o token que foi salvo no localStorage após o login
-  const token = localStorage.getItem('token');
+  const router = inject(Router);
+  const usersService = inject(UsersService);
+  let authReq = req;
 
-  // Se o token existir, clona a requisição e adiciona o cabeçalho de autorização
-  if (token) {
-    const authReq = req.clone({
-      headers: req.headers.set('Authorization', `Bearer ${token}`),
-    });
-    return next(authReq);
-  }
+  return next(authReq).pipe(
+    catchError((error: HttpErrorResponse) => {
+      const isLogoutRequest = req.url.includes('/auth/logout');
 
-  // Se não houver token, segue com a requisição normal (ex: na própria tela de login)
-  return next(req);
+      if (!isLogoutRequest && (error.status === 401 || error.status === 403)) {
+        usersService.logout().subscribe({
+          next: () => usersService.clearSession(),
+          error: () => usersService.clearSession(),
+        });
+
+        const url = router.url;
+        // Don't redirect to login if we are already on public pages or during initial load (url === '')
+        const isPublicPage =
+          url.startsWith('/login') ||
+          url.startsWith('/cadastro') ||
+          url === '/' ||
+          url === '' ||
+          url.startsWith('/?') ||
+          url.startsWith('/preco');
+        usersService.clearSession();
+        if (!isPublicPage) {
+          router.navigate(['/login']);
+        }
+      }
+      return throwError(() => error);
+    }),
+  );
 };

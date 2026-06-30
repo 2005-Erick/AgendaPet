@@ -1,6 +1,5 @@
 package com.ifpb.agendapet.auth;
 
-import com.ifpb.agendapet.auth.dto.AuthenticateResponseDTO;
 import com.ifpb.agendapet.auth.dto.LoginRequestDTO;
 import com.ifpb.agendapet.auth.dto.VerifyMfaRequestDTO;
 import com.ifpb.agendapet.exception.dto.StatusResponseDTO;
@@ -46,15 +45,14 @@ public class AuthorizationController {
     }
 
     @PostMapping("/login/confirm")
-    public ResponseEntity<AuthenticateResponseDTO> confirmLogin(@RequestBody @Valid VerifyMfaRequestDTO dto) {
-    String token = authService.confirmLogin(dto);
+    public ResponseEntity<StatusResponseDTO> confirmLogin(@RequestBody @Valid VerifyMfaRequestDTO dto) {
+        String token = authService.confirmLogin(dto);
+        ResponseCookie cookie = createAuthCookie(token);
 
-    ResponseCookie cookie = createAuthCookie(token);
-
-    return ResponseEntity.ok()
-            .header(HttpHeaders.SET_COOKIE, cookie.toString())
-            .body(new AuthenticateResponseDTO(token));
-}
+        return ResponseEntity.ok()
+                .header(HttpHeaders.SET_COOKIE, cookie.toString())
+                .body(new StatusResponseDTO("Login confirmado com sucesso."));
+    }
 
     @PostMapping("/register")
     public ResponseEntity<StatusResponseDTO> register(@RequestBody @Valid RegisterRequestDTO dto) {
@@ -63,13 +61,28 @@ public class AuthorizationController {
     }
 
     @PostMapping("/register/confirm")
-    public ResponseEntity<AuthenticateResponseDTO> confirmRegistration(@RequestBody @Valid VerifyMfaRequestDTO dto) {
-    String token = authService.confirmRegistration(dto);
+    public ResponseEntity<StatusResponseDTO> confirmRegistration(@RequestBody @Valid VerifyMfaRequestDTO dto) {
+        String token = authService.confirmRegistration(dto);
 
-    ResponseCookie cookie = createAuthCookie(token);
+        ResponseCookie cookie = createAuthCookie(token);
 
-    return ResponseEntity.status(HttpStatus.CREATED)
-            .header(HttpHeaders.SET_COOKIE, cookie.toString())
-            .body(new AuthenticateResponseDTO(token));
-}
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .header(HttpHeaders.SET_COOKIE, cookie.toString())
+                .body(new StatusResponseDTO("Cadastro confirmado com sucesso."));
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<StatusResponseDTO> logout() {
+        ResponseCookie cookie = ResponseCookie.from("auth_token", "")
+                .httpOnly(true)
+                .secure(false)
+                .path("/")
+                .maxAge(0)
+                .sameSite("Lax")
+                .build();
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.SET_COOKIE, cookie.toString())
+                .body(new StatusResponseDTO("Logout realizado com sucesso."));
+    }
 }

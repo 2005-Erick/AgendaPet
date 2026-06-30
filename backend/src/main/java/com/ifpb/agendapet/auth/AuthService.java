@@ -32,21 +32,19 @@ public class AuthService {
         var auth = this.authenticationManager.authenticate(usernamePassword);
 
         User user = (User) auth.getPrincipal();
-
-        // Gera um PIN aleatório de 6 dígitos
+        
         String mfaCode = String.format("%06d", new java.util.Random().nextInt(999999));
         user.setMfaCode(mfaCode);
-        user.setMfaCodeExpiration(java.time.LocalDateTime.now().plusMinutes(10));
+        user.setMfaCodeExpiration(java.time.LocalDateTime.now().plusMinutes(15));
         userRepository.save(user);
-
-        // Dispara o email (não retorna o Token ainda)
+        
         emailService.sendLoginCode(user.getEmail(), user.getName(), mfaCode);
     }
 
     public String confirmLogin(VerifyMfaRequestDTO dto) {
         User user = (User) userRepository.findByEmail(dto.email());
         if (user == null || user.getMfaCode() == null) {
-            throw new ResourceErrorException("Código inválido ou não solicitado.");
+            throw new ResourceErrorException("Solicitação de login inválida ou não encontrada.");
         }
 
         if (!user.getMfaCode().equals(dto.code())) {
@@ -54,19 +52,29 @@ public class AuthService {
         }
 
         if (user.getMfaCodeExpiration().isBefore(java.time.LocalDateTime.now())) {
-            throw new ResourceErrorException("Código expirado. Faça login novamente.");
+            user.setMfaCode(null);
+            user.setMfaCodeExpiration(null);
+            userRepository.save(user);
+            throw new ResourceErrorException("Código expirado. Faça o login novamente.");
         }
 
-        // Sucesso! Limpa o código
         user.setMfaCode(null);
         user.setMfaCodeExpiration(null);
         userRepository.save(user);
 
-        // Gera o token final
         return tokenService.generateToken(user);
     }
 
+
+
     public void register(RegisterRequestDTO dto) {
+        if (dto.birthday() != null) {
+            java.time.Period age = java.time.Period.between(dto.birthday(), java.time.LocalDate.now());
+            if (age.getYears() < 18) {
+                throw new ResourceErrorException("O tutor deve ter no mínimo 18 anos.");
+            }
+        }
+
         if (userRepository.findByEmail(dto.email()) != null) {
             throw new ResourceErrorException("E-mail já cadastrado no sistema.");
         }

@@ -9,7 +9,7 @@ import com.ifpb.agendapet.exception.dto.StatusResponseDTO;
 import com.ifpb.agendapet.shared.enums.RoleEnum;
 import com.ifpb.agendapet.user.dto.*;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -23,6 +23,7 @@ import java.util.UUID;
 public class UserService {
     private final UserRepository userRepository;
     private final DoctorRepository doctorRepository;
+    private final PasswordEncoder passwordEncoder;
 
     public UserResponseDTO findById(UUID id) {
         User user = userRepository.findById(id)
@@ -43,7 +44,7 @@ public class UserService {
         user.setAvatarUrl(dto.avatarUrl());
         user.setGender(dto.gender());
         user.setBirthday(dto.birthday());
-        user.setPassword(new BCryptPasswordEncoder().encode(dto.password()));
+        user.setPassword(passwordEncoder.encode(dto.password()));
         user.setCpf(dto.cpf());
         user.setPhone(dto.phone());
         user.setRoles(new HashSet<>(Set.of(RoleEnum.TUTOR)));
@@ -73,7 +74,7 @@ public class UserService {
         user.setAvatarUrl(dto.avatarUrl());
         user.setGender(dto.gender());
         user.setBirthday(dto.birthday());
-        user.setPassword(new BCryptPasswordEncoder().encode(dto.password()));
+        user.setPassword(passwordEncoder.encode(dto.password()));
         user.setCpf(dto.cpf());
         user.setPhone(dto.phone());
         user.setRoles(new HashSet<>(Set.of(dto.role())));
@@ -115,6 +116,10 @@ public class UserService {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Usuário não encontrado."));
 
+        if (dto.email() != null && !dto.email().equals(user.getEmail()) && userRepository.existsByEmail(dto.email())) {
+            throw new ResourceErrorException("E-mail já cadastrado no sistema.");
+        }
+
         if (dto.name() != null) {
             user.setName(dto.name());
         }
@@ -148,13 +153,19 @@ public class UserService {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Usuário não encontrado."));
 
-        if (dto.current_password() == null || !(dto.current_password().equals(user.getPassword())) || user.getPassword().equals(dto.new_password())) {
-            throw new ResourceErrorException();
+        if (dto.current_password() == null || dto.new_password() == null) {
+            throw new ResourceErrorException("Informe a senha atual e a nova senha.");
         }
 
-        if (dto.new_password() != null) {
-            user.setPassword(dto.new_password());
+        if (!passwordEncoder.matches(dto.current_password(), user.getPassword())) {
+            throw new ResourceErrorException("Senha atual inválida.");
         }
+
+        if (passwordEncoder.matches(dto.new_password(), user.getPassword())) {
+            throw new ResourceErrorException("A nova senha deve ser diferente da atual.");
+        }
+
+        user.setPassword(passwordEncoder.encode(dto.new_password()));
 
         userRepository.save(user);
 

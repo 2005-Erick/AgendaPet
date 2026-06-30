@@ -1,6 +1,6 @@
 import { inject, Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, tap } from 'rxjs';
+import { Observable, tap, switchMap } from 'rxjs';
 import { iUser } from '../models/users-model';
 import { UserResponseDTO, RoleEnum, GenderEnum } from '../models/DTO/user-response-DTO';
 
@@ -24,57 +24,58 @@ export class UsersService {
   private http = inject(HttpClient);
 
   private readonly backendUrl = 'http://localhost:8080';
-  private readonly storageKey = 'agendaPetUser';
 
-  currentUser = signal<UserResponseDTO | null>(this.loadUser());
+  currentUser = signal<UserResponseDTO | null>(null);
 
   // -------------------------------------------------------
-  // Auth público
+  // Auth público — Fluxo de Login com 2FA
   // -------------------------------------------------------
 
-  userlogin(login: string, password: string) {
+  /** Passo 1: Envia email + senha. O backend dispara o código MFA por e-mail. */
+  userlogin(login: string, password: string): Observable<any> {
     return this.http.post(`${this.backendUrl}/auth/login`, {
       login,
       password,
-    });
+    }, { withCredentials: true });
   }
 
-  confirmLogin(email: string, code: string) {
+  /** Passo 2: Confirma o código MFA. O backend seta o cookie HttpOnly e retorna o token. */
+  confirmLogin(email: string, code: string): Observable<UserResponseDTO> {
     return this.http
       .post(`${this.backendUrl}/auth/login/confirm`, { email, code }, { withCredentials: true })
       .pipe(
-        tap(() => {
-          this.getCurrentUser().subscribe({
-            next: (user) => this.saveUser(user),
-            error: (err) => console.error('Erro ao carregar usuário logado', err),
-          });
-        }),
+        switchMap(() => this.getCurrentUser()),
+        tap((user) => this.currentUser.set(user))
       );
   }
+
+  // -------------------------------------------------------
+  // Auth público — Fluxo de Cadastro com confirmação por e-mail
+  // -------------------------------------------------------
 
   registerUser(user: iUser) {
     return this.http.post(`${this.backendUrl}/auth/register`, user);
   }
 
-  confirmRegister(email: string, code: string) {
+  confirmRegister(email: string, code: string): Observable<UserResponseDTO> {
     return this.http
       .post(`${this.backendUrl}/auth/register/confirm`, { email, code }, { withCredentials: true })
       .pipe(
-        tap(() => {
-          this.getCurrentUser().subscribe({
-            next: (user) => this.saveUser(user),
-            error: (err) => console.error('Erro ao carregar usuário logado', err),
-          });
-        }),
+        switchMap(() => this.getCurrentUser()),
+        tap((user) => this.currentUser.set(user))
       );
   }
 
-  logout() {
-    this.currentUser.set(null);
-    localStorage.removeItem(this.storageKey);
+  // -------------------------------------------------------
+  // Logout — limpa cookie HttpOnly via backend
+  // -------------------------------------------------------
 
-    // Se depois vocês criarem um endpoint /auth/logout no back,
-    // aqui poderá chamar esse endpoint para zerar o cookie HttpOnly.
+  logout(): Observable<any> {
+    return this.http.post(`${this.backendUrl}/auth/logout`, {}, { withCredentials: true });
+  }
+
+  clearSession() {
+    this.currentUser.set(null);
   }
 
   // -------------------------------------------------------
@@ -88,7 +89,7 @@ export class UsersService {
   }
 
   loadCurrentUser(): Observable<UserResponseDTO> {
-    return this.getCurrentUser().pipe(tap((user) => this.saveUser(user)));
+    return this.getCurrentUser().pipe(tap((user) => this.currentUser.set(user)));
   }
 
   // -------------------------------------------------------
@@ -123,22 +124,4 @@ export class UsersService {
     return this.deleteUser(user.id);
   }
 
-  // -------------------------------------------------------
-  // Persistência local dos dados do usuário
-  // -------------------------------------------------------
-
-  private saveUser(user: UserResponseDTO) {
-    this.currentUser.set(user);
-    localStorage.setItem(this.storageKey, JSON.stringify(user));
-  }
-
-  private loadUser(): UserResponseDTO | null {
-    const user = localStorage.getItem(this.storageKey);
-
-    if (!user) {
-      return null;
-    }
-
-    return JSON.parse(user) as UserResponseDTO;
-  }
 }

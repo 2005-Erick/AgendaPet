@@ -1,36 +1,44 @@
 import { Component, inject, signal, computed } from '@angular/core';
-import { PetService } from '../../../../../services/pet/pet';
-import { AgendamentoService } from '../../../../../services/agendamento';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { PetsService } from '../../../../../services/pets-service';
+import { AppointmentsService } from '../../../../../services/appointments-service';
 import { ActivatedRoute, Router } from '@angular/router';
-import {PetsDetailModal} from '../../../../../components/pets-detail-modal/pets-detail-modal';
+import { PetsDetailModal } from '../../../../../components/pets-detail-modal/pets-detail-modal';
+import { PetResponseDTO } from '../../../../../models/DTO/pet-response-DTO';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-pets-page',
-  imports: [PetsDetailModal],
+  imports: [PetsDetailModal, DatePipe],
   templateUrl: './pets-page.html',
   styleUrls: ['./pets-page.css'],
+  providers: [DatePipe]
 })
 export class PetsPage {
 
-  private petService = inject(PetService);
-  private agendamentoService = inject(AgendamentoService);
+  private petsService = inject(PetsService);
+  private appointmentsService = inject(AppointmentsService);
 
-  pets = this.petService.pets;
-  agendamentos = this.agendamentoService.agendamento;
+  pets = toSignal(this.petsService.getPetsResponseDTO(), { initialValue: [] as PetResponseDTO[] });
+  agendamentos = toSignal(this.appointmentsService.getAppointmentsResponseDTO(), { initialValue: [] });
+
+  totalPets = computed(() => this.pets().length);
+  totalAgendamentos = computed(() => this.agendamentos().length);
+  agendamentosFuturos = computed(() => this.agendamentos().filter(a => a.status === 'SCHEDULED').length);
 
   private route = inject(ActivatedRoute);
   private router = inject(Router);
 
-  petSelecionado = signal<number | null>(null);
+  petSelecionado = signal<string | null>(null);
 
   petsComAgendamento = computed(() =>
     this.pets().map(pet => ({
       ...pet,
-      agendamento: this.agendamentos().find(a => a.petId === pet.id) ?? null
+      agendamento: this.agendamentos().find(a => String(a.pet_id) === pet.id && a.status === 'SCHEDULED') ?? null
     }))
   );
 
-  abrirPet(id: number) {
+  abrirPet(id: string) {
     this.router.navigate(['/dashboard/pets-page/pet', id]);
   }
 
@@ -42,15 +50,7 @@ export class PetsPage {
         return;
       }
 
-      const id : number = Number(params['id']);
-
-      const petExiste = this.petService.pets().some(p => p.id === id);
-
-      if (!petExiste) {
-        this.router.navigate(['/404']);
-        return;
-      }
-
+      const id : string = params['id'];
       this.petSelecionado.set(id);
     });
   }

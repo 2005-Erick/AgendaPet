@@ -1,17 +1,20 @@
 import { Component, inject, signal, computed } from '@angular/core';
-import {AgendamentoService} from '../../../../../services/agendamento';
+import { AppointmentsService } from '../../../../../services/appointments-service';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-agendamentos-page',
-  imports: [],
+  imports: [DatePipe],
   templateUrl: './agendamentos-page.html',
   styleUrl: './agendamentos-page.css',
+  providers: [DatePipe]
 })
 export class AgendamentosPage {
 
-  private agendamentoService = inject(AgendamentoService);
+  private appointmentsService = inject(AppointmentsService);
 
-  agendamentos = this.agendamentoService.agendamento;
+  agendamentos = toSignal(this.appointmentsService.getAppointmentsResponseDTO(), { initialValue: [] });
 
   filters = signal({
     servico: '',
@@ -23,9 +26,9 @@ export class AgendamentosPage {
     const f = this.filters();
 
     return this.agendamentos().filter(a =>
-      a.nomeAnimal.toLowerCase().includes(f.animal.toLowerCase()) &&
-      a.servico.toLowerCase().includes(f.servico.toLowerCase()) &&
-      (!f.data || a.data === f.data)
+      (a.pet_name || '').toLowerCase().includes(f.animal.toLowerCase()) &&
+      (a.type || '').toLowerCase().includes(f.servico.toLowerCase()) &&
+      (!f.data || a.scheduled_at.startsWith(f.data))
     );
   });
 

@@ -10,7 +10,11 @@ import com.ifpb.agendapet.exception.ResourceNotFoundException;
 import com.ifpb.agendapet.pet.Pet;
 import com.ifpb.agendapet.pet.PetRepository;
 import com.ifpb.agendapet.shared.enums.PaymentStatus;
+import com.ifpb.agendapet.shared.enums.RoleEnum;
+import com.ifpb.agendapet.user.User;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -24,6 +28,28 @@ public class AppointmentService {
     private final AppointmentRepository appointmentRepository;
     private final DoctorRepository doctorRepository;
     private final PetRepository petRepository;
+
+    private User getCurrentUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null || !(authentication.getPrincipal() instanceof User user)) {
+            throw new ResourceErrorException("Usuário não autenticado.");
+        }
+
+        return user;
+    }
+
+    private boolean isTutor(User user) {
+        return user.getRoles().contains(RoleEnum.TUTOR) && !user.getRoles().contains(RoleEnum.ADMIN);
+    }
+
+    private boolean canAccessAppointment(User currentUser, Appointment appointment) {
+        if (!isTutor(currentUser)) {
+            return true;
+        }
+
+        return appointment.getPet().getTutor().getId().equals(currentUser.getId());
+    }
 
     private AppointmentResponseDTO getAppointmentResponseDTO(Appointment appointment) {
         return new AppointmentResponseDTO(
@@ -46,11 +72,26 @@ public class AppointmentService {
         Appointment appointment = appointmentRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Agendamento não existe"));
 
+        if (!canAccessAppointment(getCurrentUser(), appointment)) {
+            throw new ResourceErrorException("Você não tem permissão para acessar este agendamento.");
+        }
+
         return getAppointmentResponseDTO(appointment);
     }
 
     public List<AppointmentResponseDTO> findAll() {
-        List<Appointment> appointments = appointmentRepository.findAll();
+        User currentUser = getCurrentUser();
+
+        List<Appointment> appointments;
+
+        if (currentUser.getRoles().contains(RoleEnum.TUTOR)) {
+            appointments = appointmentRepository.findByPet_Tutor_Id(currentUser.getId());
+        } else if (currentUser.getRoles().contains(RoleEnum.DOCTOR)) {
+            appointments = appointmentRepository.findByDoctor_User_Id(currentUser.getId());
+        } else {
+            appointments = appointmentRepository.findAll();
+        }
+
         List<AppointmentResponseDTO> dtos = new ArrayList<>();
 
         for (Appointment appointment : appointments) {
@@ -61,6 +102,8 @@ public class AppointmentService {
     }
 
     public AppointmentResponseDTO create(AppointmentCreateDTO dto) {
+        User currentUser = getCurrentUser();
+
         validateScheduleConflict(null, dto.doctor_id(), dto.pet_id(), dto.scheduled_at());
 
         Doctor doctor = doctorRepository.findById(dto.doctor_id())
@@ -68,6 +111,10 @@ public class AppointmentService {
 
         Pet pet = petRepository.findById(dto.pet_id())
                 .orElseThrow(() -> new ResourceNotFoundException("Pet não existe"));
+
+        if (isTutor(currentUser) && !pet.getTutor().getId().equals(currentUser.getId())) {
+            throw new ResourceErrorException("Você só pode agendar consultas para os seus próprios pets.");
+        }
 
         Appointment appointment = new Appointment();
 
@@ -98,6 +145,12 @@ public class AppointmentService {
         Appointment appointment = appointmentRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Agendamento não existe"));
 
+        User currentUser = getCurrentUser();
+
+        if (!canAccessAppointment(currentUser, appointment)) {
+            throw new ResourceErrorException("Você não tem permissão para alterar este agendamento.");
+        }
+
         UUID doctorId = dto.doctor_id() != null
                 ? dto.doctor_id()
                 : appointment.getDoctor().getId();
@@ -122,6 +175,10 @@ public class AppointmentService {
         if (dto.pet_id() != null) {
             Pet pet = petRepository.findById(dto.pet_id())
                     .orElseThrow(() -> new ResourceNotFoundException("Pet não existe"));
+
+            if (isTutor(currentUser) && !pet.getTutor().getId().equals(currentUser.getId())) {
+                throw new ResourceErrorException("Você só pode vincular pets que pertencem à sua conta.");
+            }
 
             appointment.setPet(pet);
         }
@@ -156,6 +213,13 @@ public class AppointmentService {
     }
 
     public void deleteById(UUID id) {
+        Appointment appointment = appointmentRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Agendamento não existe."));
+
+        if (!canAccessAppointment(getCurrentUser(), appointment)) {
+            throw new ResourceErrorException("Você não tem permissão para excluir este agendamento.");
+        }
+
         if (!appointmentRepository.existsById(id)) {
             throw new ResourceNotFoundException("Agendamento não existe.");
         }
