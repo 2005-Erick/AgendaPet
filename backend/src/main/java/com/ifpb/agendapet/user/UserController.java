@@ -16,10 +16,6 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/users")
-@CrossOrigin(
-    origins = "http://localhost:4200",
-    allowCredentials = "true"
-)
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;

@@ -7,6 +7,7 @@ import {
   AppointmentTypes,
   PaymentStatus,
 } from '../models/DTO/appointment-response-DTO';
+import { environment } from '../../environments/environment';
 
 export interface AppointmentCreateDTO {
   doctor_id: string;
@@ -34,7 +35,7 @@ export interface AppointmentUpdateDTO {
   providedIn: 'root',
 })
 export class AppointmentsService {
-  private readonly backendUrl = 'http://localhost:8080';
+  private readonly backendUrl = environment.backendUrl;
 
   constructor(private http: HttpClient) {}
 

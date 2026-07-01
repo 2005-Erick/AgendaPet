@@ -104,7 +104,10 @@ export class Login {
   /** Passo 2: Confirma o código MFA → backend seta cookie e autentica */
   confirmMfa() {
     const code = this.mfaCode().trim();
-    if (!code || !this.loginEmail) return;
+    if (!code || !this.loginEmail) {
+      this.errorMessage.set('E-mail ou código ausente.');
+      return;
+    }
 
     this.isLoading.set(true);
     this.errorMessage.set(null);

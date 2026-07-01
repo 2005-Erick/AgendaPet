@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, tap, switchMap } from 'rxjs';
 import { iUser } from '../models/users-model';
 import { UserResponseDTO, RoleEnum, GenderEnum } from '../models/DTO/user-response-DTO';
+import { environment } from '../../environments/environment';
 
 export interface AdminCreateUserDTO {
   name: string;
@@ -23,7 +24,7 @@ export interface AdminCreateUserDTO {
 export class UsersService {
   private http = inject(HttpClient);
 
-  private readonly backendUrl = 'http://localhost:8080';
+  private readonly backendUrl = environment.backendUrl;
 
   currentUser = signal<UserResponseDTO | null>(null);
 

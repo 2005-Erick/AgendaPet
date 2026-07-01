@@ -14,10 +14,6 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/appointments")
-@CrossOrigin(
-        origins = "http://localhost:4200",
-        allowCredentials = "true"
-)
 @RequiredArgsConstructor
 public class AppointmentController {
     private final AppointmentService appointmentService;

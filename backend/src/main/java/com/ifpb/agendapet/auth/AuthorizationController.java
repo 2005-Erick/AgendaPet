@@ -8,7 +8,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,24 +18,20 @@ import java.time.Duration;
 
 @RestController
 @RequestMapping("/auth")
-@CrossOrigin(
-    origins = "http://localhost:4200",
-    allowCredentials = "true"
-)
 @RequiredArgsConstructor
 public class AuthorizationController {
 
     private final AuthService authService;
 
     private ResponseCookie createAuthCookie(String token) {
-    return ResponseCookie.from("auth_token", token)
-            .httpOnly(true)
-            .secure(false) // true apenas em produção com HTTPS
-            .path("/")
-            .maxAge(Duration.ofDays(7))
-            .sameSite("Lax")
-            .build();
-}
+        return ResponseCookie.from("auth_token", token)
+                .httpOnly(true)
+                .secure(true) // Necessário ser true para SameSite=None
+                .path("/")
+                .maxAge(Duration.ofDays(7))
+                .sameSite("None") // Necessário para cross-origin (Render backend + localhost frontend)
+                .build();
+    }
 
     @PostMapping("/login")
     public ResponseEntity<StatusResponseDTO> login(@RequestBody @Valid LoginRequestDTO dto) {
@@ -75,10 +70,10 @@ public class AuthorizationController {
     public ResponseEntity<StatusResponseDTO> logout() {
         ResponseCookie cookie = ResponseCookie.from("auth_token", "")
                 .httpOnly(true)
-                .secure(false)
+                .secure(true)
                 .path("/")
                 .maxAge(0)
-                .sameSite("Lax")
+                .sameSite("None")
                 .build();
 
         return ResponseEntity.ok()

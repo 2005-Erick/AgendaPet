@@ -2,9 +2,13 @@
   "name": "front-end",
   "version": "0.0.0",
   "scripts": {
+    "sync:env": "node scripts/generate-environment.mjs",
+    "prestart": "npm run sync:env",
     "ng": "ng",
     "start": "ng serve",
+    "prebuild": "npm run sync:env",
     "build": "ng build",
+    "pretest": "npm run sync:env",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
   },
@@ -19,7 +23,7 @@
     "@angular/material": "^21.2.11",
     "@angular/platform-browser": "^21.2.0",
     "@angular/router": "^21.2.0",
-    "@supabase/supabase-js": "^2.106.0",
+    "dotenv": "^17.4.2",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0"
   },

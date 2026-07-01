@@ -2,12 +2,13 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { DoctorResponseDTO } from '../models/DTO/doctor-response-DTO';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class DoctorsServices {
-  private readonly backendUrl = 'http://localhost:8080';
+  private readonly backendUrl = environment.backendUrl;
 
   constructor(private http: HttpClient) {}
 

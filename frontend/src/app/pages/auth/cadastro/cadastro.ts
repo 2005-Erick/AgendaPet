@@ -266,20 +266,31 @@ export class Cadastro {
 
   confirmCode() {
     const code = this.confirmationCode().trim();
-    const email = this.registrationForm.value.email;
+    const email = this.registrationForm.getRawValue().email;
 
     if (!email || !code) {
+      this.errorMessage.set('E-mail ou código ausente.');
+      this.errorMessageType.set('error');
       return;
     }
+    
+    this.errorMessage.set(null);
+    this.isLoading.set(true);
+
     this.userService.confirmRegister(email, code).subscribe({
       next: () => {
+        this.isLoading.set(false);
         this.showConfirmationModal.set(false);
         this.confirmationCode.set('');
         this.registrationForm.reset();
         this.router.navigate(['/dashboard']);
       },
       error: (error) => {
-        console.error(error);
+        this.isLoading.set(false);
+        console.error('Erro na confirmação:', error);
+        const msg = error.error?.message || error.message || 'Código inválido ou expirado.';
+        this.errorMessage.set(msg);
+        this.errorMessageType.set('error');
       },
     });
   }

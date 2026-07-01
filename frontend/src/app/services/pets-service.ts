@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { PetGenderEnum, PetResponseDTO, PetSpecies } from '../models/DTO/pet-response-DTO';
+import { environment } from '../../environments/environment';
 
 export interface PetCreateDTO {
   tutor_id: string;
@@ -31,7 +32,7 @@ export interface PetUpdateDTO {
   providedIn: 'root',
 })
 export class PetsService {
-  private readonly backendUrl = 'http://localhost:8080';
+  private readonly backendUrl = environment.backendUrl;
 
   constructor(private http: HttpClient) {}
 

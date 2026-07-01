@@ -14,10 +14,6 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/pets")
-@CrossOrigin(
-    origins = "http://localhost:4200",
-    allowCredentials = "true"
-)
 @RequiredArgsConstructor
 public class PetController {
     private final PetService petService;
