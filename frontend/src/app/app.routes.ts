@@ -11,6 +11,10 @@ import { configurationRoutes } from './pages/tutor/dashboard/subpaginas/configur
 import { Recepcionist } from './pages/recepcionist/recepcionist';
 import { AdminDashboard } from './pages/administrator/admin-dashboard/admin-dashboard';
 import { adminDashboardRoutes } from './pages/administrator/admin-dashboard/admin-dashboard.routes';
+import { roleGuard } from './guards/role.guard';
+import { RoleEnum } from './models/DTO/user-response-DTO';
+import { DoctorDashboard } from './pages/doctor/doctor-dashboard';
+
 
 export const routes: Routes = [
   { path: '', component: Home, title: 'AgendaPet - Gestão de Clínicas Veterinárias e Pet Shops' },
@@ -20,18 +24,27 @@ export const routes: Routes = [
   {
     path: 'dashboard',
     component: Dashboard,
+    canActivate: [roleGuard([RoleEnum.TUTOR])],
     children: dashboardRoutes,
   },
   {
     path: 'admin-dashboard',
     component: AdminDashboard,
     title: 'AgendaPet - Dashboard Administrador',
+    canActivate: [roleGuard([RoleEnum.ADMIN])],
     children: adminDashboardRoutes,
   },
   {
     path: 'dashboard-recepcionist',
     component: Recepcionist,
+    canActivate: [roleGuard([RoleEnum.RECEPTIONIST])],
     title: 'AgendaPet - Dashboard Recepcionista',
+  },
+  {
+    path: 'dashboard-doctor',
+    component: DoctorDashboard,
+    canActivate: [roleGuard([RoleEnum.DOCTOR])],
+    title: 'AgendaPet - Dashboard Médico',
   },
   { path: '**', component: NotFoundPage, title: 'AgendaPet - 404' },
 ];

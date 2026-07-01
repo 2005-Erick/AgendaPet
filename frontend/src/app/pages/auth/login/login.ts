@@ -155,7 +155,7 @@ export class Login {
     }
 
     if (roles.includes(RoleEnum.DOCTOR)) {
-      this.router.navigate(['/dashboard']);
+      this.router.navigate(['/dashboard-doctor']);
       return;
     }
 

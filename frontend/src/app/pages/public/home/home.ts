@@ -24,6 +24,7 @@ export class Home {
     const roles = user.roles || [];
     if (roles.includes(RoleEnum.ADMIN)) return '/admin-dashboard';
     if (roles.includes(RoleEnum.RECEPTIONIST)) return '/dashboard-recepcionist';
+    if (roles.includes(RoleEnum.DOCTOR)) return '/dashboard-doctor';
     return '/dashboard';
   }
 
